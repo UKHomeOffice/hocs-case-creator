@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+
+  localstack:
+    image: localstack/localstack:0.9.5
+    ports:
+      - 9000:8080
+      - 4561:4561
+      - 4576:4576
+    networks:
+      - hocs-network
+    environment:
+      HOSTNAME_EXTERNAL: localstack
+      DEFAULT_REGION: eu-west-2
+      SERVICES: sqs
+
+  aws_cli:
+    image: xueshanf/awscli
+    command:
+      - /bin/sh
+      - -c
+      - |
+        sleep 20
+        aws --version
+        aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name ukvi-complaint-queue
+        aws --endpoint-url=http://localstack:4576 sqs create-queue --queue-name ukvi-complaint-queue-dlq
+    environment:
+      AWS_ACCESS_KEY_ID: UNSET
+      AWS_SECRET_ACCESS_KEY: UNSET
+      AWS_DEFAULT_REGION: 'eu-west-2'
+    networks:
+      - hocs-network
+    depends_on:
+      - localstack
+
+networks:
+  hocs-network:
