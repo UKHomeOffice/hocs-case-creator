@@ -1,0 +1,730 @@
+{
+  "title": "UKVI Complaint",
+  "description": "The JSON sent between the HO UKVI complaints service and DECS",
+  "definitions": {
+    "VacCentre": {
+      "type": "object",
+      "required": [
+        "country",
+        "city"
+      ],
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        }
+      }
+    },
+    "SscCentre": {
+      "type": "object",
+      "required": [
+        "city"
+      ],
+      "properties": {
+        "city": {
+          "type": "string"
+        }
+      }
+    },
+    "UkVcasCentre": {
+      "type": "object",
+      "required": [
+        "city"
+      ],
+      "properties": {
+        "city": {
+          "type": "string"
+        }
+      }
+    },
+    "ComplaintDetailsText": {
+      "type": "string"
+    },
+    "AgentDetails": {
+      "type": "object",
+      "required": [
+        "agentName",
+        "agentType",
+        "agentEmail"
+      ],
+      "properties": {
+        "agentName": {
+          "type": "string"
+        },
+        "agentType": {
+          "type": "string",
+          "enum": [
+            "LEGAL_REP",
+            "RELATIVE",
+            "SPONSOR",
+            "SUPPORT_ORG"
+          ]
+        },
+        "agentEmail": {
+          "type": "string",
+          "format": "email"
+        },
+        "agentPhone": {
+          "type": "string"
+        }
+      }
+    },
+    "AgentRepresentativeApplicantDetails": {
+      "type": "object",
+      "required": [
+        "agentRepresentativeApplicantName",
+        "agentRepresentativeApplicantNationality",
+        "agentRepresentativeApplicantDob"
+      ],
+      "properties": {
+        "applicantName": {
+          "type": "string"
+        },
+        "applicantNationality": {
+          "type": "string"
+        },
+        "applicantDob": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "ApplicantDetails": {
+      "type": "object",
+      "required": [
+        "applicantType",
+        "applicantName",
+        "applicantNationality",
+        "applicantDob",
+        "applicantEmail"
+      ],
+      "properties": {
+        "applicantType": {
+          "type": "string",
+          "enum": [
+            "APPLICANT"
+          ]
+        },
+        "applicantName": {
+          "type": "string"
+        },
+        "applicantNationality": {
+          "type": "string"
+        },
+        "applicantDob": {
+          "type": "string",
+          "format": "date"
+        },
+        "applicantEmail": {
+          "type": "string",
+          "format": "email"
+        },
+        "applicantPhone": {
+          "type": "string"
+        }
+      }
+    },
+    "ApplicantWithAgentDetails": {
+      "type": "object",
+      "required": [
+        "applicantType",
+        "applicantDetails",
+        "agentDetails"
+      ],
+      "properties": {
+        "applicantType": {
+          "type": "string",
+          "enum": [
+            "AGENT"
+          ]
+        },
+        "applicantDetails": {
+          "$ref": "#/definitions/AgentRepresentativeApplicantDetails"
+        },
+        "agentDetails": {
+          "$ref": "#/definitions/AgentDetails"
+        }
+      }
+    },
+    "Reference": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/GwfReference"
+        },
+        {
+          "$ref": "#/definitions/HoReference"
+        },
+        {
+          "$ref": "#/definitions/IhsReference"
+        },
+        {
+          "$ref": "#/definitions/UanReference"
+        }
+      ]
+    },
+    "GwfReference": {
+      "type": "object",
+      "description": "GWF012345678",
+      "required": [
+        "referenceType",
+        "reference"
+      ],
+      "properties": {
+        "referenceType": {
+          "type": "string",
+          "enum": [
+            "GWF_REF"
+          ]
+        },
+        "reference": {
+          "type": "string"
+        }
+      }
+    },
+    "HoReference": {
+      "type": "object",
+      "description": "012345678",
+      "required": [
+        "referenceType",
+        "reference"
+      ],
+      "properties": {
+        "referenceType": {
+          "type": "string",
+          "enum": [
+            "HO_REF"
+          ]
+        },
+        "reference": {
+          "type": "string"
+        }
+      }
+    },
+    "IhsReference": {
+      "type": "object",
+      "description": "IHS123456789",
+      "required": [
+        "referenceType",
+        "reference"
+      ],
+      "properties": {
+        "referenceType": {
+          "type": "string",
+          "enum": [
+            "IHS_REF"
+          ]
+        },
+        "reference": {
+          "type": "string"
+        }
+      }
+    },
+    "UanReference": {
+      "type": "object",
+      "description": "1234-5678-9123-4567",
+      "required": [
+        "referenceType",
+        "reference"
+      ],
+      "properties": {
+        "referenceType": {
+          "type": "string",
+          "enum": [
+            "UAN_REF"
+          ]
+        },
+        "reference": {
+          "type": "string"
+        }
+      }
+    },
+    "ReporterDetails": {
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/ApplicantWithAgentDetails"
+        },
+        {
+          "$ref": "#/definitions/ApplicantDetails"
+        }
+      ]
+    },
+    "ComplaintTypeRequiringCorrespondence": {
+      "type": "string",
+      "enum": [
+        "SUBMITTING_APPLICATION",
+        "MAKING_APPOINTMENT",
+        "BIOMETRIC_RESIDENCE_PERMIT",
+        "UNCLEAR_MISLEADING_INFORMATION",
+        "POOR_STAFF_BEHAVIOUR",
+        "POOR_INFORMATION",
+        "EXISTING_COMPLAINT",
+        "SOMETHING_ELSE"
+      ]
+    },
+    "ComplaintTypePrevious": {
+      "type": "string",
+      "enum": [
+        "SUBMITTING_APPLICATION",
+        "MAKING_APPOINTMENT",
+        "EXISTING",
+        "DOCUMENT_DELAYS",
+        "IMMIGRATION_DECISION",
+        "IMMIGRATION_STATUS_CHANGE",
+        "BIOMETRIC_RESIDENCE_PERMIT",
+        "REFUND",
+        "POOR_STAFF_BEHAVIOUR",
+        "POOR_INFORMATION",
+        "SOMETHING_ELSE"
+      ]
+    },
+    "FaceToFaceExperience": {
+      "type": "object",
+      "required": [
+        "experienceType",
+        "location",
+        "reference",
+        "reporterDetails",
+        "complaintDetails"
+      ],
+      "properties": {
+        "experienceType": {
+          "type": "string",
+          "enum": [
+            "FACE_TO_FACE"
+          ]
+        },
+        "location": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/VacCentre"
+            },
+            {
+              "$ref": "#/definitions/SscCentre"
+            },
+            {
+              "$ref": "#/definitions/UkVcasCentre"
+            }
+          ]
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "reason",
+            "complaintText"
+          ],
+          "properties": {
+            "reason": {
+              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
+            },
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    },
+    "PhoneExperience": {
+      "type": "object",
+      "required": [
+        "experienceType",
+        "callDetails",
+        "reference",
+        "reporterDetails",
+        "complaintDetails"
+      ],
+      "properties": {
+        "experienceType": {
+          "type": "string",
+          "enum": [
+            "PHONE"
+          ]
+        },
+        "callDetails": {
+          "type": "object",
+          "required": [
+            "numberCalled",
+            "date",
+            "time",
+            "calledFrom"
+          ],
+          "properties": {
+            "numberCalled": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "time": {
+              "type": "string",
+              "description": "10:30am"
+            },
+            "calledFrom": {
+              "type": "string"
+            }
+          }
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "reason",
+            "complaintText"
+          ],
+          "properties": {
+            "reason": {
+              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
+            },
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    },
+    "LetterEmailExperience": {
+      "type": "object",
+      "required": [
+        "experienceType",
+        "reference",
+        "reporterDetails",
+        "complaintDetails"
+      ],
+      "properties": {
+        "experienceType": {
+          "type": "string",
+          "enum": [
+            "LETTER_OR_EMAIL"
+          ]
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "reason",
+            "complaintText"
+          ],
+          "properties": {
+            "reason": {
+              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
+            },
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    },
+    "SubmittingApplicationComplaint": {
+      "type": "object",
+      "required": [
+        "complaintType",
+        "reference",
+        "reporterDetails",
+        "complaintDetails"
+      ],
+      "properties": {
+        "complaintType": {
+          "type": "string",
+          "enum": [
+            "SUBMITTING_APPLICATION"
+          ]
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "reason",
+            "complaintText"
+          ],
+          "properties": {
+            "reason": {
+              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
+            },
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    },
+    "MakingAppointmentComplaint": {
+      "type": "object",
+      "required": [
+        "complaintType",
+        "reference",
+        "reporterDetails",
+        "complaintDetails"
+      ],
+      "properties": {
+        "complaintType": {
+          "type": "string",
+          "enum": [
+            "MAKING_APPOINTMENT"
+          ]
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "reason",
+            "complaintText"
+          ],
+          "properties": {
+            "reason": {
+              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
+            },
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    },
+    "BrpComplaint": {
+      "type": "object",
+      "required": [
+        "complaintType",
+        "reference",
+        "reporterDetails",
+        "complaintDetails"
+      ],
+      "properties": {
+        "complaintType": {
+          "type": "string",
+          "enum": [
+            "BIOMETRIC_RESIDENCE_PERMIT"
+          ]
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "reason",
+            "complaintText"
+          ],
+          "properties": {
+            "reason": {
+              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
+            },
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    },
+    "InformationIssueComplaint": {
+      "type": "object",
+      "required": [
+        "complaintType",
+        "reference",
+        "reporterDetails",
+        "complaintDetails"
+      ],
+      "properties": {
+        "complaintType": {
+          "type": "string",
+          "enum": [
+            "POOR_INFORMATION"
+          ]
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "reason",
+            "complaintText"
+          ],
+          "properties": {
+            "reason": {
+              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
+            },
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    },
+    "StaffBehaviourComplaint": {
+      "type": "object",
+      "required": [
+        "complaintType",
+        "experience"
+      ],
+      "properties": {
+        "complaintType": {
+          "type": "string",
+          "enum": [
+            "POOR_STAFF_BEHAVIOUR"
+          ]
+        },
+        "experience": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/FaceToFaceExperience"
+            },
+            {
+              "$ref": "#/definitions/PhoneExperience"
+            },
+            {
+              "$ref": "#/definitions/LetterEmailExperience"
+            }
+          ]
+        }
+      }
+    },
+    "ExistingComplaint": {
+      "type": "object",
+      "required": [
+        "complaintType",
+        "complaintDetails",
+        "reporterDetails"
+      ],
+      "properties": {
+        "complaintType": {
+          "type": "string",
+          "enum": [
+            "EXISTING"
+          ]
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "complaintReferenceNumber",
+            "complaintText",
+            "reason"
+          ],
+          "properties": {
+            "complaintReferenceNumber": {
+              "type": "string"
+            },
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            },
+            "reason": {
+              "$ref": "#/definitions/ComplaintTypePrevious"
+            }
+          }
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        }
+      }
+    },
+    "SomethingElseComplaint": {
+      "type": "object",
+      "required": [
+        "complaintType",
+        "reference",
+        "reporterDetails",
+        "complaintDetails"
+      ],
+      "properties": {
+        "complaintType": {
+          "type": "string",
+          "enum": [
+            "SOMETHING_ELSE"
+          ]
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "reason",
+            "complaintText"
+          ],
+          "properties": {
+            "reason": {
+              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
+            },
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "required": [
+    "creationDate",
+    "complaint"
+  ],
+  "properties": {
+    "creationDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "complaint": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/SubmittingApplicationComplaint"
+        },
+        {
+          "$ref": "#/definitions/MakingAppointmentComplaint"
+        },
+        {
+          "$ref": "#/definitions/BrpComplaint"
+        },
+        {
+          "$ref": "#/definitions/InformationIssueComplaint"
+        },
+        {
+          "$ref": "#/definitions/StaffBehaviourComplaint"
+        },
+        {
+          "$ref": "#/definitions/ExistingComplaint"
+        },
+        {
+          "$ref": "#/definitions/SomethingElseComplaint"
+        }
+      ]
+    }
+  }
+}

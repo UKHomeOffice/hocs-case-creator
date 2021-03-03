@@ -54,10 +54,10 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                 }));
 
         from(ukviComplaintQueue)
+                .to("json-validator:cmsSchema.json")
                 .setProperty(SqsConstants.RECEIPT_HANDLE, header(SqsConstants.RECEIPT_HANDLE))
                 .process(transferHeadersToMDC())
                 .log(LoggingLevel.INFO, "UKVI Complaint request received")
-                .log(LoggingLevel.DEBUG, "UKVI Complaint unmarshalled")
                 .bean(UKVIComplaintService, "createComplaint(${body})")
                 .log(LoggingLevel.INFO, "UKVI Complaint request processed")
                 .setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));

@@ -1,0 +1,17 @@
+{
+  "creationDate": "2020-10-03",
+  "complaint": {
+    "complaintType": "POOR_STAFF_BEHAVIOUR",
+    "experience": {
+      "experienceType": "LETTER_OR_EMAIL",
+      "reference": {
+        "referenceType": "IHS_REF",
+        "reference": "amet"
+      },
+      "complaintDetails": {
+        "reason": "UNCLEAR_MISLEADING_INFORMATION",
+        "complaintText": "mollit deserunt"
+      }
+    }
+  }
+}
