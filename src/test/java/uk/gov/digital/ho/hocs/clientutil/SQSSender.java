@@ -39,8 +39,8 @@ public class SQSSender {
                         "        \"applicantName\": \"dolor ad eiusmod aute\",\n" +
                         "        \"applicantNationality\": \"Guinea\",\n" +
                         "        \"applicantDob\": \"2020-10-03\",\n" +
-                        "        \"applicantEmail\": \"sss@uevptde.co.uk\",\n" +
-                        "        \"applicantPhone\": \"01772 700806\"\n" +
+                        "        \"applicantEmail\": \"test@example.org\",\n" +
+                        "        \"applicantPhone\": \"01632 960000\"\n" +
                         "      },\n" +
                         "      \"complaintDetails\": {\n" +
                         "        \"reason\": \"UNCLEAR_MISLEADING_INFORMATION\",\n" +

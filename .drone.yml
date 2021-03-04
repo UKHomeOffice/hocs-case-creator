@@ -9,11 +9,21 @@ steps:
     image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
     commands:
       - ./gradlew assemble --no-daemon
+    environment:
+      ARTIFACTORY_TOKEN:
+        from_secret: ARTIFACTORY_TOKEN
+      ARTIFACTORY_USER:
+        from_secret: ARTIFACTORY_USER
 
   - name: test project
     image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
     commands:
       - ./gradlew check --no-daemon
+    environment:
+      ARTIFACTORY_TOKEN:
+        from_secret: ARTIFACTORY_TOKEN
+      ARTIFACTORY_USER:
+        from_secret: ARTIFACTORY_USER
     depends_on:
       - build project
 
@@ -35,6 +45,10 @@ steps:
       DOCKER_PASSWORD:
         from_secret: QUAY_ROBOT_TOKEN
       DOCKER_USERNAME: ukhomeofficedigital+hocs_quay_robot
+      ARTIFACTORY_TOKEN:
+        from_secret: ARTIFACTORY_TOKEN
+      ARTIFACTORY_USER:
+        from_secret: ARTIFACTORY_USER
     depends_on:
       - test project
 
@@ -49,6 +63,10 @@ steps:
       DOCKER_PASSWORD:
         from_secret: QUAY_ROBOT_TOKEN
       DOCKER_USERNAME: ukhomeofficedigital+hocs_quay_robot
+      ARTIFACTORY_TOKEN:
+        from_secret: ARTIFACTORY_TOKEN
+      ARTIFACTORY_USER:
+        from_secret: ARTIFACTORY_USER
     when:
       branch:
         - main
@@ -82,7 +100,7 @@ steps:
   - name: clone kube repo
     image: plugins/git
     commands:
-      - git clone https://github.com/UKHomeOffice/kube-hocs-case-creator.git
+      - git clone --branch main https://github.com/UKHomeOffice/kube-hocs-case-creator.git
     when:
       event:
         - push
@@ -121,6 +139,25 @@ steps:
     when:
       branch:
         - main
+      event:
+        - push
+    depends_on:
+      - clone kube repo
+
+  - name: deploy to delta
+    image: quay.io/ukhomeofficedigital/kd:v1.16.0
+    commands:
+      - cd kube-hocs-case-creator
+      - ./deploy.sh
+    environment:
+      ENVIRONMENT: hocs-delta
+      KUBE_TOKEN:
+        from_secret: hocs_case_creator_hocs_delta
+      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      VERSION: build_${DRONE_BUILD_NUMBER}
+    when:
+      branch:
+        - epic/HOCS-COMP
       event:
         - push
     depends_on:
@@ -247,5 +284,3 @@ steps:
           - "*-prod"
     depends_on:
       - clone kube repo
-      
-...
