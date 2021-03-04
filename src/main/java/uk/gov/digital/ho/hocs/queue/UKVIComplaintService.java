@@ -9,6 +9,5 @@ import org.springframework.stereotype.Service;
 public class UKVIComplaintService {
     public void createComplaint(String jsonBody) throws Exception {
         log.info("Complaint : {}", (String) JsonPath.read(jsonBody, "$.complaint.complaintType"));
-        log.debug(jsonBody);
     }
 }
