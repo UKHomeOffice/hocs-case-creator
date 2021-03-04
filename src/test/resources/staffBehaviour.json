@@ -1,0 +1,25 @@
+{
+  "creationDate": "2020-10-03",
+  "complaint": {
+    "complaintType": "POOR_STAFF_BEHAVIOUR",
+    "experience": {
+      "experienceType": "LETTER_OR_EMAIL",
+      "reference": {
+        "referenceType": "IHS_REF",
+        "reference": "amet"
+      },
+      "reporterDetails": {
+        "applicantType": "APPLICANT",
+        "applicantName": "dolor ad eiusmod aute",
+        "applicantNationality": "Guinea",
+        "applicantDob": "2020-10-03",
+        "applicantEmail": "sss@uevptde.co.uk",
+        "applicantPhone": "01772 700806"
+      },
+      "complaintDetails": {
+        "reason": "UNCLEAR_MISLEADING_INFORMATION",
+        "complaintText": "mollit deserunt"
+      }
+    }
+  }
+}

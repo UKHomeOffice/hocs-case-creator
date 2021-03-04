@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.queue;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import static uk.gov.digital.ho.hocs.application.RequestData.transferHeadersToMDC;
 
+@Slf4j
 @Component
 public class UKVIComplaintConsumer extends RouteBuilder {
 
@@ -39,7 +41,8 @@ public class UKVIComplaintConsumer extends RouteBuilder {
     public void configure() {
 
         errorHandler(deadLetterChannel(dlq)
-                .loggingLevel(LoggingLevel.ERROR)
+                .log(log)
+                .loggingLevel(LoggingLevel.DEBUG)
                 .retryAttemptedLogLevel(LoggingLevel.WARN)
                 .useOriginalMessage()
                 .maximumRedeliveries(maximumRedeliveries)
@@ -56,10 +59,10 @@ public class UKVIComplaintConsumer extends RouteBuilder {
         from(ukviComplaintQueue)
                 .setProperty(SqsConstants.RECEIPT_HANDLE, header(SqsConstants.RECEIPT_HANDLE))
                 .process(transferHeadersToMDC())
-                .log(LoggingLevel.INFO, "UKVI Complaint request received")
-                .log(LoggingLevel.DEBUG, "UKVI Complaint unmarshalled")
+                .log(LoggingLevel.INFO, log, "UKVI Complaint received, MessageId : ${headers.CamelAwsSqsMessageId}")
+                .to("json-validator:schema/cmsSchema.json")
                 .bean(UKVIComplaintService, "createComplaint(${body})")
-                .log(LoggingLevel.INFO, "UKVI Complaint request processed")
+                .log(LoggingLevel.INFO, log, "UKVI Complaint processed, MessageId : ${headers.CamelAwsSqsMessageId}")
                 .setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
     }
 }
