@@ -64,8 +64,7 @@
           ]
         },
         "agentEmail": {
-          "type": "string",
-          "format": "email"
+          "type": "string"
         },
         "agentPhone": {
           "type": "string"
@@ -75,9 +74,9 @@
     "AgentRepresentativeApplicantDetails": {
       "type": "object",
       "required": [
-        "agentRepresentativeApplicantName",
-        "agentRepresentativeApplicantNationality",
-        "agentRepresentativeApplicantDob"
+        "applicantName",
+        "applicantNationality",
+        "applicantDob"
       ],
       "properties": {
         "applicantName": {
@@ -119,8 +118,7 @@
           "format": "date"
         },
         "applicantEmail": {
-          "type": "string",
-          "format": "email"
+          "type": "string"
         },
         "applicantPhone": {
           "type": "string"
@@ -148,6 +146,13 @@
           "$ref": "#/definitions/AgentDetails"
         }
       }
+    },
+    "ApplicationLocation": {
+      "type": "string",
+      "enum": [
+        "INSIDE_UK",
+        "OUTSIDE_UK"
+      ]
     },
     "Reference": {
       "oneOf": [
@@ -252,20 +257,7 @@
         }
       ]
     },
-    "ComplaintTypeRequiringCorrespondence": {
-      "type": "string",
-      "enum": [
-        "SUBMITTING_APPLICATION",
-        "MAKING_APPOINTMENT",
-        "BIOMETRIC_RESIDENCE_PERMIT",
-        "UNCLEAR_MISLEADING_INFORMATION",
-        "POOR_STAFF_BEHAVIOUR",
-        "POOR_INFORMATION",
-        "EXISTING_COMPLAINT",
-        "SOMETHING_ELSE"
-      ]
-    },
-    "ComplaintTypePrevious": {
+    "ComplaintType": {
       "type": "string",
       "enum": [
         "SUBMITTING_APPLICATION",
@@ -319,13 +311,9 @@
         "complaintDetails": {
           "type": "object",
           "required": [
-            "reason",
             "complaintText"
           ],
           "properties": {
-            "reason": {
-              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
-            },
             "complaintText": {
               "$ref": "#/definitions/ComplaintDetailsText"
             }
@@ -383,13 +371,9 @@
         "complaintDetails": {
           "type": "object",
           "required": [
-            "reason",
             "complaintText"
           ],
           "properties": {
-            "reason": {
-              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
-            },
             "complaintText": {
               "$ref": "#/definitions/ComplaintDetailsText"
             }
@@ -421,13 +405,9 @@
         "complaintDetails": {
           "type": "object",
           "required": [
-            "reason",
             "complaintText"
           ],
           "properties": {
-            "reason": {
-              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
-            },
             "complaintText": {
               "$ref": "#/definitions/ComplaintDetailsText"
             }
@@ -450,6 +430,9 @@
             "SUBMITTING_APPLICATION"
           ]
         },
+        "applicationLocation": {
+          "$ref": "#/definitions/ApplicationLocation"
+        },
         "reference": {
           "$ref": "#/definitions/Reference"
         },
@@ -459,15 +442,20 @@
         "complaintDetails": {
           "type": "object",
           "required": [
-            "reason",
-            "complaintText"
+            "complaintText",
+            "problemExperienced"
           ],
           "properties": {
-            "reason": {
-              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
-            },
             "complaintText": {
               "$ref": "#/definitions/ComplaintDetailsText"
+            },
+            "problemExperienced": {
+              "type": "string",
+              "enum": [
+                "TECHNICAL_ISSUES",
+                "GUIDANCE",
+                "SOMETHING_ELSE"
+              ]
             }
           }
         }
@@ -497,15 +485,25 @@
         "complaintDetails": {
           "type": "object",
           "required": [
-            "reason",
-            "complaintText"
+            "complaintText",
+            "problemExperienced"
           ],
           "properties": {
-            "reason": {
-              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
-            },
             "complaintText": {
               "$ref": "#/definitions/ComplaintDetailsText"
+            },
+            "applicationLocation": {
+              "$ref": "#/definitions/ApplicationLocation"
+            },
+            "problemExperienced": {
+              "type": "string",
+              "enum": [
+                "LACK_AVAILABILITY",
+                "CHANGE_APPOINTMENT",
+                "TECHNICAL_APPOINTMENTS",
+                "QUESTION_APPOINTMENTS",
+                "COMPLAIN_APPOINTMENTS"
+              ]
             }
           }
         }
@@ -535,15 +533,20 @@
         "complaintDetails": {
           "type": "object",
           "required": [
-            "reason",
-            "complaintText"
+            "complaintText",
+            "problemExperienced"
           ],
           "properties": {
-            "reason": {
-              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
-            },
             "complaintText": {
               "$ref": "#/definitions/ComplaintDetailsText"
+            },
+            "problemExperienced": {
+              "type": "string",
+              "enum": [
+                "CARD_NOT_ARRIVED",
+                "CARD_INCORRECT",
+                "COMPLAIN_BRP"
+              ]
             }
           }
         }
@@ -573,13 +576,9 @@
         "complaintDetails": {
           "type": "object",
           "required": [
-            "reason",
             "complaintText"
           ],
           "properties": {
-            "reason": {
-              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
-            },
             "complaintText": {
               "$ref": "#/definitions/ComplaintDetailsText"
             }
@@ -634,7 +633,7 @@
           "required": [
             "complaintReferenceNumber",
             "complaintText",
-            "reason"
+            "previousComplaintType"
           ],
           "properties": {
             "complaintReferenceNumber": {
@@ -643,8 +642,8 @@
             "complaintText": {
               "$ref": "#/definitions/ComplaintDetailsText"
             },
-            "reason": {
-              "$ref": "#/definitions/ComplaintTypePrevious"
+            "previousComplaintType": {
+              "$ref": "#/definitions/ComplaintType"
             }
           }
         },
@@ -677,13 +676,167 @@
         "complaintDetails": {
           "type": "object",
           "required": [
-            "reason",
             "complaintText"
           ],
           "properties": {
-            "reason": {
-              "$ref": "#/definitions/ComplaintTypeRequiringCorrespondence"
-            },
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    },
+    "DelaysComplaint": {
+      "type": "object",
+      "required": [
+        "complaintType",
+        "reference",
+        "reporterDetails",
+        "complaintDetails",
+        "delayedWaitingFor"
+      ],
+      "properties": {
+        "complaintType": {
+          "type": "string",
+          "enum": [
+            "DELAYS"
+          ]
+        },
+        "delayedWaitingFor": {
+          "type": "string",
+          "enum": [
+            "APPLICATION_DELAY",
+            "RETURN_OF_DOCUMENTS"
+          ]
+        },
+        "applicationSubmittedWhen": {
+          "type": "string"
+        },
+        "applicationLocation": {
+          "$ref": "#/definitions/ApplicationLocation"
+        },
+        "documentReturnRequest": {
+          "type": "string",
+          "enum": [
+            "YES_DOCS_SERVICE",
+            "YES_OTHER",
+            "NO"
+          ]
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "complaintText"
+          ],
+          "properties": {
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    },
+    "DecisionComplaint": {
+      "type": "object",
+      "required": [
+        "complaintType",
+        "reference",
+        "reporterDetails",
+        "complaintDetails",
+        "decisionOutcome"
+      ],
+      "properties": {
+        "complaintType": {
+          "type": "string",
+          "enum": [
+            "IMMIGRATION_DECISION"
+          ]
+        },
+        "applicationLocation": {
+          "$ref": "#/definitions/ApplicationLocation"
+        },
+        "decisionOutcome": {
+          "type": "string",
+          "enum": [
+            "NEGATIVE",
+            "POSITIVE"
+          ]
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "complaintText"
+          ],
+          "properties": {
+            "complaintText": {
+              "$ref": "#/definitions/ComplaintDetailsText"
+            }
+          }
+        }
+      }
+    },
+    "RefundComplaint": {
+      "type": "object",
+      "required": [
+        "complaintType",
+        "reference",
+        "reporterDetails",
+        "complaintDetails",
+        "refundRequested"
+      ],
+      "properties": {
+        "complaintType": {
+          "type": "string",
+          "enum": [
+            "REFUND"
+          ]
+        },
+        "applicationLocation": {
+          "$ref": "#/definitions/ApplicationLocation"
+        },
+        "refundRequested": {
+          "type": "string",
+          "enum": [
+            "YES",
+            "NO",
+            "NOT_YET"
+          ]
+        },
+        "refundType": {
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "PRIORITY",
+            "SUPER_PRIORITY",
+            "PREMIUM",
+            "IHS",
+            "EU_SETTLEMENT"
+          ]
+        },
+        "reference": {
+          "$ref": "#/definitions/Reference"
+        },
+        "reporterDetails": {
+          "$ref": "#/definitions/ReporterDetails"
+        },
+        "complaintDetails": {
+          "type": "object",
+          "required": [
+            "complaintText"
+          ],
+          "properties": {
             "complaintText": {
               "$ref": "#/definitions/ComplaintDetailsText"
             }
@@ -724,6 +877,15 @@
         },
         {
           "$ref": "#/definitions/SomethingElseComplaint"
+        },
+        {
+          "$ref": "#/definitions/DelaysComplaint"
+        },
+        {
+          "$ref": "#/definitions/DecisionComplaint"
+        },
+        {
+          "$ref": "#/definitions/RefundComplaint"
         }
       ]
     }
