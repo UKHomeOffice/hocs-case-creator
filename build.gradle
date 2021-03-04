@@ -33,6 +33,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
+
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+
     implementation('org.springframework.boot:spring-boot-starter-undertow')
     implementation group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: camelVersion
     implementation group: 'org.apache.camel', name: 'camel-jackson', version: camelVersion

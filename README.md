@@ -1,4 +1,4 @@
-# hocs-correspondence-management
+# hocs-case-creator
 
 ## Behaviour
 - Reads a JSON payload from an AWS SQS queue
@@ -12,7 +12,6 @@
 ## Local development
 There is a docker-compose file that will start localstack and add the required queues.
 ````
-cd localdev
 docker-compose up
 ````
 

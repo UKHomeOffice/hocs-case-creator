@@ -1,0 +1,97 @@
+pipeline:
+
+  build-project:
+    image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
+    commands:
+      - export SPRING_PROFILES_ACTIVE='development, local'
+      - ./gradlew build --no-daemon
+    when:
+      event: [push, pull_request, tag]
+
+  sonar-scanner:
+    image: quay.io/ukhomeofficedigital/sonar-scanner:v3.0.2
+    when:
+      event: [push, pull_request, tag]
+
+  docker-build:
+    image: docker:17.09.1
+    environment:
+      - DOCKER_HOST=tcp://172.17.0.1:2375
+    commands:
+      - docker build -t hocs-case-creator .
+    when:
+      event: [push, tag]
+
+  install-docker-image:
+    group: docker-push
+    image: docker:17.09.1
+    environment:
+      - DOCKER_HOST=tcp://172.17.0.1:2375
+    secrets:
+      - docker_password
+    commands:
+      - docker login -u="ukhomeofficedigital+hocs" -p=$${DOCKER_PASSWORD} quay.io
+      - docker tag hocs-case-creator quay.io/ukhomeofficedigital/hocs-case-creator:build-$${DRONE_BUILD_NUMBER}
+      # you aren't allowed slashes in Docker tags, so this replaces them with underscores
+      # there is a nicer way to do this in Drone 1.0, but for 0.8 we need to hack with sed:
+      - export BRANCH_NAME_TAGFRIENDLY=`echo "$${DRONE_COMMIT_BRANCH}" | sed 's$/$_$g'` # sed can use any character as delimiter
+      - docker tag hocs-case-creator quay.io/ukhomeofficedigital/hocs-case-creator:branch-$${BRANCH_NAME_TAGFRIENDLY}
+      - docker push quay.io/ukhomeofficedigital/hocs-case-creator:build-$${DRONE_BUILD_NUMBER}
+      - docker push quay.io/ukhomeofficedigital/hocs-case-creator:branch-$${BRANCH_NAME_TAGFRIENDLY}
+    when:
+      branch: [ master, epic/*, hotfix/* ] # this should be any branch you might reasonably want deployed somewhere
+      event: push
+
+  install-docker-image-latest:
+    # this is the same as docker-install-image, except we only want to tag :latest on mainline
+    group: docker-push
+    image: docker:17.09.1
+    environment:
+      - DOCKER_HOST=tcp://172.17.0.1:2375
+    secrets:
+      - docker_password
+    commands:
+      - docker login -u="ukhomeofficedigital+hocs" -p=$${DOCKER_PASSWORD} quay.io
+      - docker tag hocs-case-creator quay.io/ukhomeofficedigital/hocs-case-creator:latest
+      - docker push quay.io/ukhomeofficedigital/hocs-case-creator:latest
+    when:
+      branch: [ master ]
+      event: push
+
+  docker-semver-tag:
+    image: quay.io/ukhomeofficedigital/hocs-version-bot:build-25
+    environment:
+      - DOCKER_HOST=tcp://172.17.0.1:2375
+      - DOCKER_API_VERSION=1.37
+    secrets:
+      - github_password
+      - docker_password
+      - git_password
+    commands:
+      - /app/hocs-deploy --version=$${SEMVER} --service=hocs-case-creator --serviceGitToken=$${GIT_PASSWORD} --gitToken=$${GITHUB_PASSWORD} --gitRepo="https://gitlab.digital.homeoffice.gov.uk/hocs/hocs-versions.git" --environment=qa --dockerRepository=quay.io/ukhomeofficedigital --sourceBuild=$${IMAGE_VERSION} --registryUser=ukhomeofficedigital+hocs --registryPassword=$${DOCKER_PASSWORD}
+    when:
+      event: deployment
+      environment: [ cs-qa, wcs-qa ]
+
+    clone-kube-project:
+      image: plugins/git
+      commands:
+        - git clone https://github.com/UKHomeOffice/kube-hocs-case-creator.git
+      when:
+        event: [ push, tag, deployment ]
+
+    deploy-to-cs-dev-from-build-number:
+      image: quay.io/ukhomeofficedigital/kd:v1.16.0
+      environment:
+        - ENVIRONMENT=cs-dev
+        - VERSION=build-${DRONE_BUILD_NUMBER}
+        - KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      secrets:
+        - hocs_case_creator_dev_cs
+      commands:
+        - cd kube-hocs-case-creator
+        - ./deploy.sh
+      when:
+        branch: master
+        event: [ push, tag ]
+
