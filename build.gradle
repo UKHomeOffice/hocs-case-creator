@@ -1,7 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '2.3.9.RELEASE'
-        camelVersion = '2.23.0'
+        camelVersion = '2.25.3'
     }
     repositories {
         mavenCentral()
@@ -39,6 +39,7 @@ dependencies {
     implementation group: 'org.apache.camel', name: 'camel-aws', version: camelVersion
     implementation group: 'org.apache.camel', name: 'camel-json-validator', version: camelVersion
     implementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.380'
+    implementation 'com.jayway.jsonpath:json-path:2.5.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
     testImplementation 'junit:junit:4.12'
     testImplementation group: 'org.apache.camel', name: 'camel-test-spring', version: camelVersion

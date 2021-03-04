@@ -25,28 +25,30 @@ public class SQSSender {
         SendMessageRequest send_msg_request = new SendMessageRequest()
                 .withQueueUrl(queueUrl)
                 .withMessageBody("{\n" +
-                        "  \"creationDate\": \"1949-04-07\",\n" +
+                        "  \"creationDate\": \"2020-10-03\",\n" +
                         "  \"complaint\": {\n" +
-                        "    \"complaintType\": \"MAKING_APPOINTMENT\",\n" +
-                        "    \"reference\": {\n" +
-                        "      \"referenceType\": \"GWF_REF\",\n" +
-                        "      \"reference\": \"nostrud labore do\"\n" +
-                        "    },\n" +
-                        "    \"reporterDetails\": {\n" +
-                        "      \"applicantType\": \"APPLICANT\",\n" +
-                        "      \"applicantName\": \"dolore\",\n" +
-                        "      \"applicantNationality\": \"Botswana\",\n" +
-                        "      \"applicantDob\": \"1974-03-05\",\n" +
-                        "      \"applicantEmail\": \"sss@uevptde.com\",\n" +
-                        "      \"applicantPhone\": \"01772 700806\"\n" +
-                        "    },\n" +
-                        "    \"complaintDetails\": {\n" +
-                        "      \"complaintText\": \"tempor aute pariatur aliquip esse\",\n" +
-                        "      \"problemExperienced\": \"TECHNICAL_APPOINTMENTS\",\n" +
-                        "      \"applicationLocation\": \"INSIDE_UK\"\n" +
+                        "    \"complaintType\": \"POOR_STAFF_BEHAVIOUR\",\n" +
+                        "    \"experience\": {\n" +
+                        "      \"experienceType\": \"LETTER_OR_EMAIL\",\n" +
+                        "      \"reference\": {\n" +
+                        "        \"referenceType\": \"IHS_REF\",\n" +
+                        "        \"reference\": \"amet\"\n" +
+                        "      },\n" +
+                        "      \"reporterDetails\": {\n" +
+                        "        \"applicantType\": \"APPLICANT\",\n" +
+                        "        \"applicantName\": \"dolor ad eiusmod aute\",\n" +
+                        "        \"applicantNationality\": \"Guinea\",\n" +
+                        "        \"applicantDob\": \"2020-10-03\",\n" +
+                        "        \"applicantEmail\": \"sss@uevptde.co.uk\",\n" +
+                        "        \"applicantPhone\": \"01772 700806\"\n" +
+                        "      },\n" +
+                        "      \"complaintDetails\": {\n" +
+                        "        \"reason\": \"UNCLEAR_MISLEADING_INFORMATION\",\n" +
+                        "        \"complaintText\": \"mollit deserunt\"\n" +
+                        "      }\n" +
                         "    }\n" +
                         "  }\n" +
-                        "}\n")
+                        "}")
                 .withDelaySeconds(5);
 
         SendMessageResult sendMessageResult = sqs.sendMessage(send_msg_request);
