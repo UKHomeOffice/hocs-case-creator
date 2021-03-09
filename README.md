@@ -11,10 +11,10 @@
 
 ## Local development
 There is a docker-compose file that will start localstack and add the required queues.
-````
-cd localdev
-docker-compose up
+````console
+$ cd localdev
+$ docker-compose up
 ````
 
-There is also a small java client ``src/test/java/uk/gov/digital/ho/hocs/clientutil/SQSSender.java``
+There is also a small java client `src/test/java/uk/gov/digital/ho/hocs/clientutil/SQSSender.java`.
 This can be used for sending messages to the local queue.
