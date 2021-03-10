@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
 @SpringBootApplication
-public class CorrespondenceApplication {
+public class CaseCreatorApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CorrespondenceApplication.class, args);
+        SpringApplication.run(CaseCreatorApplication.class, args);
     }
 }
