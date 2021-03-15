@@ -1,7 +1,6 @@
 package uk.gov.digital.ho.hocs.client.casework.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class CreateComplaintCorrespondentRequest {
+public class UKVIComplaintCorrespondent {
 
     @NonNull
     @JsonProperty(value = "type", required = true)
@@ -30,7 +29,7 @@ public class CreateComplaintCorrespondentRequest {
     @JsonProperty("email")
     String email;
 
-    public CreateComplaintCorrespondentRequest(@NonNull @NotEmpty String fullname) {
+    public UKVIComplaintCorrespondent(@NonNull @NotEmpty String fullname) {
         this.fullname = fullname;
         this.type = "COMPLAINT";
     }

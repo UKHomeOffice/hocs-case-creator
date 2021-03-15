@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestHelper;
-import uk.gov.digital.ho.hocs.client.casework.dto.CreateComplaintCorrespondentRequest;
+import uk.gov.digital.ho.hocs.client.casework.dto.StageAndUserResponse;
+import uk.gov.digital.ho.hocs.client.casework.dto.UKVIComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
 
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class CaseworkClient {
         this.serviceBaseURL = serviceBaseURL;
     }
 
-    public UUID getStageForCase(UUID caseUUID) {
+    public StageAndUserResponse getStageAndUserForCase(UUID caseUUID) {
         ResponseEntity<String> responseEntity = restHelper.get(serviceBaseURL, String.format("/active-stage/case/%s", caseUUID), String.class);
         ReadContext ctx = JsonPath.parse(responseEntity.getBody());
         Integer numStages = ctx.read("$.stages.length()");
@@ -32,7 +33,7 @@ public class CaseworkClient {
             log.error(message);
             throw new IllegalStateException(message);
         }
-        return UUID.fromString(ctx.read("$.stages[0].uuid"));
+        return new StageAndUserResponse(UUID.fromString(ctx.read("$.stages[0].uuid")), UUID.fromString(ctx.read("$.stages[0].userUUID")));
     }
 
     public ResponseEntity<Void> updateStageUser(UUID caseUUID, UUID stageUUID, UUID userUUID) {
@@ -40,8 +41,8 @@ public class CaseworkClient {
         return restHelper.put(serviceBaseURL, String.format("/case/%s/stage/%s/user", caseUUID, stageUUID), request, Void.class);
     }
 
-    public ResponseEntity<Void> addCorrespondentToCase(UUID caseUUID, UUID stageUUID, CreateComplaintCorrespondentRequest createComplaintCorrespondentRequest) {
-        return restHelper.post(serviceBaseURL, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageUUID), createComplaintCorrespondentRequest, Void.class);
+    public ResponseEntity<Void> addCorrespondentToCase(UUID caseUUID, UUID stageUUID, UKVIComplaintCorrespondent UKVIComplaintCorrespondent) {
+        return restHelper.post(serviceBaseURL, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageUUID), UKVIComplaintCorrespondent, Void.class);
     }
 
     public UUID getPrimaryCorrespondent(UUID caseUUID) {

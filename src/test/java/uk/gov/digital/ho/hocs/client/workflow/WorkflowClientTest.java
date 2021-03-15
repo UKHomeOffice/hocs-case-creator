@@ -23,12 +23,10 @@ import static uk.gov.digital.ho.hocs.queue.UKVIComplaintService.CASE_TYPE;
 @RunWith(MockitoJUnitRunner.class)
 public class WorkflowClientTest {
 
+    private final String serviceUrl = "http://localhost:8091";
     private WorkflowClient workflowClient;
-
     @Mock
     private RestHelper restHelper;
-
-    private final String serviceUrl = "http://localhost:8091";
 
     @Before
     public void setUp() {

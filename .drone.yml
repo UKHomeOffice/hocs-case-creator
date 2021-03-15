@@ -6,12 +6,12 @@ pipeline:
       - export SPRING_PROFILES_ACTIVE='development, local'
       - ./gradlew build --no-daemon
     when:
-      event: [push, pull_request, tag]
+      event: [ push, pull_request, tag ]
 
   sonar-scanner:
     image: quay.io/ukhomeofficedigital/sonar-scanner:v3.0.2
     when:
-      event: [push, pull_request, tag]
+      event: [ push, pull_request, tag ]
 
   docker-build:
     image: docker:17.09.1
@@ -20,7 +20,7 @@ pipeline:
     commands:
       - docker build -t hocs-case-creator .
     when:
-      event: [push, tag]
+      event: [ push, tag ]
 
   install-docker-image:
     group: docker-push

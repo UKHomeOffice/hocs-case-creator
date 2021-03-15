@@ -7,14 +7,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.context.ActiveProfiles;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
+import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
 @Slf4j
 @RunWith(MockitoJUnitRunner.class)
@@ -56,19 +51,5 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
         getMockEndpoint(dlq).setExpectedCount(1);
         template.sendBody(complaintQueue, json);
         getMockEndpoint(dlq).assertIsSatisfied();
-    }
-
-    private String getResourceFileAsString(String fileName) {
-        InputStream is = getResourceFileAsInputStream(fileName);
-        if (is != null) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            return reader.lines().collect(Collectors.joining(System.lineSeparator()));
-        } else {
-            throw new RuntimeException("resource not found");
-        }
-    }
-
-    private InputStream getResourceFileAsInputStream(String fileName) {
-        return Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
     }
 }

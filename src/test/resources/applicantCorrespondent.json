@@ -1,0 +1,20 @@
+{
+  "creationDate": "2020-10-03",
+  "complaint": {
+    "complaintType": "POOR_INFORMATION",
+    "reference": {
+      "referenceType": "UAN_REF",
+      "reference": "in ut id veniam"
+    },
+    "reporterDetails": {
+      "applicantType": "APPLICANT",
+      "applicantName": "occaecat Lorem",
+      "applicantDob": "2020-10-03",
+      "applicantEmail": "sss@uevptde.com",
+      "applicantPhone": "01772 700806"
+    },
+    "complaintDetails": {
+      "complaintText": "do tempor"
+    }
+  }
+}
