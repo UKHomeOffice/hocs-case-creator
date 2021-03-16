@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.client.ComplaintData;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
-import uk.gov.digital.ho.hocs.client.casework.dto.StageAndUserResponse;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
@@ -41,13 +40,9 @@ public class ComplaintService {
         CreateCaseResponse createCaseResponse = workflowClient.createCase(request);
 
         UUID caseUUID = createCaseResponse.getUuid();
+        UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
 
-        StageAndUserResponse stageAndUserForCase = caseworkClient.getStageAndUserForCase(caseUUID);
-
-        UUID stageForCaseUUID = stageAndUserForCase.getStageUUID();
-        UUID userUUID = stageAndUserForCase.getUserUUID();
-
-        caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, userUUID);
+        caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(user));
 
         caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, complaintData.getUkviComplaintCorrespondent());
 

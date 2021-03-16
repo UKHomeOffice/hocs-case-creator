@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestHelper;
-import uk.gov.digital.ho.hocs.client.casework.dto.StageAndUserResponse;
 import uk.gov.digital.ho.hocs.client.casework.dto.UKVIComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
 
@@ -24,7 +23,7 @@ public class CaseworkClient {
         this.serviceBaseURL = serviceBaseURL;
     }
 
-    public StageAndUserResponse getStageAndUserForCase(UUID caseUUID) {
+    public UUID getStageForCase(UUID caseUUID) {
         ResponseEntity<String> responseEntity = restHelper.get(serviceBaseURL, String.format("/active-stage/case/%s", caseUUID), String.class);
         ReadContext ctx = JsonPath.parse(responseEntity.getBody());
         Integer numStages = ctx.read("$.stages.length()");
@@ -33,7 +32,7 @@ public class CaseworkClient {
             log.error(message);
             throw new IllegalStateException(message);
         }
-        return new StageAndUserResponse(UUID.fromString(ctx.read("$.stages[0].uuid")), UUID.fromString(ctx.read("$.stages[0].userUUID")));
+        return UUID.fromString(ctx.read("$.stages[0].uuid"));
     }
 
     public ResponseEntity<Void> updateStageUser(UUID caseUUID, UUID stageUUID, UUID userUUID) {

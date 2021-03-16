@@ -46,7 +46,8 @@ public class WorkflowClientTest {
 
         CreateCaseResponse actualResponse = workflowClient.createCase(request);
 
-        assertEquals(expectedResponse, actualResponse);
+        assertEquals(expectedResponse.getUuid(), actualResponse.getUuid());
+        assertEquals(expectedResponse.getReference(), actualResponse.getReference());
     }
 
     @Test

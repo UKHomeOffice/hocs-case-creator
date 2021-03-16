@@ -8,7 +8,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.application.RestHelper;
-import uk.gov.digital.ho.hocs.client.casework.dto.StageAndUserResponse;
 import uk.gov.digital.ho.hocs.client.casework.dto.UKVIComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
 
@@ -32,31 +31,25 @@ public class CaseworkClientTest {
     }
 
     @Test
-    public void shouldGetStageAndUserForCase() {
+    public void shouldGetStageForCase() {
 
         UUID caseUUID = UUID.randomUUID();
         UUID expectedStageUUID = UUID.randomUUID();
-        UUID expectedUserUUID = UUID.randomUUID();
 
         String jsonFromCaseService = "{\n" +
                 "  \"stages\" : [ {\n" +
                 "    \"uuid\" : \"%s\",\n" +
                 "    \"caseUUID\" : \"%s\",\n" +
-                "    \"userUUID\" : \"%s\",\n" +
                 "  } ]\n" +
                 "}\n";
 
-        ResponseEntity<String> responseEntity = new ResponseEntity<>(String.format(jsonFromCaseService, expectedStageUUID, caseUUID, expectedUserUUID), HttpStatus.OK);
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(String.format(jsonFromCaseService, expectedStageUUID, caseUUID), HttpStatus.OK);
 
         when(restHelper.get(serviceUrl, String.format("/active-stage/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
 
-        StageAndUserResponse stageAndUserForCase = caseworkClient.getStageAndUserForCase(caseUUID);
+        UUID actualStageUUID = caseworkClient.getStageForCase(caseUUID);
 
-        UUID actualStageUUID = stageAndUserForCase.getStageUUID();
         assertEquals(expectedStageUUID, actualStageUUID);
-
-        UUID actualUserUUID = stageAndUserForCase.getUserUUID();
-        assertEquals(expectedUserUUID, actualUserUUID);
     }
 
     @Test
@@ -96,7 +89,7 @@ public class CaseworkClientTest {
 
         when(restHelper.get(serviceUrl, String.format("/active-stage/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
 
-        caseworkClient.getStageAndUserForCase(caseUUID);
+        caseworkClient.getStageForCase(caseUUID);
 
     }
 

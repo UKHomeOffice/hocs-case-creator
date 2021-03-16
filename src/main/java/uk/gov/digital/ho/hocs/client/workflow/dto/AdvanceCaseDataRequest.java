@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @NoArgsConstructor
@@ -16,5 +15,5 @@ import java.util.Map;
 public class AdvanceCaseDataRequest {
 
     @JsonProperty("data")
-    private Map<String, String> data = new HashMap<>();
+    private Map<String, String> data;
 }

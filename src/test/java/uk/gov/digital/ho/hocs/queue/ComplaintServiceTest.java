@@ -5,10 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Value;
 import uk.gov.digital.ho.hocs.client.ComplaintData;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
-import uk.gov.digital.ho.hocs.client.casework.dto.StageAndUserResponse;
 import uk.gov.digital.ho.hocs.client.casework.dto.UKVIComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
@@ -31,11 +29,11 @@ public class ComplaintServiceTest {
     CaseworkClient caseworkClient;
 
     ComplaintService complaintService;
-    @Value("${hocs.user}")
     private String user;
 
     @Before
     public void setUp() {
+        user = UUID.randomUUID().toString();
         complaintService = new ComplaintService(workflowClient, caseworkClient, user);
     }
 
@@ -45,24 +43,21 @@ public class ComplaintServiceTest {
 
         LocalDate receivedDate = LocalDate.parse("2020-10-03");
         String decsReference = "COMP/01";
-        UUID userUUID = UUID.randomUUID();
         UUID caseUUID = UUID.randomUUID();
         UUID stageForCaseUUID = UUID.randomUUID();
         UUID primaryCorrespondent = UUID.randomUUID();
         CreateCaseRequest createCaseRequest = new CreateCaseRequest(UKVIComplaintService.CASE_TYPE, receivedDate);
         CreateCaseResponse createCaseResponse = new CreateCaseResponse(caseUUID, decsReference);
 
-        StageAndUserResponse stageAndUserResponse = new StageAndUserResponse(stageForCaseUUID, userUUID);
-
         when(workflowClient.createCase(createCaseRequest)).thenReturn(createCaseResponse);
 
-        when(caseworkClient.getStageAndUserForCase(caseUUID)).thenReturn(stageAndUserResponse);
+        when(caseworkClient.getStageForCase(caseUUID)).thenReturn(stageForCaseUUID);
 
         when(caseworkClient.getPrimaryCorrespondent(caseUUID)).thenReturn(primaryCorrespondent);
 
         complaintService.createComplaint(new ComplaintData(json), UKVIComplaintService.CASE_TYPE);
 
-        verify(caseworkClient).updateStageUser(caseUUID, stageForCaseUUID, userUUID);
+        verify(caseworkClient).updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(user));
 
         verify(caseworkClient).addCorrespondentToCase(eq(caseUUID), eq(stageForCaseUUID), any(UKVIComplaintCorrespondent.class));
 
