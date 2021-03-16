@@ -16,7 +16,7 @@ public class UKVIComplaintService {
         this.complaintService = complaintService;
     }
 
-    public void createComplaint(String jsonBody) throws Exception {
+    public void createComplaint(String jsonBody) {
         complaintService.createComplaint(new ComplaintData(jsonBody), CASE_TYPE);
     }
 }

@@ -32,15 +32,20 @@ public class ComplaintService {
         this.user = user;
     }
 
-    public void createComplaint(ComplaintData complaintData, String caseType) throws Exception {
+    public void createComplaint(ComplaintData complaintData, String caseType) {
 
-        log.info("createComplaint : started");
+        log.info("createComplaint, started");
 
         CreateCaseRequest request = new CreateCaseRequest(caseType, complaintData.getDateReceived());
         CreateCaseResponse createCaseResponse = workflowClient.createCase(request);
 
         UUID caseUUID = createCaseResponse.getUuid();
+
+        log.info("createComplaint, create case : caseUUID : {}", caseUUID);
+
         UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
+
+        log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageForCaseUUID);
 
         caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(user));
 
@@ -48,15 +53,21 @@ public class ComplaintService {
 
         UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
 
+        log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUUID, primaryCorrespondent);
+
         Map<String, String> correspondents = Map.of(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
 
         workflowClient.advanceCase(caseUUID, stageForCaseUUID, correspondents);
+
+        log.info("createComplaint, case advanced for correspondent : caseUUID : {}", caseUUID);
 
         Map<String, String> complaintType = Map.of(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
 
         workflowClient.advanceCase(caseUUID, stageForCaseUUID, complaintType);
 
-        log.info("createComplaint : completed");
+        log.info("createComplaint, case advanced for complaintType : caseUUID : {}", caseUUID);
+
+        log.info("createComplaint, completed : caseUUID : {}", caseUUID);
     }
 
 }

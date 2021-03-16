@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.web.client.RestClientException;
 
 import static org.mockito.Mockito.*;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
@@ -27,7 +28,7 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     }
 
     @Test
-    public void shouldAcceptValidJson() throws Exception {
+    public void shouldAcceptValidJson() {
         String json = getResourceFileAsString("staffBehaviour.json");
         template.sendBody(complaintQueue, json);
         verify(mockUKVIComplaintService, times(1)).createComplaint(json);
@@ -44,12 +45,11 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     }
 
     @Test
-    public void shouldMoveToDLQIfServiceFails() throws Exception {
+    public void shouldMoveToDLQIfDownstreamServiceCallFails() throws RestClientException {
         String json = getResourceFileAsString("staffBehaviour.json");
-        doThrow(Exception.class)
+        doThrow(RestClientException.class)
                 .when(mockUKVIComplaintService).createComplaint(json);
         getMockEndpoint(dlq).setExpectedCount(1);
         template.sendBody(complaintQueue, json);
-        getMockEndpoint(dlq).assertIsSatisfied();
     }
 }
