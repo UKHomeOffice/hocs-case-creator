@@ -29,7 +29,7 @@ public class ComplaintDataTest {
         assertEquals("COMPLAINT", ukviComplaintApplicantCorrespondent.getType());
         assertEquals("occaecat Lorem", ukviComplaintApplicantCorrespondent.getFullname());
         assertEquals("sss@uevptde.com", ukviComplaintApplicantCorrespondent.getEmail());
-        assertEquals("01772 700806", ukviComplaintApplicantCorrespondent.getTelephone());
+        assertEquals("0114 4960002", ukviComplaintApplicantCorrespondent.getTelephone());
     }
 
     @Test
