@@ -25,26 +25,34 @@ public class SQSSender {
         SendMessageRequest send_msg_request = new SendMessageRequest()
                 .withQueueUrl(queueUrl)
                 .withMessageBody("{\n" +
-                        "  \"creationDate\": \"2020-10-03\",\n" +
+                        "  \"creationDate\": \"2021-03-15\",\n" +
                         "  \"complaint\": {\n" +
                         "    \"complaintType\": \"POOR_STAFF_BEHAVIOUR\",\n" +
-                        "    \"experience\": {\n" +
-                        "      \"experienceType\": \"LETTER_OR_EMAIL\",\n" +
-                        "      \"reference\": {\n" +
-                        "        \"referenceType\": \"IHS_REF\",\n" +
-                        "        \"reference\": \"amet\"\n" +
+                        "    \"reference\": {\n" +
+                        "      \"referenceType\": \"IHS_REF\",\n" +
+                        "      \"reference\": \"amet\"\n" +
+                        "    },\n" +
+                        "    \"reporterDetails\": {\n" +
+                        "      \"applicantType\": \"AGENT\",\n" +
+                        "      \"applicantDetails\": {\n" +
+                        "        \"applicantName\": \"Paul Smith\",\n" +
+                        "        \"applicantNationality\": \"Lorem\",\n" +
+                        "        \"applicantDob\": \"1989-08-23\"\n" +
                         "      },\n" +
-                        "      \"reporterDetails\": {\n" +
-                        "        \"applicantType\": \"APPLICANT\",\n" +
-                        "        \"applicantName\": \"dolor ad eiusmod aute\",\n" +
-                        "        \"applicantNationality\": \"Guinea\",\n" +
-                        "        \"applicantDob\": \"2020-10-03\",\n" +
-                        "        \"applicantEmail\": \"test@example.org\",\n" +
-                        "        \"applicantPhone\": \"01632 960000\"\n" +
-                        "      },\n" +
-                        "      \"complaintDetails\": {\n" +
-                        "        \"reason\": \"UNCLEAR_MISLEADING_INFORMATION\",\n" +
-                        "        \"complaintText\": \"mollit deserunt\"\n" +
+                        "      \"agentDetails\": {\n" +
+                        "        \"agentName\": \"id\",\n" +
+                        "        \"agentType\": \"RELATIVE\",\n" +
+                        "        \"agentEmail\": \"cupidatat in\"\n" +
+                        "      }\n" +
+                        "    },\n" +
+                        "    \"complaintDetails\": {\n" +
+                        "      \"complaintText\": \"officia laborum dolore\",\n" +
+                        "      \"experience\": {\n" +
+                        "        \"experienceType\": \"FACE_TO_FACE\",\n" +
+                        "        \"location\": {\n" +
+                        "          \"country\": \"dolore consequat\",\n" +
+                        "          \"city\": \"sit aute incididunt mollit\"\n" +
+                        "        }\n" +
                         "      }\n" +
                         "    }\n" +
                         "  }\n" +

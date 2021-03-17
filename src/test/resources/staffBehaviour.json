@@ -2,23 +2,31 @@
   "creationDate": "2020-10-03",
   "complaint": {
     "complaintType": "POOR_STAFF_BEHAVIOUR",
-    "experience": {
-      "experienceType": "LETTER_OR_EMAIL",
-      "reference": {
-        "referenceType": "IHS_REF",
-        "reference": "amet"
+    "reference": {
+      "referenceType": "IHS_REF",
+      "reference": "amet"
+    },
+    "reporterDetails": {
+      "applicantType": "AGENT",
+      "applicantDetails": {
+        "applicantName": "sint enim incididunt in",
+        "applicantNationality": "Lorem",
+        "applicantDob": "1989-08-23"
       },
-      "reporterDetails": {
-        "applicantType": "APPLICANT",
-        "applicantName": "dolor ad eiusmod aute",
-        "applicantNationality": "Guinea",
-        "applicantDob": "2020-10-03",
-        "applicantEmail": "test@example.org",
-        "applicantPhone": "01632 960000"
-      },
-      "complaintDetails": {
-        "reason": "UNCLEAR_MISLEADING_INFORMATION",
-        "complaintText": "mollit deserunt"
+      "agentDetails": {
+        "agentName": "id",
+        "agentType": "RELATIVE",
+        "agentEmail": "cupidatat in"
+      }
+    },
+    "complaintDetails": {
+      "complaintText": "officia laborum dolore",
+      "experience": {
+        "experienceType": "FACE_TO_FACE",
+        "location": {
+          "country": "dolore consequat",
+          "city": "sit aute incididunt mollit"
+        }
       }
     }
   }
