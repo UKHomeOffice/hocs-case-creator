@@ -18,5 +18,5 @@ These should be started using the docker-compose file in the frontend project.
 
 ## Local testing
 
-There is also a small java client ``src/test/java/uk/gov/digital/ho/hocs/clientutil/SQSSender.java``
+There is also a small java client `src/test/java/uk/gov/digital/ho/hocs/clientutil/SQSSender.java`.
 This can be used for sending messages to the local queue.
