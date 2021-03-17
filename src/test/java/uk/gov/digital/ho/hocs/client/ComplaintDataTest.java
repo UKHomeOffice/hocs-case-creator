@@ -2,6 +2,8 @@ package uk.gov.digital.ho.hocs.client;
 
 import org.junit.Test;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.queue.data.ComplaintData;
+import uk.gov.digital.ho.hocs.queue.data.UKVIComplaintData;
 
 import java.time.LocalDate;
 

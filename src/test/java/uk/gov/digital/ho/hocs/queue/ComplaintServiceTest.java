@@ -6,12 +6,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.client.UKVIComplaintData;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
+import uk.gov.digital.ho.hocs.queue.data.UKVIComplaintData;
 
 import java.time.LocalDate;
 import java.util.UUID;

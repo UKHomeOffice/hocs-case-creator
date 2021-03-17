@@ -27,19 +27,16 @@ public class ClientContext {
 
     public String getCorrelationId() {
         Map<String, String> threadMap = THREAD_LOCAL.get();
-        log.debug("getCorrelationId : {}", threadMap);
         return threadMap.get(CORRELATION_ID_HEADER);
     }
 
     public String getUserId() {
         Map<String, String> threadMap = THREAD_LOCAL.get();
-        log.debug("getUserId : {}", threadMap);
         return threadMap.get(USER_ID_HEADER);
     }
 
     public String getGroups() {
         Map<String, String> threadMap = THREAD_LOCAL.get();
-        log.debug("getGroups : {}", threadMap);
         return threadMap.get(GROUP_HEADER);
     }
 

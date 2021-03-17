@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.client.UKVIComplaintData;
+import uk.gov.digital.ho.hocs.queue.data.UKVIComplaintData;
 
 @Slf4j
 @Service
