@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.ComplaintData;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -16,13 +17,15 @@ public class UKVIComplaintServiceTest {
 
     @Mock
     ComplaintService complaintService;
+    @Mock
+    ClientContext clientContext;
 
     @Test
-    public void shouldCreateComplaint() throws Exception {
-        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService);
+    public void shouldCreateComplaint() {
+        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext);
         String json = getResourceFileAsString("staffBehaviour.json");
 
-        ukviComplaintService.createComplaint(json);
+        ukviComplaintService.createComplaint(json, "messageId");
 
         verify(complaintService).createComplaint(any(ComplaintData.class), eq(UKVIComplaintService.CASE_TYPE));
     }

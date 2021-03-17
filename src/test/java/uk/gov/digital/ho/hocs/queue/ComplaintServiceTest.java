@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.ComplaintData;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.UKVIComplaintCorrespondent;
@@ -24,21 +25,25 @@ import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsSt
 public class ComplaintServiceTest {
 
     @Mock
-    WorkflowClient workflowClient;
+    private WorkflowClient workflowClient;
     @Mock
-    CaseworkClient caseworkClient;
+    private CaseworkClient caseworkClient;
+    @Mock
+    private ClientContext clientContext;
 
-    ComplaintService complaintService;
+    private ComplaintService complaintService;
+
     private String user;
 
     @Before
     public void setUp() {
         user = UUID.randomUUID().toString();
-        complaintService = new ComplaintService(workflowClient, caseworkClient, user);
+        when(clientContext.getUserId()).thenReturn(user);
+        complaintService = new ComplaintService(workflowClient, caseworkClient, clientContext);
     }
 
     @Test
-    public void shouldCreateComplaint() throws Exception {
+    public void shouldCreateComplaint() {
         String json = getResourceFileAsString("staffBehaviour.json");
 
         LocalDate receivedDate = LocalDate.parse("2020-10-03");

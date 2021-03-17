@@ -31,7 +31,7 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     public void shouldAcceptValidJson() {
         String json = getResourceFileAsString("staffBehaviour.json");
         template.sendBody(complaintQueue, json);
-        verify(mockUKVIComplaintService, times(1)).createComplaint(json);
+        verify(mockUKVIComplaintService, times(1)).createComplaint(eq(json), any());
         verifyNoMoreInteractions(mockUKVIComplaintService);
     }
 
@@ -40,7 +40,7 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
         String json = getResourceFileAsString("incorrect.json");
         getMockEndpoint(dlq).setExpectedCount(1);
         template.sendBody(complaintQueue, json);
-        verify(mockUKVIComplaintService, never()).createComplaint(json);
+        verify(mockUKVIComplaintService, never()).createComplaint(eq(json), any());
         getMockEndpoint(dlq).assertIsSatisfied();
     }
 
@@ -48,7 +48,7 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     public void shouldMoveToDLQIfDownstreamServiceCallFails() throws RestClientException {
         String json = getResourceFileAsString("staffBehaviour.json");
         doThrow(RestClientException.class)
-                .when(mockUKVIComplaintService).createComplaint(json);
+                .when(mockUKVIComplaintService).createComplaint(eq(json), any());
         getMockEndpoint(dlq).setExpectedCount(1);
         template.sendBody(complaintQueue, json);
     }

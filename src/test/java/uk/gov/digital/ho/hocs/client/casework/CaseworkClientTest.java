@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.application.RestHelper;
+import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.UKVIComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
 
@@ -23,11 +23,11 @@ public class CaseworkClientTest {
     private final String serviceUrl = "http://localhost:8082";
     private CaseworkClient caseworkClient;
     @Mock
-    private RestHelper restHelper;
+    private RestClient restClient;
 
     @Before
     public void setUp() {
-        caseworkClient = new CaseworkClient(restHelper, serviceUrl);
+        caseworkClient = new CaseworkClient(restClient, serviceUrl);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class CaseworkClientTest {
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(String.format(jsonFromCaseService, expectedStageUUID, caseUUID), HttpStatus.OK);
 
-        when(restHelper.get(serviceUrl, String.format("/active-stage/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
+        when(restClient.get(serviceUrl, String.format("/active-stage/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
 
         UUID actualStageUUID = caseworkClient.getStageForCase(caseUUID);
 
@@ -61,7 +61,7 @@ public class CaseworkClientTest {
 
         ResponseEntity<Void> responseEntity = new ResponseEntity<>(HttpStatus.OK);
 
-        when(restHelper.put(serviceUrl, String.format("/case/%s/stage/%s/user", caseUUID, stageUUID), request, Void.class)).thenReturn(responseEntity);
+        when(restClient.put(serviceUrl, String.format("/case/%s/stage/%s/user", caseUUID, stageUUID), request, Void.class)).thenReturn(responseEntity);
 
         ResponseEntity<Void> voidResponseEntity = caseworkClient.updateStageUser(caseUUID, stageUUID, userUUID);
 
@@ -87,7 +87,7 @@ public class CaseworkClientTest {
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonFromCaseService, HttpStatus.OK);
 
-        when(restHelper.get(serviceUrl, String.format("/active-stage/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
+        when(restClient.get(serviceUrl, String.format("/active-stage/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
 
         caseworkClient.getStageForCase(caseUUID);
 
@@ -103,7 +103,7 @@ public class CaseworkClientTest {
 
         caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, UKVIComplaintCorrespondent);
 
-        verify(restHelper).post(serviceUrl, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageForCaseUUID), UKVIComplaintCorrespondent, Void.class);
+        verify(restClient).post(serviceUrl, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageForCaseUUID), UKVIComplaintCorrespondent, Void.class);
 
     }
 
@@ -122,7 +122,7 @@ public class CaseworkClientTest {
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(String.format(jsonFromCaseService, caseUUID, expectedPrimaryCorrespondentUUID), HttpStatus.OK);
 
-        when(restHelper.get(serviceUrl, String.format("/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
+        when(restClient.get(serviceUrl, String.format("/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
 
         UUID actualPrimaryCorrespondentUUID = caseworkClient.getPrimaryCorrespondent(caseUUID);
 
