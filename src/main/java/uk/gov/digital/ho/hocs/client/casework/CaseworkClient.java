@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
-import uk.gov.digital.ho.hocs.client.casework.dto.UKVIComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
 
 import java.util.UUID;
@@ -40,8 +40,8 @@ public class CaseworkClient {
         return restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/user", caseUUID, stageUUID), request, Void.class);
     }
 
-    public ResponseEntity<Void> addCorrespondentToCase(UUID caseUUID, UUID stageUUID, UKVIComplaintCorrespondent UKVIComplaintCorrespondent) {
-        return restClient.post(serviceBaseURL, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageUUID), UKVIComplaintCorrespondent, Void.class);
+    public ResponseEntity<Void> addCorrespondentToCase(UUID caseUUID, UUID stageUUID, ComplaintCorrespondent ComplaintCorrespondent) {
+        return restClient.post(serviceBaseURL, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageUUID), ComplaintCorrespondent, Void.class);
     }
 
     public UUID getPrimaryCorrespondent(UUID caseUUID) {

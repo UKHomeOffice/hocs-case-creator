@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.client.ComplaintData;
+import uk.gov.digital.ho.hocs.client.UKVIComplaintData;
 
 @Slf4j
 @Service
@@ -27,6 +27,6 @@ public class UKVIComplaintService {
 
     public void createComplaint(String jsonBody, String messageId) {
         clientContext.setContext(user, group, messageId);
-        complaintService.createComplaint(new ComplaintData(jsonBody), CASE_TYPE);
+        complaintService.createComplaint(new UKVIComplaintData(jsonBody), CASE_TYPE);
     }
 }

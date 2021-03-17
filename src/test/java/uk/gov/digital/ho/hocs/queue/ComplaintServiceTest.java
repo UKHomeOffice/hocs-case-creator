@@ -6,9 +6,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.client.ComplaintData;
+import uk.gov.digital.ho.hocs.client.UKVIComplaintData;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
-import uk.gov.digital.ho.hocs.client.casework.dto.UKVIComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
@@ -60,11 +60,11 @@ public class ComplaintServiceTest {
 
         when(caseworkClient.getPrimaryCorrespondent(caseUUID)).thenReturn(primaryCorrespondent);
 
-        complaintService.createComplaint(new ComplaintData(json), UKVIComplaintService.CASE_TYPE);
+        complaintService.createComplaint(new UKVIComplaintData(json), UKVIComplaintService.CASE_TYPE);
 
         verify(caseworkClient).updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(user));
 
-        verify(caseworkClient).addCorrespondentToCase(eq(caseUUID), eq(stageForCaseUUID), any(UKVIComplaintCorrespondent.class));
+        verify(caseworkClient).addCorrespondentToCase(eq(caseUUID), eq(stageForCaseUUID), any(ComplaintCorrespondent.class));
 
         verify(workflowClient, times(2)).advanceCase(eq(caseUUID), eq(stageForCaseUUID), anyMap());
 

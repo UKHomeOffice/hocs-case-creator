@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.client.ComplaintData;
+import uk.gov.digital.ho.hocs.client.UKVIComplaintData;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -27,7 +27,7 @@ public class UKVIComplaintServiceTest {
 
         ukviComplaintService.createComplaint(json, "messageId");
 
-        verify(complaintService).createComplaint(any(ComplaintData.class), eq(UKVIComplaintService.CASE_TYPE));
+        verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(UKVIComplaintService.CASE_TYPE));
     }
 
 }

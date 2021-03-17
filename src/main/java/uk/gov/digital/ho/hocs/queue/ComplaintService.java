@@ -49,7 +49,7 @@ public class ComplaintService {
 
         caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
 
-        caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, complaintData.getUkviComplaintCorrespondent());
+        caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, complaintData.getComplaintCorrespondent());
 
         UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
 

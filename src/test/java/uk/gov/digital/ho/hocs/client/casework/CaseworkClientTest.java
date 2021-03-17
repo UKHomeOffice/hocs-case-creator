@@ -8,7 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.application.RestClient;
-import uk.gov.digital.ho.hocs.client.casework.dto.UKVIComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
 
 import java.util.UUID;
@@ -99,11 +99,11 @@ public class CaseworkClientTest {
         UUID caseUUID = UUID.randomUUID();
         UUID stageForCaseUUID = UUID.randomUUID();
 
-        UKVIComplaintCorrespondent UKVIComplaintCorrespondent = new UKVIComplaintCorrespondent("Baz Smith");
+        ComplaintCorrespondent ComplaintCorrespondent = new ComplaintCorrespondent("Baz Smith");
 
-        caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, UKVIComplaintCorrespondent);
+        caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, ComplaintCorrespondent);
 
-        verify(restClient).post(serviceUrl, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageForCaseUUID), UKVIComplaintCorrespondent, Void.class);
+        verify(restClient).post(serviceUrl, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageForCaseUUID), ComplaintCorrespondent, Void.class);
 
     }
 
