@@ -7,14 +7,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.context.ActiveProfiles;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
+import org.springframework.web.client.RestClientException;
 
 import static org.mockito.Mockito.*;
+import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
 @Slf4j
 @RunWith(MockitoJUnitRunner.class)
@@ -32,7 +28,7 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     }
 
     @Test
-    public void shouldAcceptValidJson() throws Exception {
+    public void shouldAcceptValidJson() {
         String json = getResourceFileAsString("staffBehaviour.json");
         template.sendBody(complaintQueue, json);
         verify(mockUKVIComplaintService, times(1)).createComplaint(json);
@@ -49,26 +45,11 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     }
 
     @Test
-    public void shouldMoveToDLQIfServiceFails() throws Exception {
+    public void shouldMoveToDLQIfDownstreamServiceCallFails() throws RestClientException {
         String json = getResourceFileAsString("staffBehaviour.json");
-        doThrow(Exception.class)
+        doThrow(RestClientException.class)
                 .when(mockUKVIComplaintService).createComplaint(json);
         getMockEndpoint(dlq).setExpectedCount(1);
         template.sendBody(complaintQueue, json);
-        getMockEndpoint(dlq).assertIsSatisfied();
-    }
-
-    private String getResourceFileAsString(String fileName) {
-        InputStream is = getResourceFileAsInputStream(fileName);
-        if (is != null) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            return reader.lines().collect(Collectors.joining(System.lineSeparator()));
-        } else {
-            throw new RuntimeException("resource not found");
-        }
-    }
-
-    private InputStream getResourceFileAsInputStream(String fileName) {
-        return Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
     }
 }
