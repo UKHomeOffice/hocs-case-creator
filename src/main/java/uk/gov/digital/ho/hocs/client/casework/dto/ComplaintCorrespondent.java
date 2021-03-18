@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class UKVIComplaintCorrespondent {
+public class ComplaintCorrespondent {
 
     @NonNull
     @JsonProperty(value = "type", required = true)
@@ -29,7 +29,7 @@ public class UKVIComplaintCorrespondent {
     @JsonProperty("email")
     String email;
 
-    public UKVIComplaintCorrespondent(@NonNull @NotEmpty String fullname) {
+    public ComplaintCorrespondent(@NonNull @NotEmpty String fullname) {
         this.fullname = fullname;
         this.type = "COMPLAINT";
     }

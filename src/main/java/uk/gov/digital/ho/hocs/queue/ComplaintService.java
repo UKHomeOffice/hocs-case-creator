@@ -2,13 +2,13 @@ package uk.gov.digital.ho.hocs.queue;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.client.ComplaintData;
+import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
+import uk.gov.digital.ho.hocs.queue.data.ComplaintData;
 
 import java.util.Map;
 import java.util.UUID;
@@ -21,35 +21,35 @@ public class ComplaintService {
     public static final String COMPLAINT_TYPE_LABEL = "ComplaintType";
     private final WorkflowClient workflowClient;
     private final CaseworkClient caseworkClient;
-    private final String user;
+    private final ClientContext clientContext;
 
     @Autowired
     public ComplaintService(WorkflowClient workflowClient,
                             CaseworkClient caseworkClient,
-                            @Value("${hocs.user}") String user) {
+                            ClientContext clientContext) {
         this.workflowClient = workflowClient;
         this.caseworkClient = caseworkClient;
-        this.user = user;
+        this.clientContext = clientContext;
     }
 
     public void createComplaint(ComplaintData complaintData, String caseType) {
 
-        log.info("createComplaint, started");
+        log.info("createComplaint, started : type {}", complaintData.getComplaintType());
 
         CreateCaseRequest request = new CreateCaseRequest(caseType, complaintData.getDateReceived());
         CreateCaseResponse createCaseResponse = workflowClient.createCase(request);
 
         UUID caseUUID = createCaseResponse.getUuid();
 
-        log.info("createComplaint, create case : caseUUID : {}", caseUUID);
+        log.info("createComplaint, create case : caseUUID : {}, reference : {}", caseUUID, createCaseResponse.getReference());
 
         UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
 
         log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageForCaseUUID);
 
-        caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(user));
+        caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
 
-        caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, complaintData.getUkviComplaintCorrespondent());
+        caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, complaintData.getComplaintCorrespondent());
 
         UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
 
