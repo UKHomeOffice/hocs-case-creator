@@ -2,6 +2,7 @@
 /build/
 /target/
 !gradle/wrapper/gradle-wrapper.jar
+/src/main/resources/cmsSchema.json
 
 ### IntelliJ IDEA ###
 .idea

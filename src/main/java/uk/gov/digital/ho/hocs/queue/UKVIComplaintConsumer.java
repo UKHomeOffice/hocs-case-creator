@@ -60,7 +60,7 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                 .setProperty(SqsConstants.RECEIPT_HANDLE, header(SqsConstants.RECEIPT_HANDLE))
                 .process(transferHeadersToMDC())
                 .log(LoggingLevel.INFO, log, "UKVI Complaint received, MessageId : ${headers.CamelAwsSqsMessageId}")
-                .to("json-validator:schema/cmsSchema.json")
+                .to("json-validator:cmsSchema.json")
                 .bean(UKVIComplaintService, "createComplaint(${body})")
                 .log(LoggingLevel.INFO, log, "UKVI Complaint processed, MessageId : ${headers.CamelAwsSqsMessageId}")
                 .setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));

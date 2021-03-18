@@ -5,17 +5,17 @@ type: kubernetes
 name: build
 
 steps:
-- name: build project
-  image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
-  commands:
-  - ./gradlew assemble --no-daemon
+  - name: build project
+    image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
+    commands:
+      - ./gradlew assemble --no-daemon
 
-- name: test project
-  image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
-  commands:
-  - ./gradlew check --no-daemon
-  depends_on:
-    - build project
+  - name: test project
+    image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
+    commands:
+      - ./gradlew check --no-daemon
+    depends_on:
+      - build project
 
 trigger:
   event:
