@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.digital.ho.hocs.application.RestHelper;
+import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.AdvanceCaseDataRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
@@ -26,11 +26,11 @@ public class WorkflowClientTest {
     private final String serviceUrl = "http://localhost:8091";
     private WorkflowClient workflowClient;
     @Mock
-    private RestHelper restHelper;
+    private RestClient restClient;
 
     @Before
     public void setUp() {
-        workflowClient = new WorkflowClient(restHelper, serviceUrl);
+        workflowClient = new WorkflowClient(restClient, serviceUrl);
     }
 
     @Test
@@ -42,7 +42,7 @@ public class WorkflowClientTest {
         CreateCaseResponse expectedResponse = new CreateCaseResponse(responseUUID, caseRef);
         ResponseEntity<CreateCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
 
-        when(restHelper.post(serviceUrl, "/case", request, CreateCaseResponse.class)).thenReturn(responseEntity);
+        when(restClient.post(serviceUrl, "/case", request, CreateCaseResponse.class)).thenReturn(responseEntity);
 
         CreateCaseResponse actualResponse = workflowClient.createCase(request);
 
@@ -63,7 +63,7 @@ public class WorkflowClientTest {
         ResponseEntity<String> responseEntity = new ResponseEntity<>(String.format(jsonFromService, currentStageUUID), HttpStatus.OK);
         AdvanceCaseDataRequest request = new AdvanceCaseDataRequest(data);
 
-        when(restHelper.post(serviceUrl, String.format("/case/%s/stage/%s", caseUUID, currentStageUUID), request, String.class)).thenReturn(responseEntity);
+        when(restClient.post(serviceUrl, String.format("/case/%s/stage/%s", caseUUID, currentStageUUID), request, String.class)).thenReturn(responseEntity);
 
         UUID actualStageUUID = workflowClient.advanceCase(caseUUID, currentStageUUID, data);
 
