@@ -1,14 +1,14 @@
-package uk.gov.digital.ho.hocs.client;
+package uk.gov.digital.ho.hocs.queue.data;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
-import uk.gov.digital.ho.hocs.client.casework.dto.UKVIComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class ComplaintData {
+public class UKVIComplaintData implements ComplaintData {
 
     public static final String CREATION_DATE = "$.creationDate";
     public static final String COMPLAINT_TYPE = "$.complaint.complaintType";
@@ -20,29 +20,32 @@ public class ComplaintData {
 
     private final ReadContext ctx;
 
-    public ComplaintData(String jsonBody) {
+    public UKVIComplaintData(String jsonBody) {
         ctx = JsonPath.parse(jsonBody);
     }
 
+    @Override
     public LocalDate getDateReceived() {
         return LocalDate.parse(ctx.read(CREATION_DATE));
     }
 
+    @Override
     public String getComplaintType() {
         return ctx.read(COMPLAINT_TYPE);
     }
 
-    public UKVIComplaintCorrespondent getUkviComplaintCorrespondent() {
+    @Override
+    public ComplaintCorrespondent getComplaintCorrespondent() {
         String applicantType = ctx.read(APPLICANT_TYPE);
-        UKVIComplaintCorrespondent correspondent;
+        ComplaintCorrespondent correspondent;
 
         if (applicantType.equals("APPLICANT")) {
-            correspondent = new UKVIComplaintCorrespondent(ctx.read(APPLICANT_APPLICANT_NAME));
+            correspondent = new ComplaintCorrespondent(ctx.read(APPLICANT_APPLICANT_NAME));
             optionalString(ctx, APPLICANT_APPLICANT_EMAIL).ifPresent(correspondent::setEmail);
             optionalString(ctx, APPLICANT_APPLICANT_PHONE).ifPresent(correspondent::setTelephone);
 
         } else if (applicantType.equals("AGENT")) {
-            correspondent = new UKVIComplaintCorrespondent(ctx.read(AGENT_APPLICANT_NAME));
+            correspondent = new ComplaintCorrespondent(ctx.read(AGENT_APPLICANT_NAME));
 
         } else {
             throw new IllegalStateException("APPLICANT_TYPE Unknown : " + applicantType);
