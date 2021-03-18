@@ -25,7 +25,8 @@
         "experienceType": "FACE_TO_FACE",
         "location": {
           "country": "dolore consequat",
-          "city": "sit aute incididunt mollit"
+          "city": "sit aute incididunt mollit",
+          "centreType": "VAC"
         }
       }
     }

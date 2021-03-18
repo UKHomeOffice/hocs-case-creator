@@ -10,32 +10,25 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
-
 plugins {
     id "io.freefair.lombok" version "5.3.0"
+    id "de.undercouch.download" version "4.1.1"
 }
-
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-
-
 group 'uk.gov.digital.ho.hocs'
 version '1.0-SNAPSHOT'
 sourceCompatibility = '11'
-
 repositories {
     mavenCentral()
 }
-
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
-
     compile('org.springframework.boot:spring-boot-starter-actuator')
-
     implementation('org.springframework.boot:spring-boot-starter-undertow')
     implementation group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: camelVersion
     implementation group: 'org.apache.camel', name: 'camel-jackson', version: camelVersion
@@ -50,14 +43,20 @@ dependencies {
     testImplementation group: 'com.google.code.tempus-fugit', name: 'tempus-fugit', version: '1.1'
 
 }
-
+task downloadSchema {
+    download {
+        src 'https://raw.githubusercontent.com/UKHomeOffice/hocs-ukvi-complaint-schema/master/src/main/resources/cmsSchema.json'
+        dest "./build/resources/main/cmsSchema.json"
+        overwrite true
+    }
+}
 bootRun {
     String activeProfile = System.properties['spring.profiles.active']
     systemProperty "spring.profiles.active", activeProfile
 }
-
 test {
     testLogging {
         events "passed", "skipped", "failed"
     }
 }
+build.dependsOn downloadSchema
