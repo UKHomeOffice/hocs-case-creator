@@ -14,9 +14,9 @@ public class UKVIComplaintService {
     private final ComplaintService complaintService;
     private final ClientContext clientContext;
 
-    @Value("${hocs.ukvi.user}")
+    @Value("${case.creator.ukvi-complaint.user}")
     private String user;
-    @Value("${hocs.ukvi.group}")
+    @Value("${case.creator.ukvi-complaint.group}")
     private String group;
 
     @Autowired

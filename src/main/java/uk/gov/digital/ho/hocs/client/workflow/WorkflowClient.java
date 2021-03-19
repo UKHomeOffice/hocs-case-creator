@@ -21,7 +21,7 @@ public class WorkflowClient {
     private final String serviceBaseURL;
 
     @Autowired
-    public WorkflowClient(RestClient restClient, @Value("${hocs.workflow-service}") String serviceBaseURL) {
+    public WorkflowClient(RestClient restClient, @Value("${case.creator.workflow-service}") String serviceBaseURL) {
         this.restClient = restClient;
         this.serviceBaseURL = serviceBaseURL;
     }

@@ -22,11 +22,11 @@ public class UKVIComplaintConsumer extends RouteBuilder {
 
     @Autowired
     public UKVIComplaintConsumer(UKVIComplaintService UKVIComplaintService,
-                                 @Value("${ukvi-complaint.queue}") String ukviComplaintQueue,
-                                 @Value("${ukvi-complaint.queue.dlq}") String dlq,
-                                 @Value("${ukvi-complaint.queue.maximumRedeliveries}") int maximumRedeliveries,
-                                 @Value("${ukvi-complaint.queue.redeliveryDelay}") int redeliveryDelay,
-                                 @Value("${ukvi-complaint.queue.backOffMultiplier}") int backOffMultiplier) {
+                                 @Value("${case.creator.ukvi-complaint.queue}") String ukviComplaintQueue,
+                                 @Value("${case.creator.ukvi-complaint.dl-queue}") String dlq,
+                                 @Value("${case.creator.ukvi-complaint.queue-maximum-redeliveries}") int maximumRedeliveries,
+                                 @Value("${case.creator.ukvi-complaint.queue-redelivery-delay}") int redeliveryDelay,
+                                 @Value("${case.creator.ukvi-complaint.queue-backOff-multiplier}") int backOffMultiplier) {
         this.UKVIComplaintService = UKVIComplaintService;
         this.ukviComplaintQueue = ukviComplaintQueue;
         this.dlq = dlq;
