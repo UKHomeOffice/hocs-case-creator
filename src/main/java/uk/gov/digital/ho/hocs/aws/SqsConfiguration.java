@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 @Profile({"sqs"})
 public class SqsConfiguration {
 
-    @Bean
+    @Bean(name = "sqsClient")
     public AmazonSQS sqsClient(@Value("${case.creator.sqs.access-key}") String accessKey,
                                @Value("${case.creator.sqs.secret-key}") String secretKey,
                                @Value("${case.creator.sqs.region}") String region) {
@@ -38,5 +38,11 @@ public class SqsConfiguration {
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
                 .withClientConfiguration(new ClientConfiguration())
                 .build();
+    }
+
+    @Bean
+    public SQSQueuePrefix queuePrefix(@Value("${case.creator.sqs.region}") String region,
+                                      @Value("${case.creator.sqs.account-id}") String accountId) {
+        return new SQSQueuePrefix("aws-sqs://arn:aws:sqs:" + region + accountId + ":");
     }
 }

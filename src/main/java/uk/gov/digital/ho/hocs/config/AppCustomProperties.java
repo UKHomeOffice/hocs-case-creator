@@ -44,6 +44,10 @@ public class AppCustomProperties {
         private Integer queuePollDelay = 100;
         @NotBlank
         private String redrivePolicy;
+        @NotBlank
+        private String queueProperties;
+        @NotBlank
+        private String dlQueueProperties;
     }
 
     @Getter
