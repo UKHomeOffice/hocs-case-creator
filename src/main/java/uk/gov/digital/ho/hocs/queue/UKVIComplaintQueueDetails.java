@@ -22,6 +22,7 @@ public class UKVIComplaintQueueDetails {
     private final int maximumRedeliveries;
     private final int redeliveryDelay;
     private final int backOffMultiplier;
+    private final int backoffIdleThreshold;
     private final int waitTimeSeconds;
     private final int initialDelay;
     private final int pollDelay;
@@ -34,10 +35,11 @@ public class UKVIComplaintQueueDetails {
                                      @Value("${case.creator.sqs.account-id}") String awsSQSAccountId,
                                      @Value("${case.creator.ukvi-complaint.queue-maximum-redeliveries}") int maximumRedeliveries,
                                      @Value("${case.creator.ukvi-complaint.queue-redelivery-delay}") int redeliveryDelay,
+                                     @Value("${case.creator.ukvi-complaint.queue-backoff-idle-threshold}") int backoffIdleThreshold,
                                      @Value("${case.creator.ukvi-complaint.queue-backOff-multiplier}") int backOffMultiplier,
                                      @Value("${case.creator.ukvi-complaint.queue-wait-time-seconds}") int waitTimeSeconds,
                                      @Value("${case.creator.ukvi-complaint.queue-initial-delay}") int initialDelay,
-                                     @Value("${case.creator.ukvi-complaint.queue-pollDelay}") int pollDelay) {
+                                     @Value("${case.creator.ukvi-complaint.queue-poll-delay}") int pollDelay) {
         this.sqsQueuePrefix = sqsQueuePrefix;
         this.queueName = queueName;
         this.dlQueueName = dlQueueName;
@@ -45,6 +47,7 @@ public class UKVIComplaintQueueDetails {
         this.awsSQSAccountId = awsSQSAccountId;
         this.maximumRedeliveries = maximumRedeliveries;
         this.redeliveryDelay = redeliveryDelay;
+        this.backoffIdleThreshold = backoffIdleThreshold;
         this.backOffMultiplier = backOffMultiplier;
         this.waitTimeSeconds = waitTimeSeconds;
         this.initialDelay = initialDelay;
@@ -64,11 +67,11 @@ public class UKVIComplaintQueueDetails {
                 "&messageAttributeNames=All" +
                 "&redrivePolicy=%s" +
                 "&waitTimeSeconds=%s" +
-                "&backoffIdleThreshold=1" +
+                "&backoffIdleThreshold=%s" +
                 "&backoffMultiplier=%s" +
                 "&initialDelay=%s" +
                 "&delay=%s";
-        String queueProperties = String.format(queuePropertiesTemplate, redrivePolicy, waitTimeSeconds, backOffMultiplier, initialDelay, pollDelay);
+        String queueProperties = String.format(queuePropertiesTemplate, redrivePolicy, waitTimeSeconds, backoffIdleThreshold, backOffMultiplier, initialDelay, pollDelay);
 
         return sqsQueuePrefix.getPrefix() + queueName + queueProperties;
     }

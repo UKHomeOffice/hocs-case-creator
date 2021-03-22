@@ -45,6 +45,8 @@ public class AppCustomProperties {
         @NotBlank
         private Integer queueBackOffMultiplier;
         @NotBlank
+        private Integer queueBackoffIdleThreshold;
+        @NotBlank
         private Integer queuePollDelay;
         @NotBlank
         private Integer queueWaitTimeSeconds;
