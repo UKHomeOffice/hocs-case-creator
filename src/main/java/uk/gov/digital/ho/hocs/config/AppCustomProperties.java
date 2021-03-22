@@ -38,10 +38,18 @@ public class AppCustomProperties {
         private String dlQueueName;
         @NotBlank
         private String dlQueue;
-        private Integer queueMaximumRedeliveries = 10;
-        private Integer queueRedeliveryDelay = 10000;
-        private Integer queueBackOffMultiplier = 5;
-        private Integer queuePollDelay = 100;
+        @NotBlank
+        private Integer queueMaximumRedeliveries;
+        @NotBlank
+        private Integer queueRedeliveryDelay;
+        @NotBlank
+        private Integer queueBackOffMultiplier;
+        @NotBlank
+        private Integer queuePollDelay;
+        @NotBlank
+        private Integer queueWaitTimeSeconds;
+        @NotBlank
+        private Integer queueInitialDelay;
         @NotBlank
         private String redrivePolicy;
         @NotBlank

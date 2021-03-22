@@ -22,6 +22,8 @@ public class UKVIComplaintQueueDetails {
     private final int maximumRedeliveries;
     private final int redeliveryDelay;
     private final int backOffMultiplier;
+    private final int waitTimeSeconds;
+    private final int initialDelay;
     private final int pollDelay;
 
     @Autowired
@@ -33,6 +35,8 @@ public class UKVIComplaintQueueDetails {
                                      @Value("${case.creator.ukvi-complaint.queue-maximum-redeliveries}") int maximumRedeliveries,
                                      @Value("${case.creator.ukvi-complaint.queue-redelivery-delay}") int redeliveryDelay,
                                      @Value("${case.creator.ukvi-complaint.queue-backOff-multiplier}") int backOffMultiplier,
+                                     @Value("${case.creator.ukvi-complaint.queue-wait-time-seconds}") int waitTimeSeconds,
+                                     @Value("${case.creator.ukvi-complaint.queue-initial-delay}") int initialDelay,
                                      @Value("${case.creator.ukvi-complaint.queue-pollDelay}") int pollDelay) {
         this.sqsQueuePrefix = sqsQueuePrefix;
         this.queueName = queueName;
@@ -42,6 +46,8 @@ public class UKVIComplaintQueueDetails {
         this.maximumRedeliveries = maximumRedeliveries;
         this.redeliveryDelay = redeliveryDelay;
         this.backOffMultiplier = backOffMultiplier;
+        this.waitTimeSeconds = waitTimeSeconds;
+        this.initialDelay = initialDelay;
         this.pollDelay = pollDelay;
 
         this.ukviComplaintQueue = buildQueueName();
@@ -51,24 +57,26 @@ public class UKVIComplaintQueueDetails {
 
     private String buildQueueName() {
 
-        //case.creator.ukvi-complaint.redrive-policy={"maxReceiveCount": "${case.creator.ukvi-complaint.queue-maximum-redeliveries}", "deadLetterTargetArn":"arn:aws:sqs:${case.creator.sqs.region}:${case.creator.sqs.account-id}:${case.creator.ukvi-complaint.dl-queue-name}"}
         String redriveTemplate = "{\"maxReceiveCount\": \"%s\", \"deadLetterTargetArn\":\"arn:aws:sqs:%s:%s:%s\"}";
         String redrivePolicy = String.format(redriveTemplate, maximumRedeliveries, awsSQSRegion, awsSQSAccountId, dlQueueName);
 
-        //case.creator.ukvi-complaint.queue-properties=amazonSQSClient=#sqsClient&messageAttributeNames=All&redrivePolicy=${case.creator.ukvi-complaint.redrive-policy}&waitTimeSeconds=20&backoffIdleThreshold=1&backoffMultiplier=${case.creator.ukvi-complaint.queue-backOff-multiplier}&initialDelay=5000&delay=${case.creator.ukvi-complaint.queue-pollDelay}
-        String queuePropertiesTemplate = "?amazonSQSClient=#sqsClient&messageAttributeNames=All&redrivePolicy=%s&waitTimeSeconds=20&backoffIdleThreshold=1&backoffMultiplier=%s&initialDelay=5000&delay=%s";
-        String queueProperties = String.format(queuePropertiesTemplate, redrivePolicy, backOffMultiplier, pollDelay);
+        String queuePropertiesTemplate = "?amazonSQSClient=#sqsClient" +
+                "&messageAttributeNames=All" +
+                "&redrivePolicy=%s" +
+                "&waitTimeSeconds=%s" +
+                "&backoffIdleThreshold=1" +
+                "&backoffMultiplier=%s" +
+                "&initialDelay=%s" +
+                "&delay=%s";
+        String queueProperties = String.format(queuePropertiesTemplate, redrivePolicy, waitTimeSeconds, backOffMultiplier, initialDelay, pollDelay);
 
-        //case.creator.ukvi-complaint.queue=aws-sqs://${case.creator.ukvi-complaint.queue-name}?${case.creator.ukvi-complaint.queue-properties}
         return sqsQueuePrefix.getPrefix() + queueName + queueProperties;
     }
 
     private String buildDlQueueName() {
 
-        //case.creator.ukvi-complaint.dl-queue-properties=amazonSQSClient=#sqsClient&messageAttributeNames=All
         String dlQueueProperties = "?amazonSQSClient=#sqsClient&messageAttributeNames=All";
 
-        //case.creator.ukvi-complaint.dl-queue=aws-sqs://${case.creator.ukvi-complaint.dl-queue-name}?${case.creator.ukvi-complaint.dl-queue-properties}
         return sqsQueuePrefix.getPrefix() + dlQueueName + dlQueueProperties;
     }
 }
