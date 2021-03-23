@@ -96,7 +96,7 @@ steps:
     environment:
       ENVIRONMENT: cs-dev
       KUBE_TOKEN:
-        from_secret: hocs_case-creator_cs_dev
+        from_secret: hocs_case_creator_cs_dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       VERSION: build_${DRONE_BUILD_NUMBER}
     when:
@@ -115,7 +115,7 @@ steps:
     environment:
       ENVIRONMENT: wcs-dev
       KUBE_TOKEN:
-        from_secret: hocs_case-creator_wcs_dev
+        from_secret: hocs_case_creator_wcs_dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       VERSION: build_${DRONE_BUILD_NUMBER}
     when:
@@ -177,7 +177,7 @@ steps:
     environment:
       ENVIRONMENT: cs-qa
       KUBE_TOKEN:
-        from_secret: hocs_case-creator_cs_qa
+        from_secret: hocs_case_creator_cs_qa
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
     when:
       event:
@@ -198,7 +198,7 @@ steps:
     environment:
       ENVIRONMENT: wcs-qa
       KUBE_TOKEN:
-        from_secret: hocs_case-creator_wcs_qa
+        from_secret: hocs_case_creator_wcs_qa
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
     when:
       event:
@@ -217,7 +217,7 @@ steps:
     environment:
       ENVIRONMENT: ${DRONE_DEPLOY_TO}
       KUBE_TOKEN:
-        from_secret: hocs_case-creator_${DRONE_DEPLOY_TO/-/_}
+        from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
     when:
       event:
@@ -237,7 +237,7 @@ steps:
     environment:
       ENVIRONMENT: ${DRONE_DEPLOY_TO}
       KUBE_TOKEN:
-        from_secret: hocs_case-creator_${DRONE_DEPLOY_TO/-/_}
+        from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
       KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
     when:
       event:
