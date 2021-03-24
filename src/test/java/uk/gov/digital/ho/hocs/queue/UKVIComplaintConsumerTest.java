@@ -7,12 +7,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClientException;
 
 import static org.mockito.Mockito.*;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
 @Slf4j
+@ActiveProfiles(profiles = "local")
 @RunWith(MockitoJUnitRunner.class)
 public class UKVIComplaintConsumerTest extends CamelTestSupport {
 
@@ -21,10 +23,14 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
 
     @Mock
     private UKVIComplaintService mockUKVIComplaintService;
+    @Mock
+    private UKVIComplaintQueueDetails queueDetails;
 
     @Override
     protected RouteBuilder createRouteBuilder() {
-        return new UKVIComplaintConsumer(mockUKVIComplaintService, complaintQueue, dlq, 0, 0, 0);
+        when(queueDetails.getDlq()).thenReturn(dlq);
+        when(queueDetails.getUkviComplaintQueue()).thenReturn(complaintQueue);
+        return new UKVIComplaintConsumer(mockUKVIComplaintService, queueDetails);
     }
 
     @Test
