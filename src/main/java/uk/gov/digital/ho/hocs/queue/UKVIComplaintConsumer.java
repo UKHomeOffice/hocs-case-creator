@@ -6,7 +6,6 @@ import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.aws.sqs.SqsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -14,38 +13,26 @@ import org.springframework.stereotype.Component;
 public class UKVIComplaintConsumer extends RouteBuilder {
 
     private final UKVIComplaintService UKVIComplaintService;
-    private final String ukviComplaintQueue;
-    private final String dlq;
-    private final int maximumRedeliveries;
-    private final int redeliveryDelay;
-    private final int backOffMultiplier;
+    private final UKVIComplaintQueueDetails queueDetails;
 
     @Autowired
     public UKVIComplaintConsumer(UKVIComplaintService UKVIComplaintService,
-                                 @Value("${ukvi-complaint.queue}") String ukviComplaintQueue,
-                                 @Value("${ukvi-complaint.queue.dlq}") String dlq,
-                                 @Value("${ukvi-complaint.queue.maximumRedeliveries}") int maximumRedeliveries,
-                                 @Value("${ukvi-complaint.queue.redeliveryDelay}") int redeliveryDelay,
-                                 @Value("${ukvi-complaint.queue.backOffMultiplier}") int backOffMultiplier) {
+                                 UKVIComplaintQueueDetails queueDetails) {
         this.UKVIComplaintService = UKVIComplaintService;
-        this.ukviComplaintQueue = ukviComplaintQueue;
-        this.dlq = dlq;
-        this.maximumRedeliveries = maximumRedeliveries;
-        this.redeliveryDelay = redeliveryDelay;
-        this.backOffMultiplier = backOffMultiplier;
+        this.queueDetails = queueDetails;
     }
 
     @Override
     public void configure() {
 
-        errorHandler(deadLetterChannel(dlq)
+        errorHandler(deadLetterChannel(queueDetails.getDlq())
                 .log(log)
                 .loggingLevel(LoggingLevel.DEBUG)
                 .retryAttemptedLogLevel(LoggingLevel.WARN)
                 .useOriginalMessage()
-                .maximumRedeliveries(maximumRedeliveries)
-                .redeliveryDelay(redeliveryDelay)
-                .backOffMultiplier(backOffMultiplier)
+                .maximumRedeliveries(queueDetails.getMaximumRedeliveries())
+                .redeliveryDelay(queueDetails.getRedeliveryDelay())
+                .backOffMultiplier(queueDetails.getBackOffMultiplier())
                 .asyncDelayedRedelivery()
                 .logRetryStackTrace(false)
                 .onPrepareFailure(exchange -> {
@@ -54,7 +41,7 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                     exchange.getIn().setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
                 }));
 
-        from(ukviComplaintQueue)
+        from(queueDetails.getUkviComplaintQueue())
                 .setProperty(SqsConstants.RECEIPT_HANDLE, header(SqsConstants.RECEIPT_HANDLE))
                 .log(LoggingLevel.INFO, log, "UKVI Complaint received, MessageId : ${headers.CamelAwsSqsMessageId}")
                 .to("json-validator:cmsSchema.json")
@@ -62,4 +49,5 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                 .log(LoggingLevel.INFO, log, "UKVI Complaint processed, MessageId : ${headers.CamelAwsSqsMessageId}")
                 .setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
     }
+
 }

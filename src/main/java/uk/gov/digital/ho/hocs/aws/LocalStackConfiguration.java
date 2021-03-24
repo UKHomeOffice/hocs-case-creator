@@ -32,7 +32,7 @@ public class LocalStackConfiguration {
     @Value("${aws.local.host:localhost}")
     private String awsHost;
 
-    @Bean
+    @Bean(name = "sqsClient")
     public AmazonSQS sqsClient() {
 
         String host = String.format("http://%s:4576/", awsHost);
@@ -44,4 +44,10 @@ public class LocalStackConfiguration {
                 .withEndpointConfiguration(endpoint)
                 .build();
     }
+
+    @Bean
+    public SQSQueuePrefix queuePrefix() {
+        return new SQSQueuePrefix("aws-sqs://");
+    }
+
 }

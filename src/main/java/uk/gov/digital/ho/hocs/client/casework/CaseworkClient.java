@@ -18,7 +18,7 @@ public class CaseworkClient {
     private final RestClient restClient;
     private final String serviceBaseURL;
 
-    public CaseworkClient(RestClient restClient, @Value("${hocs.case-service}") String serviceBaseURL) {
+    public CaseworkClient(RestClient restClient, @Value("${case.creator.case-service}") String serviceBaseURL) {
         this.restClient = restClient;
         this.serviceBaseURL = serviceBaseURL;
     }
