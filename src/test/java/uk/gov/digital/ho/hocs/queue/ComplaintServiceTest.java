@@ -6,12 +6,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
+import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
-import uk.gov.digital.ho.hocs.queue.data.UKVIComplaintData;
+import uk.gov.digital.ho.hocs.queue.common.ComplaintService;
+import uk.gov.digital.ho.hocs.queue.common.ComplaintTypeData;
+import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
+import uk.gov.digital.ho.hocs.queue.ukvi.UKVITypeData;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -30,6 +34,8 @@ public class ComplaintServiceTest {
     private CaseworkClient caseworkClient;
     @Mock
     private ClientContext clientContext;
+    @Mock
+    private AuditClient auditClient;
 
     private ComplaintService complaintService;
 
@@ -39,7 +45,7 @@ public class ComplaintServiceTest {
     public void setUp() {
         user = UUID.randomUUID().toString();
         when(clientContext.getUserId()).thenReturn(user);
-        complaintService = new ComplaintService(workflowClient, caseworkClient, clientContext);
+        complaintService = new ComplaintService(workflowClient, caseworkClient, clientContext, auditClient);
     }
 
     @Test
@@ -51,7 +57,8 @@ public class ComplaintServiceTest {
         UUID caseUUID = UUID.randomUUID();
         UUID stageForCaseUUID = UUID.randomUUID();
         UUID primaryCorrespondent = UUID.randomUUID();
-        CreateCaseRequest createCaseRequest = new CreateCaseRequest(UKVIComplaintService.CASE_TYPE, receivedDate);
+        ComplaintTypeData complaintTypeData = new UKVITypeData();
+        CreateCaseRequest createCaseRequest = new CreateCaseRequest(complaintTypeData.getCaseType(), receivedDate);
         CreateCaseResponse createCaseResponse = new CreateCaseResponse(caseUUID, decsReference);
 
         when(workflowClient.createCase(createCaseRequest)).thenReturn(createCaseResponse);
@@ -60,7 +67,7 @@ public class ComplaintServiceTest {
 
         when(caseworkClient.getPrimaryCorrespondent(caseUUID)).thenReturn(primaryCorrespondent);
 
-        complaintService.createComplaint(new UKVIComplaintData(json), UKVIComplaintService.CASE_TYPE);
+        complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
 
         verify(caseworkClient).updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(user));
 

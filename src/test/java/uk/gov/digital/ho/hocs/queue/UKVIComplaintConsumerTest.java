@@ -9,6 +9,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClientException;
+import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintConsumer;
+import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintQueueBuilder;
+import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintService;
 
 import static org.mockito.Mockito.*;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
@@ -24,7 +27,7 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     @Mock
     private UKVIComplaintService mockUKVIComplaintService;
     @Mock
-    private UKVIComplaintQueueDetails queueDetails;
+    private UKVIComplaintQueueBuilder queueDetails;
 
     @Override
     protected RouteBuilder createRouteBuilder() {

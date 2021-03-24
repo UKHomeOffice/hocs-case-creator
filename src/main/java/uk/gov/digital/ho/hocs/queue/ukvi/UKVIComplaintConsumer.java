@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue;
+package uk.gov.digital.ho.hocs.queue.ukvi;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 public class UKVIComplaintConsumer extends RouteBuilder {
 
     private final UKVIComplaintService UKVIComplaintService;
-    private final UKVIComplaintQueueDetails queueDetails;
+    private final UKVIComplaintQueueBuilder queueDetails;
 
     @Autowired
     public UKVIComplaintConsumer(UKVIComplaintService UKVIComplaintService,
-                                 UKVIComplaintQueueDetails queueDetails) {
+                                 UKVIComplaintQueueBuilder queueDetails) {
         this.UKVIComplaintService = UKVIComplaintService;
         this.queueDetails = queueDetails;
     }
