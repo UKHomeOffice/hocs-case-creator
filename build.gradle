@@ -41,7 +41,7 @@ dependencies {
     testImplementation group: 'org.apache.camel', name: 'camel-test-spring', version: camelVersion
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation group: 'com.google.code.tempus-fugit', name: 'tempus-fugit', version: '1.1'
-
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 task downloadSchema {
     download {

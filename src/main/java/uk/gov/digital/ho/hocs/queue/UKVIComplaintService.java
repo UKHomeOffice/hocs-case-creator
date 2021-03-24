@@ -13,16 +13,18 @@ public class UKVIComplaintService {
     public static final String CASE_TYPE = "COMP";
     private final ComplaintService complaintService;
     private final ClientContext clientContext;
-
-    @Value("${hocs.ukvi.user}")
-    private String user;
-    @Value("${hocs.ukvi.group}")
-    private String group;
+    private final String user;
+    private final String group;
 
     @Autowired
-    public UKVIComplaintService(ComplaintService complaintService, ClientContext clientContext) {
+    public UKVIComplaintService(ComplaintService complaintService,
+                                ClientContext clientContext,
+                                @Value("${case.creator.ukvi-complaint.user}") String user,
+                                @Value("${case.creator.ukvi-complaint.group}") String group) {
         this.complaintService = complaintService;
         this.clientContext = clientContext;
+        this.user = user;
+        this.group = group;
     }
 
     public void createComplaint(String jsonBody, String messageId) {

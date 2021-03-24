@@ -20,7 +20,7 @@ public class RestClient {
 
     @Autowired
     public RestClient(RestTemplate restTemplate,
-                      @Value("${hocs.basicauth}") String basicAuthString,
+                      @Value("${case.creator.basicauth}") String basicAuthString,
                       ClientContext clientContext) {
         this.restTemplate = restTemplate;
         this.basicAuthString = basicAuthString;

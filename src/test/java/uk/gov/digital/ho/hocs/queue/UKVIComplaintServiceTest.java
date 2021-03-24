@@ -22,7 +22,7 @@ public class UKVIComplaintServiceTest {
 
     @Test
     public void shouldCreateComplaint() {
-        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext);
+        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, "user", "group");
         String json = getResourceFileAsString("staffBehaviour.json");
 
         ukviComplaintService.createComplaint(json, "messageId");
