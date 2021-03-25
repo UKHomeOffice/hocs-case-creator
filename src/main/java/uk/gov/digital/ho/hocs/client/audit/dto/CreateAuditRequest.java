@@ -14,7 +14,7 @@ public class CreateAuditRequest {
     @JsonProperty(value = "correlation_id", required = true)
     private final String correlationID;
 
-    @JsonProperty(value = "caseUUID", required = true)
+    @JsonProperty(value = "caseUUID")
     private final UUID caseUUID;
 
     @JsonProperty(value = "stageUUID")
