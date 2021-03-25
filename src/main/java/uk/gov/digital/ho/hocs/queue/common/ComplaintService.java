@@ -9,8 +9,6 @@ import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
-import uk.gov.digital.ho.hocs.queue.common.ComplaintData;
-import uk.gov.digital.ho.hocs.queue.common.ComplaintTypeData;
 
 import java.util.Map;
 import java.util.UUID;

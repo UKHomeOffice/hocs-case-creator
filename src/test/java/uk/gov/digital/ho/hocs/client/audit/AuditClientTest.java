@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.client.audit;
 
-import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import org.apache.camel.ProducerTemplate;
@@ -12,6 +11,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
+import uk.gov.digital.ho.hocs.application.SpringConfiguration;
 import uk.gov.digital.ho.hocs.aws.LocalStackConfiguration;
 import uk.gov.digital.ho.hocs.aws.SNSTopicPrefix;
 import uk.gov.digital.ho.hocs.client.audit.dto.EventType;
@@ -33,16 +33,16 @@ public class AuditClientTest {
     @Mock
     private ProducerTemplate producerTemplate;
 
-    private String topicName = "audit-topic";
+    private final String topicName = "audit-topic";
     private String topic;
-    private String raisingService = "case-creator";
-    private String namespace = "local";
-    private String userId = UUID.randomUUID().toString();
-    private String groups = "groupsString";
-    private String correlationId = UUID.randomUUID().toString();
-    private UUID caseId = UUID.randomUUID();
-    private UUID stageId = UUID.randomUUID();
-    private ClientContext clientContext = new ClientContext();
+    private final String raisingService = "case-creator";
+    private final String namespace = "local";
+    private final String userId = UUID.randomUUID().toString();
+    private final String groups = "groupsString";
+    private final String correlationId = UUID.randomUUID().toString();
+    private final UUID caseId = UUID.randomUUID();
+    private final UUID stageId = UUID.randomUUID();
+    private final ClientContext clientContext = new ClientContext();
 
     @Captor
     ArgumentCaptor<HashMap<String, Object>> headerCaptor;
@@ -59,6 +59,7 @@ public class AuditClientTest {
                 auditTopicBuilder,
                 raisingService,
                 namespace,
+                new SpringConfiguration().objectMapper(),
                 clientContext,
                 producerTemplate);
     }

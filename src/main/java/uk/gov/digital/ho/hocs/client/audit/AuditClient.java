@@ -26,7 +26,7 @@ public class AuditClient {
     private final String auditTopic;
     private final String raisingService;
     private final String namespace;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
     private final ClientContext clientContext;
     private final ProducerTemplate producerTemplate;
     public static final String EVENT_TYPE_HEADER = "event_type";
@@ -35,11 +35,12 @@ public class AuditClient {
     public AuditClient(AuditTopicBuilder auditTopicBuilder,
                        @Value("${info.app.name}") String raisingService,
                        @Value("${audit.namespace}") String namespace,
-                       ClientContext clientContext,
+                       ObjectMapper objectMapper, ClientContext clientContext,
                        ProducerTemplate producerTemplate) {
         this.auditTopic = auditTopicBuilder.getTopic();
         this.raisingService = raisingService;
         this.namespace = namespace;
+        this.objectMapper = objectMapper;
         this.clientContext = clientContext;
         this.producerTemplate = producerTemplate;
     }
