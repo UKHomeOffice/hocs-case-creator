@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue;
+package uk.gov.digital.ho.hocs.queue.ukvi;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

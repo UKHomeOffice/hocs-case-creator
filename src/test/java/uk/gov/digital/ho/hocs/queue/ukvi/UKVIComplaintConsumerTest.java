@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue;
+package uk.gov.digital.ho.hocs.queue.ukvi;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
@@ -9,9 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClientException;
-import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintConsumer;
-import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintQueueBuilder;
-import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintService;
 
 import static org.mockito.Mockito.*;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
@@ -32,7 +29,7 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     @Override
     protected RouteBuilder createRouteBuilder() {
         when(queueDetails.getDlq()).thenReturn(dlq);
-        when(queueDetails.getUkviComplaintQueue()).thenReturn(complaintQueue);
+        when(queueDetails.getQueue()).thenReturn(complaintQueue);
         return new UKVIComplaintConsumer(mockUKVIComplaintService, queueDetails);
     }
 

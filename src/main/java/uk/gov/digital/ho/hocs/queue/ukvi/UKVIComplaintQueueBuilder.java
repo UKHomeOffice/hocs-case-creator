@@ -13,7 +13,7 @@ import uk.gov.digital.ho.hocs.aws.SQSQueuePrefix;
 public class UKVIComplaintQueueBuilder {
 
     private final SQSQueuePrefix sqsQueuePrefix;
-    private final String ukviComplaintQueue;
+    private final String queue;
     private final String dlq;
     private final String queueName;
     private final String dlQueueName;
@@ -53,7 +53,7 @@ public class UKVIComplaintQueueBuilder {
         this.initialDelay = initialDelay;
         this.pollDelay = pollDelay;
 
-        this.ukviComplaintQueue = buildQueue();
+        this.queue = buildQueue();
         this.dlq = buildDeadLetterQueue();
     }
 

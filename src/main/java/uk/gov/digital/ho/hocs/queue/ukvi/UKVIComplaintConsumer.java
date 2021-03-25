@@ -41,7 +41,7 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                     exchange.getIn().setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
                 }));
 
-        from(queueDetails.getUkviComplaintQueue())
+        from(queueDetails.getQueue())
                 .setProperty(SqsConstants.RECEIPT_HANDLE, header(SqsConstants.RECEIPT_HANDLE))
                 .log(LoggingLevel.INFO, log, "UKVI Complaint received, MessageId : ${headers.CamelAwsSqsMessageId}")
                 .to("json-validator:cmsSchema.json")

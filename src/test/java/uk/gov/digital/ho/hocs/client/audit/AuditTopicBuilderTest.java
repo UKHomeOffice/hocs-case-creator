@@ -1,15 +1,34 @@
 package uk.gov.digital.ho.hocs.client.audit;
 
-import junit.framework.TestCase;
 import org.junit.Test;
-import uk.gov.digital.ho.hocs.aws.SNSTopicPrefix;
+import uk.gov.digital.ho.hocs.aws.LocalStackConfiguration;
+import uk.gov.digital.ho.hocs.aws.SNSConfiguration;
 
-public class AuditTopicBuilderTest  {
+import static junit.framework.TestCase.assertEquals;
+
+public class AuditTopicBuilderTest {
 
     @Test
-    public void shouldReturnCorrectTopic() {
+    public void shouldReturnCorrectTopicForLocalConfig() {
 
-        // TODO use spring to wire tests
-        //AuditTopicBuilder auditTopicBuilder = new AuditTopicBuilder(new SNSTopicPrefix(), "topic-name");
+        LocalStackConfiguration localStackConfiguration = new LocalStackConfiguration();
+        String topicName = "audit-topic";
+
+        AuditTopicBuilder auditTopicBuilder = new AuditTopicBuilder(localStackConfiguration.topicPrefix(), topicName);
+
+        assertEquals(String.format("aws-sns://%s?amazonSNSClient=#auditSnsClient", topicName), auditTopicBuilder.getTopic());
+    }
+
+    @Test
+    public void shouldReturnCorrectTopicForSNSConfig() {
+
+        SNSConfiguration localStackConfiguration = new SNSConfiguration();
+        String region = "eu-west-2";
+        String accountId = "12345";
+        String topicName = "audit-topic";
+
+        AuditTopicBuilder auditTopicBuilder = new AuditTopicBuilder(localStackConfiguration.topicPrefix(region, accountId), topicName);
+
+        assertEquals(String.format("aws-sns://arn:aws:sns:%s:%s:%s?amazonSNSClient=#auditSnsClient", region, accountId, topicName), auditTopicBuilder.getTopic());
     }
 }
