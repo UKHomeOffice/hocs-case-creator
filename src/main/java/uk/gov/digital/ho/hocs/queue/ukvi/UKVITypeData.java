@@ -20,4 +20,14 @@ public class UKVITypeData implements ComplaintTypeData {
     public EventType getCreateCorrespondentEventType() {
         return EventType.UKVI_CORRESPONDENT_CREATED;
     }
+
+    @Override
+    public EventType getSuccessfulValidationEvent() {
+        return EventType.UKVI_PAYLOAD_PASSED_VALIDATED;
+    }
+
+    @Override
+    public EventType getUnsuccessfulValidationEvent() {
+        return EventType.UKVI_PAYLOAD_FAILED_VALIDATED;
+    }
 }

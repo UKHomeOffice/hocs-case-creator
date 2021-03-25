@@ -25,12 +25,14 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     private UKVIComplaintService mockUKVIComplaintService;
     @Mock
     private UKVIComplaintQueueBuilder queueDetails;
+    @Mock
+    private UKVIComplaintValidator ukviComplaintValidator;
 
     @Override
     protected RouteBuilder createRouteBuilder() {
         when(queueDetails.getDlq()).thenReturn(dlq);
         when(queueDetails.getQueue()).thenReturn(complaintQueue);
-        return new UKVIComplaintConsumer(mockUKVIComplaintService, queueDetails);
+        return new UKVIComplaintConsumer(mockUKVIComplaintService, queueDetails, ukviComplaintValidator);
     }
 
     @Test
@@ -44,6 +46,7 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     @Test
     public void shouldRejectInvalidJson() throws Exception {
         String json = getResourceFileAsString("incorrect.json");
+        doThrow(Exception.class).when(ukviComplaintValidator).validate(eq(json), any());
         getMockEndpoint(dlq).setExpectedCount(1);
         template.sendBody(complaintQueue, json);
         verify(mockUKVIComplaintService, never()).createComplaint(eq(json), any());

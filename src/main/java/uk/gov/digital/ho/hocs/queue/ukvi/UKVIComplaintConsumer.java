@@ -12,14 +12,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class UKVIComplaintConsumer extends RouteBuilder {
 
-    private final UKVIComplaintService UKVIComplaintService;
+    private final UKVIComplaintService ukviComplaintService;
     private final UKVIComplaintQueueBuilder queueDetails;
+    private final UKVIComplaintValidator ukviComplaintValidator;
 
     @Autowired
-    public UKVIComplaintConsumer(UKVIComplaintService UKVIComplaintService,
-                                 UKVIComplaintQueueBuilder queueDetails) {
-        this.UKVIComplaintService = UKVIComplaintService;
+    public UKVIComplaintConsumer(UKVIComplaintService ukviComplaintService,
+                                 UKVIComplaintQueueBuilder queueDetails,
+                                 UKVIComplaintValidator ukviComplaintValidator) {
+        this.ukviComplaintService = ukviComplaintService;
         this.queueDetails = queueDetails;
+        this.ukviComplaintValidator = ukviComplaintValidator;
     }
 
     @Override
@@ -44,8 +47,8 @@ public class UKVIComplaintConsumer extends RouteBuilder {
         from(queueDetails.getQueue())
                 .setProperty(SqsConstants.RECEIPT_HANDLE, header(SqsConstants.RECEIPT_HANDLE))
                 .log(LoggingLevel.INFO, log, "UKVI Complaint received, MessageId : ${headers.CamelAwsSqsMessageId}")
-                .to("json-validator:cmsSchema.json")
-                .bean(UKVIComplaintService, "createComplaint(${body}, ${headers.CamelAwsSqsMessageId})")
+                .bean(ukviComplaintValidator, "validate(${body}, ${headers.CamelAwsSqsMessageId})")
+                .bean(ukviComplaintService, "createComplaint(${body}, ${headers.CamelAwsSqsMessageId})")
                 .log(LoggingLevel.INFO, log, "UKVI Complaint processed, MessageId : ${headers.CamelAwsSqsMessageId}")
                 .setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
     }
