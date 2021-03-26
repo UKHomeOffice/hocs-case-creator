@@ -35,22 +35,23 @@ The following table contains the mandatory and optional properties that need to 
 | CASE_CREATOR_UKVI_COMPLAINT_QUEUE_WAIT_TIME_SECONDS | The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. | 20 | No |
 | CASE_CREATOR_UKVI_COMPLAINT_QUEUE_INITIAL_DELAY | Milliseconds before the first poll starts. | 5000 | No |
 | CASE_CREATOR_UKVI_COMPLAINT_QUEUE_POLL_DELAY | Milliseconds before the next poll. | 100 | No |
+| CASE_CREATOR_REST_CLIENT_RETRIES |The maximum number of retry attempts | 10 | No |
+| CASE_CREATOR_REST_CLIENT_DELAY | The minimum delay between retries. | 1000 | No |
+| AUDIT_NAMESPACE | The kubernetes namespace | local | Yes |
+| AUDIT_SNS_REGION | The SNS region | eu-west-2 | Yes |
+| AUDIT_SNS_ACCOUNT_ID | The SNS account Id | 12345 | Yes |
+| AUDIT_SNS_ACCESS_KEY | The SNS access key | 12345 | Yes |
+| AUDIT_SNS_SECRET_KEY | The SNS secret key | 12345 | Yes |
+| AUDIT_SNS_TOPIC_NAME | The SNS Topic Name | hocs-audit-topic | Yes |
+| AUDIT_SNS_RETRIES | The maximum number of retry attempts | 10 | No |
+| AUDIT_SNS_DELAY | The minimum delay between retries.  | 2000 | No |
+
+> Note : The rest retry properties must not be longer than the default visibility timeout of the SQS queue, which defaults to 30 seconds
 
 ## Local development
 
 This service has a dependency on the workflow and casework services. These should be started using the docker-compose
 file in the frontend project.
-
-## Local testing
-
-### Localstack and queues
-
-There is a docker-compose file that will start localstack and add the required queues.
-
-````console
-$ cd localdev
-$ docker-compose up
-````
 
 There is also a small java client `src/test/java/uk/gov/digital/ho/hocs/clientutil/SQSSender.java`. This can be used for
 sending messages to the local queue.

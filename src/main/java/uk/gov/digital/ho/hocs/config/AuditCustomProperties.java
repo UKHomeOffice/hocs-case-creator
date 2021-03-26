@@ -30,5 +30,9 @@ public class AuditCustomProperties {
         private String secretKey;
         @NotBlank
         private String topicName;
+        @NotBlank
+        private int retries;
+        @NotBlank
+        private int delay;
     }
 }
