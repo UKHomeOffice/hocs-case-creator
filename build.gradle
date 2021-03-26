@@ -30,6 +30,7 @@ dependencies {
     }
     compile('org.springframework.boot:spring-boot-starter-actuator')
     implementation('org.springframework.boot:spring-boot-starter-undertow')
+    implementation('org.springframework.boot:spring-boot-starter-aop')
     implementation('org.springframework.retry:spring-retry')
     implementation group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: camelVersion
     implementation group: 'org.apache.camel', name: 'camel-jackson', version: camelVersion
