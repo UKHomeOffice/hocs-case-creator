@@ -9,7 +9,9 @@ import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
+import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,6 +21,8 @@ public class ComplaintService {
 
     public static final String CORRESPONDENTS_LABEL = "Correspondents";
     public static final String COMPLAINT_TYPE_LABEL = "ComplaintType";
+    public static final String WEB_FORM_CONTENT = "WebFormContent.txt";
+    public static final String DOCUMENT_TYPE = "To document";
     private final WorkflowClient workflowClient;
     private final CaseworkClient caseworkClient;
     private final ClientContext clientContext;
@@ -39,7 +43,10 @@ public class ComplaintService {
 
         log.info("createComplaint, started : type {}", complaintData.getComplaintType());
 
-        CreateCaseRequest request = new CreateCaseRequest(complaintTypeData.getCaseType(), complaintData.getDateReceived());
+        String fakeS3UntrustedUrl = "8bdc5724-80e4-4fe3-a0a9-1f00262107b0";
+        DocumentSummary documentSummary = new DocumentSummary(WEB_FORM_CONTENT, DOCUMENT_TYPE, fakeS3UntrustedUrl);
+
+        CreateCaseRequest request = new CreateCaseRequest(complaintTypeData.getCaseType(), complaintData.getDateReceived(), List.of(documentSummary));
         CreateCaseResponse createCaseResponse = workflowClient.createCase(request);
 
         UUID caseUUID = createCaseResponse.getUuid();

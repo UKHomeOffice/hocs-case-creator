@@ -12,17 +12,21 @@ import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
+import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 import uk.gov.digital.ho.hocs.queue.common.ComplaintService;
 import uk.gov.digital.ho.hocs.queue.common.ComplaintTypeData;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVITypeData;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static uk.gov.digital.ho.hocs.queue.common.ComplaintService.DOCUMENT_TYPE;
+import static uk.gov.digital.ho.hocs.queue.common.ComplaintService.WEB_FORM_CONTENT;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -58,7 +62,9 @@ public class ComplaintServiceTest {
         UUID stageForCaseUUID = UUID.randomUUID();
         UUID primaryCorrespondent = UUID.randomUUID();
         ComplaintTypeData complaintTypeData = new UKVITypeData();
-        CreateCaseRequest createCaseRequest = new CreateCaseRequest(complaintTypeData.getCaseType(), receivedDate);
+        String s3ObjectName = "8bdc5724-80e4-4fe3-a0a9-1f00262107b0";
+        DocumentSummary documentSummary = new DocumentSummary(WEB_FORM_CONTENT, DOCUMENT_TYPE, s3ObjectName);
+        CreateCaseRequest createCaseRequest = new CreateCaseRequest(complaintTypeData.getCaseType(), receivedDate, List.of(documentSummary));
         CreateCaseResponse createCaseResponse = new CreateCaseResponse(caseUUID, decsReference);
 
         when(workflowClient.createCase(createCaseRequest)).thenReturn(createCaseResponse);

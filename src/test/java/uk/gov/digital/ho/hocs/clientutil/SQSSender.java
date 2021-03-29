@@ -25,7 +25,7 @@ public class SQSSender {
         SendMessageRequest send_msg_request = new SendMessageRequest()
                 .withQueueUrl(queueUrl)
                 .withMessageBody("{\n" +
-                        "  \"creationDate\": \"2020-10-03\",\n" +
+                        "  \"creationDate\": \"2021-03-03\",\n" +
                         "  \"complaint\": {\n" +
                         "    \"complaintType\": \"POOR_STAFF_BEHAVIOUR\",\n" +
                         "    \"reference\": {\n" +
@@ -35,7 +35,7 @@ public class SQSSender {
                         "    \"reporterDetails\": {\n" +
                         "      \"applicantType\": \"AGENT\",\n" +
                         "      \"applicantDetails\": {\n" +
-                        "        \"applicantName\": \"sint enim incididunt in\",\n" +
+                        "        \"applicantName\": \"Ken Dodd\",\n" +
                         "        \"applicantNationality\": \"Lorem\",\n" +
                         "        \"applicantDob\": \"1989-08-23\"\n" +
                         "      },\n" +
@@ -58,7 +58,7 @@ public class SQSSender {
                         "    }\n" +
                         "  }\n" +
                         "}\n")
-                .withDelaySeconds(5);
+                .withDelaySeconds(2);
 
         SendMessageResult sendMessageResult = sqs.sendMessage(send_msg_request);
 
