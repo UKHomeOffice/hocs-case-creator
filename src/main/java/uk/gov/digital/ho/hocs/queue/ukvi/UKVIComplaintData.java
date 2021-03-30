@@ -61,6 +61,11 @@ public class UKVIComplaintData implements ComplaintData {
         return jsonBody;
     }
 
+    @Override
+    public String getRawPayload() {
+        return jsonBody;
+    }
+
     private Optional<String> optionalString(ReadContext ctx, String path) {
         try {
             String value = ctx.read(path);

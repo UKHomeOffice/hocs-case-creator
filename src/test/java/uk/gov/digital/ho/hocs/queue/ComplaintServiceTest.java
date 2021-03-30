@@ -13,12 +13,17 @@ import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
+import uk.gov.digital.ho.hocs.queue.common.ComplaintService;
+import uk.gov.digital.ho.hocs.queue.common.ComplaintTypeData;
+import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
+import uk.gov.digital.ho.hocs.queue.ukvi.UKVITypeData;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 import uk.gov.digital.ho.hocs.queue.common.ComplaintService;
 import uk.gov.digital.ho.hocs.queue.common.ComplaintTypeData;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVITypeData;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -56,7 +61,7 @@ public class ComplaintServiceTest {
     }
 
     @Test
-    public void shouldCreateComplaint() {
+    public void shouldCreateComplaint() throws IOException {
         String json = getResourceFileAsString("staffBehaviour.json");
 
         LocalDate receivedDate = LocalDate.parse("2020-10-03");
@@ -86,6 +91,9 @@ public class ComplaintServiceTest {
 
         verify(workflowClient, times(2)).advanceCase(eq(caseUUID), eq(stageForCaseUUID), anyMap());
 
+        verify(auditClient).audit(EventType.CREATOR_CASE_CREATED, caseUUID, stageForCaseUUID, json);
+
+        verify(auditClient).audit(eq(EventType.CREATOR_CORRESPONDENT_CREATED), eq(caseUUID), eq(stageForCaseUUID), anyMap());
     }
 
 }

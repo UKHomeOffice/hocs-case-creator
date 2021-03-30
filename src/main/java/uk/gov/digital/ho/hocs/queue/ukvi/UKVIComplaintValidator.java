@@ -52,9 +52,7 @@ public class UKVIComplaintValidator {
         clientContext.setContext(user, group, messageId);
         JsonNode json = objectMapper.readTree(jsonBody);
         Set<ValidationMessage> validationMessages = schema.validate(json);
-        if (validationMessages.isEmpty()) {
-            auditClient.audit(ukviTypeData.getSuccessfulValidationEvent(), null, null, jsonBody);
-        } else {
+        if (!validationMessages.isEmpty()) {
             for (ValidationMessage validationMessage : validationMessages) {
                 log.warn("MessageId : {}, {}", messageId, validationMessage.getMessage());
             }

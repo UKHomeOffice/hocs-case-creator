@@ -24,7 +24,7 @@ public class UKVIComplaintServiceTest {
     ClientContext clientContext;
 
     @Test
-    public void shouldCreateComplaint() {
+    public void shouldCreateComplaint() throws IOException {
         UKVITypeData complaintTypeData = new UKVITypeData();
         UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group");
         String json = getResourceFileAsString("staffBehaviour.json");

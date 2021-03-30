@@ -13,6 +13,7 @@ import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
 import java.util.List;
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,7 +35,8 @@ public class ComplaintService {
     public ComplaintService(WorkflowClient workflowClient,
                             CaseworkClient caseworkClient,
                             ClientContext clientContext,
-                            AuditClient auditClient, DocumentS3Client documentS3Client) {
+                            AuditClient auditClient,
+                            DocumentS3Client documentS3Client) {
         this.workflowClient = workflowClient;
         this.caseworkClient = caseworkClient;
         this.clientContext = clientContext;
@@ -42,7 +44,7 @@ public class ComplaintService {
         this.documentS3Client = documentS3Client;
     }
 
-    public void createComplaint(ComplaintData complaintData, ComplaintTypeData complaintTypeData) {
+    public void createComplaint(ComplaintData complaintData, ComplaintTypeData complaintTypeData) throws IOException {
 
         log.info("createComplaint, started : type {}", complaintData.getComplaintType());
 
@@ -58,7 +60,7 @@ public class ComplaintService {
 
         UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
 
-        auditClient.audit(complaintTypeData.getCreateComplaintEventType(), caseUUID, stageForCaseUUID);
+        auditClient.audit(complaintTypeData.getCreateComplaintEventType(), caseUUID, stageForCaseUUID, complaintData.getRawPayload());
 
         log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageForCaseUUID);
 

@@ -13,4 +13,6 @@ public interface ComplaintData {
     ComplaintCorrespondent getComplaintCorrespondent();
 
     String getFormattedDocument();
+
+    String getRawPayload();
 }

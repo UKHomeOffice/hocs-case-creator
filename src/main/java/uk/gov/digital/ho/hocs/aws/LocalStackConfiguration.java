@@ -42,7 +42,7 @@ public class LocalStackConfiguration {
     @Bean("sqsClient")
     public AmazonSQS sqsClient() {
         String host = "http://localhost:4576/";
-        AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(host, REGION);
+        AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(host, "eu-west-2");
         return AmazonSQSClientBuilder.standard()
                 .withClientConfiguration(new ClientConfiguration().withProtocol(Protocol.HTTP))
                 .withCredentials(awsCredentialsProvider)
