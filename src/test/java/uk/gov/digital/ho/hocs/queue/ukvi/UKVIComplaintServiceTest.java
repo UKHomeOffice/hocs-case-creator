@@ -6,9 +6,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.queue.common.ComplaintService;
-import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
-import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintService;
-import uk.gov.digital.ho.hocs.queue.ukvi.UKVITypeData;
+
+import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
