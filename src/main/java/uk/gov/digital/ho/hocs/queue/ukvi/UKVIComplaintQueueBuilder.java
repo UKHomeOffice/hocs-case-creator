@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue;
+package uk.gov.digital.ho.hocs.queue.ukvi;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +10,10 @@ import uk.gov.digital.ho.hocs.aws.SQSQueuePrefix;
 @Slf4j
 @Component
 @Getter
-public class UKVIComplaintQueueDetails {
+public class UKVIComplaintQueueBuilder {
 
     private final SQSQueuePrefix sqsQueuePrefix;
-    private final String ukviComplaintQueue;
+    private final String queue;
     private final String dlq;
     private final String queueName;
     private final String dlQueueName;
@@ -28,7 +28,7 @@ public class UKVIComplaintQueueDetails {
     private final int pollDelay;
 
     @Autowired
-    public UKVIComplaintQueueDetails(SQSQueuePrefix sqsQueuePrefix,
+    public UKVIComplaintQueueBuilder(SQSQueuePrefix sqsQueuePrefix,
                                      @Value("${case.creator.ukvi-complaint.queue-name}") String queueName,
                                      @Value("${case.creator.ukvi-complaint.dl-queue-name}") String dlQueueName,
                                      @Value("${case.creator.sqs.region}") String awsSQSRegion,
@@ -53,12 +53,12 @@ public class UKVIComplaintQueueDetails {
         this.initialDelay = initialDelay;
         this.pollDelay = pollDelay;
 
-        this.ukviComplaintQueue = buildQueueName();
-        this.dlq = buildDlQueueName();
+        this.queue = buildQueue();
+        this.dlq = buildDeadLetterQueue();
     }
 
 
-    private String buildQueueName() {
+    private String buildQueue() {
 
         String redriveTemplate = "{\"maxReceiveCount\": \"%s\", \"deadLetterTargetArn\":\"arn:aws:sqs:%s:%s:%s\"}";
         String redrivePolicy = String.format(redriveTemplate, maximumRedeliveries, awsSQSRegion, awsSQSAccountId, dlQueueName);
@@ -76,7 +76,7 @@ public class UKVIComplaintQueueDetails {
         return sqsQueuePrefix.getPrefix() + queueName + queueProperties;
     }
 
-    private String buildDlQueueName() {
+    private String buildDeadLetterQueue() {
 
         String dlQueueProperties = "?amazonSQSClient=#sqsClient&messageAttributeNames=All";
 

@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
 
 @Configuration
 @Profile({"sqs"})
-public class SqsConfiguration {
+public class SQSConfiguration {
 
     @Bean(name = "sqsClient")
     public AmazonSQS sqsClient(@Value("${case.creator.sqs.access-key}") String accessKey,
@@ -43,6 +43,6 @@ public class SqsConfiguration {
     @Bean
     public SQSQueuePrefix queuePrefix(@Value("${case.creator.sqs.region}") String region,
                                       @Value("${case.creator.sqs.account-id}") String accountId) {
-        return new SQSQueuePrefix("aws-sqs://arn:aws:sqs:" + region + accountId + ":");
+        return new SQSQueuePrefix("aws-sqs://arn:aws:sqs:" + region + ":" + accountId + ":");
     }
 }

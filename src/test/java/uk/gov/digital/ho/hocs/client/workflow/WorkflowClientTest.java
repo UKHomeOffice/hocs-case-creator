@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.when;
-import static uk.gov.digital.ho.hocs.queue.UKVIComplaintService.CASE_TYPE;
+import static uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintService.CASE_TYPE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkflowClientTest {
