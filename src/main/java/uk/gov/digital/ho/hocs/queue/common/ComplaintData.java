@@ -11,4 +11,6 @@ public interface ComplaintData {
     String getComplaintType();
 
     ComplaintCorrespondent getComplaintCorrespondent();
+
+    String getRawPayload();
 }

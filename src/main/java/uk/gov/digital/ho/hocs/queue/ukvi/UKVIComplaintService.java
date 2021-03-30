@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.queue.common.ComplaintService;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 @Slf4j
 @Service
@@ -33,8 +34,7 @@ public class UKVIComplaintService {
         this.group = group;
     }
 
-
-    public void createComplaint(String jsonBody, String messageId) {
+    public void createComplaint(String jsonBody, String messageId) throws IOException {
         clientContext.setContext(user, group, messageId);
         complaintService.createComplaint(new UKVIComplaintData(jsonBody), ukviTypeData);
     }

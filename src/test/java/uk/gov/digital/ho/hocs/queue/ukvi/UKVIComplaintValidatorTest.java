@@ -14,6 +14,7 @@ import uk.gov.digital.ho.hocs.client.audit.dto.EventType;
 
 import java.util.UUID;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
@@ -48,7 +49,7 @@ public class UKVIComplaintValidatorTest {
     @Test
     public void shouldAuditValidationSuccess() throws Exception {
         complaintValidator.validate(goodJson, messageId);
-        verify(auditClient).audit(EventType.UKVI_PAYLOAD_PASSED_VALIDATED, null, null, goodJson);
+        verify(auditClient, never()).audit(EventType.UKVI_PAYLOAD_FAILED_VALIDATED, null, null);
     }
 
     @Test

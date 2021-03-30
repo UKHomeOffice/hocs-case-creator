@@ -10,6 +10,8 @@ import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintService;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVITypeData;
 
+import java.io.IOException;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -24,7 +26,7 @@ public class UKVIComplaintServiceTest {
     ClientContext clientContext;
 
     @Test
-    public void shouldCreateComplaint() {
+    public void shouldCreateComplaint() throws IOException {
         UKVITypeData complaintTypeData = new UKVITypeData();
         UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group");
         String json = getResourceFileAsString("staffBehaviour.json");

@@ -67,7 +67,7 @@ public class AuditClientTest {
     @Test
     public void shouldWriteAuditWithoutPayload() {
 
-        auditClient.audit(EventType.UKVI_COMPLAINT_CREATED, caseId, stageId);
+        auditClient.audit(EventType.CREATOR_CASE_CREATED, caseId, stageId);
         verify(producerTemplate).sendBodyAndHeaders(eq(topic), jsonMessage.capture(), headerCaptor.capture());
         ReadContext ctx = JsonPath.parse(jsonMessage.getValue());
 
@@ -80,7 +80,7 @@ public class AuditClientTest {
     @Test
     public void shouldWriteAuditWithDataPayload() {
         Map<String, String> data = Map.of("key", "value");
-        auditClient.audit(EventType.UKVI_COMPLAINT_CREATED, caseId, stageId, data);
+        auditClient.audit(EventType.CREATOR_CASE_CREATED, caseId, stageId, data);
         verify(producerTemplate).sendBodyAndHeaders(eq(topic), jsonMessage.capture(), headerCaptor.capture());
         ReadContext ctx = JsonPath.parse(jsonMessage.getValue());
 
@@ -93,7 +93,7 @@ public class AuditClientTest {
     @Test
     public void shouldWriteAuditWithJSONPayload() throws IOException {
         String jsonString = "{\"key\":\"value\"}";
-        auditClient.audit(EventType.UKVI_COMPLAINT_CREATED, caseId, stageId, jsonString);
+        auditClient.audit(EventType.CREATOR_CASE_CREATED, caseId, stageId, jsonString);
         verify(producerTemplate).sendBodyAndHeaders(eq(topic), jsonMessage.capture(), headerCaptor.capture());
         ReadContext ctx = JsonPath.parse(jsonMessage.getValue());
 
@@ -105,7 +105,7 @@ public class AuditClientTest {
 
     @Test(expected = IOException.class)
     public void shouldFailIfNOtJSONPayload() throws IOException {
-        auditClient.audit(EventType.UKVI_COMPLAINT_CREATED, caseId, stageId, "rubbish");
+        auditClient.audit(EventType.CREATOR_CASE_CREATED, caseId, stageId, "rubbish");
     }
 
     private void validateMainJsonBody(ReadContext ctx) {

@@ -6,6 +6,5 @@ public interface ComplaintTypeData {
     String getCaseType();
     EventType getCreateComplaintEventType();
     EventType getCreateCorrespondentEventType();
-    EventType getSuccessfulValidationEvent();
     EventType getUnsuccessfulValidationEvent();
 }

@@ -10,6 +10,7 @@ import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class ComplaintService {
         this.auditClient = auditClient;
     }
 
-    public void createComplaint(ComplaintData complaintData, ComplaintTypeData complaintTypeData) {
+    public void createComplaint(ComplaintData complaintData, ComplaintTypeData complaintTypeData) throws IOException {
 
         log.info("createComplaint, started : type {}", complaintData.getComplaintType());
 
@@ -48,7 +49,7 @@ public class ComplaintService {
 
         UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
 
-        auditClient.audit(complaintTypeData.getCreateComplaintEventType(), caseUUID, stageForCaseUUID);
+        auditClient.audit(complaintTypeData.getCreateComplaintEventType(), caseUUID, stageForCaseUUID, complaintData.getRawPayload());
 
         log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageForCaseUUID);
 
