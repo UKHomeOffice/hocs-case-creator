@@ -1,15 +1,16 @@
-package uk.gov.digital.ho.hocs.queue;
+package uk.gov.digital.ho.hocs.queue.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
+import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
-import uk.gov.digital.ho.hocs.queue.data.ComplaintData;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,21 +23,24 @@ public class ComplaintService {
     private final WorkflowClient workflowClient;
     private final CaseworkClient caseworkClient;
     private final ClientContext clientContext;
+    private final AuditClient auditClient;
 
     @Autowired
     public ComplaintService(WorkflowClient workflowClient,
                             CaseworkClient caseworkClient,
-                            ClientContext clientContext) {
+                            ClientContext clientContext,
+                            AuditClient auditClient) {
         this.workflowClient = workflowClient;
         this.caseworkClient = caseworkClient;
         this.clientContext = clientContext;
+        this.auditClient = auditClient;
     }
 
-    public void createComplaint(ComplaintData complaintData, String caseType) {
+    public void createComplaint(ComplaintData complaintData, ComplaintTypeData complaintTypeData) throws IOException {
 
         log.info("createComplaint, started : type {}", complaintData.getComplaintType());
 
-        CreateCaseRequest request = new CreateCaseRequest(caseType, complaintData.getDateReceived());
+        CreateCaseRequest request = new CreateCaseRequest(complaintTypeData.getCaseType(), complaintData.getDateReceived());
         CreateCaseResponse createCaseResponse = workflowClient.createCase(request);
 
         UUID caseUUID = createCaseResponse.getUuid();
@@ -44,6 +48,8 @@ public class ComplaintService {
         log.info("createComplaint, create case : caseUUID : {}, reference : {}", caseUUID, createCaseResponse.getReference());
 
         UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
+
+        auditClient.audit(complaintTypeData.getCreateComplaintEventType(), caseUUID, stageForCaseUUID, complaintData.getRawPayload());
 
         log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageForCaseUUID);
 
@@ -58,6 +64,8 @@ public class ComplaintService {
         Map<String, String> correspondents = Map.of(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
 
         workflowClient.advanceCase(caseUUID, stageForCaseUUID, correspondents);
+
+        auditClient.audit(complaintTypeData.getCreateCorrespondentEventType(), caseUUID, stageForCaseUUID, correspondents);
 
         log.info("createComplaint, case advanced for correspondent : caseUUID : {}", caseUUID);
 

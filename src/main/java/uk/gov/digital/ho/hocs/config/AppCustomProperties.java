@@ -19,9 +19,21 @@ public class AppCustomProperties {
     @NotBlank
     private String basicAuth;
     @NotBlank
+    private RestClientProperties restClient;
+    @NotBlank
     private SQSCustomProperties sqs;
     @NotBlank
     private ClientCustomProperties ukviComplaint;
+
+    @Getter
+    @Setter
+    private static class RestClientProperties {
+        @NotBlank
+        private int retries;
+        @NotBlank
+        private int delay;
+
+    }
 
     @Getter
     @Setter
