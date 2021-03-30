@@ -1,11 +1,16 @@
-package uk.gov.digital.ho.hocs.queue;
+package uk.gov.digital.ho.hocs.queue.ukvi;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.queue.data.UKVIComplaintData;
+import uk.gov.digital.ho.hocs.queue.common.ComplaintService;
+import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
+import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintService;
+import uk.gov.digital.ho.hocs.queue.ukvi.UKVITypeData;
+
+import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -21,13 +26,14 @@ public class UKVIComplaintServiceTest {
     ClientContext clientContext;
 
     @Test
-    public void shouldCreateComplaint() {
-        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, "user", "group");
+    public void shouldCreateComplaint() throws IOException {
+        UKVITypeData complaintTypeData = new UKVITypeData();
+        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group");
         String json = getResourceFileAsString("staffBehaviour.json");
 
         ukviComplaintService.createComplaint(json, "messageId");
 
-        verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(UKVIComplaintService.CASE_TYPE));
+        verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(complaintTypeData));
     }
 
 }

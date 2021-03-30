@@ -1,9 +1,10 @@
-package uk.gov.digital.ho.hocs.queue.data;
+package uk.gov.digital.ho.hocs.queue.ukvi;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.queue.common.ComplaintData;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -19,8 +20,10 @@ public class UKVIComplaintData implements ComplaintData {
     public static final String AGENT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantDetails.applicantName";
 
     private final ReadContext ctx;
+    private final String jsonBody;
 
     public UKVIComplaintData(String jsonBody) {
+        this.jsonBody = jsonBody;
         ctx = JsonPath.parse(jsonBody);
     }
 
@@ -51,6 +54,11 @@ public class UKVIComplaintData implements ComplaintData {
             throw new IllegalStateException("APPLICANT_TYPE Unknown : " + applicantType);
         }
         return correspondent;
+    }
+
+    @Override
+    public String getRawPayload() {
+        return jsonBody;
     }
 
     private Optional<String> optionalString(ReadContext ctx, String path) {
