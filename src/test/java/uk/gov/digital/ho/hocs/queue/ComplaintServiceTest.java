@@ -9,6 +9,7 @@ import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
@@ -26,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static uk.gov.digital.ho.hocs.queue.common.ComplaintService.DOCUMENT_TYPE;
-import static uk.gov.digital.ho.hocs.queue.common.ComplaintService.WEB_FORM_CONTENT;
+import static uk.gov.digital.ho.hocs.queue.common.ComplaintService.ORIGINAL_FILENAME;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,6 +41,8 @@ public class ComplaintServiceTest {
     private ClientContext clientContext;
     @Mock
     private AuditClient auditClient;
+    @Mock
+    private DocumentS3Client documentS3Client;
 
     private ComplaintService complaintService;
 
@@ -49,7 +52,7 @@ public class ComplaintServiceTest {
     public void setUp() {
         user = UUID.randomUUID().toString();
         when(clientContext.getUserId()).thenReturn(user);
-        complaintService = new ComplaintService(workflowClient, caseworkClient, clientContext, auditClient);
+        complaintService = new ComplaintService(workflowClient, caseworkClient, clientContext, auditClient, documentS3Client);
     }
 
     @Test
@@ -63,9 +66,11 @@ public class ComplaintServiceTest {
         UUID primaryCorrespondent = UUID.randomUUID();
         ComplaintTypeData complaintTypeData = new UKVITypeData();
         String s3ObjectName = "8bdc5724-80e4-4fe3-a0a9-1f00262107b0";
-        DocumentSummary documentSummary = new DocumentSummary(WEB_FORM_CONTENT, DOCUMENT_TYPE, s3ObjectName);
+        DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, s3ObjectName);
         CreateCaseRequest createCaseRequest = new CreateCaseRequest(complaintTypeData.getCaseType(), receivedDate, List.of(documentSummary));
         CreateCaseResponse createCaseResponse = new CreateCaseResponse(caseUUID, decsReference);
+
+        when(documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, json)).thenReturn(s3ObjectName);
 
         when(workflowClient.createCase(createCaseRequest)).thenReturn(createCaseResponse);
 

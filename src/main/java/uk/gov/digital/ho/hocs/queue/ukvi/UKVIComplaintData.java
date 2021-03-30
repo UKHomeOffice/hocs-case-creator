@@ -20,8 +20,10 @@ public class UKVIComplaintData implements ComplaintData {
     public static final String AGENT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantDetails.applicantName";
 
     private final ReadContext ctx;
+    private final String jsonBody;
 
     public UKVIComplaintData(String jsonBody) {
+        this.jsonBody = jsonBody;
         ctx = JsonPath.parse(jsonBody);
     }
 
@@ -52,6 +54,11 @@ public class UKVIComplaintData implements ComplaintData {
             throw new IllegalStateException("APPLICANT_TYPE Unknown : " + applicantType);
         }
         return correspondent;
+    }
+
+    @Override
+    public String getFormattedDocument() {
+        return jsonBody;
     }
 
     private Optional<String> optionalString(ReadContext ctx, String path) {

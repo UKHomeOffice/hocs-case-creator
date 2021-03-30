@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
+import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
@@ -21,30 +22,32 @@ public class ComplaintService {
 
     public static final String CORRESPONDENTS_LABEL = "Correspondents";
     public static final String COMPLAINT_TYPE_LABEL = "ComplaintType";
-    public static final String WEB_FORM_CONTENT = "WebFormContent.txt";
+    public static final String ORIGINAL_FILENAME = "WebFormContent.txt";
     public static final String DOCUMENT_TYPE = "To document";
     private final WorkflowClient workflowClient;
     private final CaseworkClient caseworkClient;
     private final ClientContext clientContext;
     private final AuditClient auditClient;
+    private final DocumentS3Client documentS3Client;
 
     @Autowired
     public ComplaintService(WorkflowClient workflowClient,
                             CaseworkClient caseworkClient,
                             ClientContext clientContext,
-                            AuditClient auditClient) {
+                            AuditClient auditClient, DocumentS3Client documentS3Client) {
         this.workflowClient = workflowClient;
         this.caseworkClient = caseworkClient;
         this.clientContext = clientContext;
         this.auditClient = auditClient;
+        this.documentS3Client = documentS3Client;
     }
 
     public void createComplaint(ComplaintData complaintData, ComplaintTypeData complaintTypeData) {
 
         log.info("createComplaint, started : type {}", complaintData.getComplaintType());
 
-        String fakeS3UntrustedUrl = "8bdc5724-80e4-4fe3-a0a9-1f00262107b0";
-        DocumentSummary documentSummary = new DocumentSummary(WEB_FORM_CONTENT, DOCUMENT_TYPE, fakeS3UntrustedUrl);
+        String untrustedS3ObjectName = documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, complaintData.getFormattedDocument());
+        DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, untrustedS3ObjectName);
 
         CreateCaseRequest request = new CreateCaseRequest(complaintTypeData.getCaseType(), complaintData.getDateReceived(), List.of(documentSummary));
         CreateCaseResponse createCaseResponse = workflowClient.createCase(request);
