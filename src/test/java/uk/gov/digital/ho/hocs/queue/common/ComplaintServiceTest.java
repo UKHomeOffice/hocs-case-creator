@@ -60,6 +60,7 @@ public class ComplaintServiceTest {
     @Test
     public void shouldCreateComplaint() throws IOException {
         String json = getResourceFileAsString("staffBehaviour.json");
+        String expectedText = getResourceFileAsString("staffBehaviour.txt");
 
         LocalDate receivedDate = LocalDate.parse("2020-10-03");
         String decsReference = "COMP/01";
@@ -72,7 +73,7 @@ public class ComplaintServiceTest {
         CreateCaseRequest createCaseRequest = new CreateCaseRequest(complaintTypeData.getCaseType(), receivedDate, List.of(documentSummary));
         CreateCaseResponse createCaseResponse = new CreateCaseResponse(caseUUID, decsReference);
 
-        when(documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, json)).thenReturn(s3ObjectName);
+        when(documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, expectedText)).thenReturn(s3ObjectName);
 
         when(workflowClient.createCase(createCaseRequest)).thenReturn(createCaseResponse);
 

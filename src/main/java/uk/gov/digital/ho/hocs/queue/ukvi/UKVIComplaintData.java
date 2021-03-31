@@ -3,12 +3,16 @@ package uk.gov.digital.ho.hocs.queue.ukvi;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.document.JSONToSimpleTextConverter;
 import uk.gov.digital.ho.hocs.queue.common.ComplaintData;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
+@Slf4j
 public class UKVIComplaintData implements ComplaintData {
 
     public static final String CREATION_DATE = "$.creationDate";
@@ -58,7 +62,14 @@ public class UKVIComplaintData implements ComplaintData {
 
     @Override
     public String getFormattedDocument() {
-        return jsonBody;
+        String formattedText = jsonBody; // Fall back if conversion fails
+        try {
+            JSONToSimpleTextConverter jsonToSimpleTextConverter = new JSONToSimpleTextConverter(jsonBody);
+            formattedText = jsonToSimpleTextConverter.getConvertedOutput();
+        } catch (IOException e) {
+            log.warn("Document formatting failed due to : {}", e.getMessage());
+        }
+        return formattedText;
     }
 
     @Override
