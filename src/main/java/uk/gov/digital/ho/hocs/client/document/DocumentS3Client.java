@@ -31,25 +31,36 @@ public class DocumentS3Client {
     }
 
     public String storeUntrustedDocument(String originalFilename, String formattedDocument) {
-        String tempObjectName = UUID.randomUUID().toString();
-        ObjectMetadata metaData = new ObjectMetadata();
-        metaData.setContentType("application/octet-stream");
-        metaData.addUserMetadata(META_DATA_LABEL, originalFilename);
-        metaData.setContentLength(formattedDocument.length());
-
+        ObjectMetadata metaData = buildObjectMetadata(originalFilename, formattedDocument);
+        String tempObjectName = getTempObjectName();
         try {
-            PutObjectRequest uploadRequest = new PutObjectRequest(untrustedS3BucketName, tempObjectName, new StringInputStream(formattedDocument), metaData);
-
-            if (StringUtils.hasValue(untrustedBucketKMSKey)) { // Will be empty when running local. Workaround because localstack doesn't use HTTPS
-                uploadRequest = uploadRequest.withSSEAwsKeyManagementParams(new SSEAwsKeyManagementParams(untrustedBucketKMSKey));
-            }
-
+            PutObjectRequest uploadRequest = buildPutObjectRequest(formattedDocument, metaData, tempObjectName);
             s3Client.putObject(uploadRequest);
-
         } catch (UnsupportedEncodingException e) {
             // Unless this code changes, this should never happen
             log.error(e.getMessage());
         }
         return tempObjectName;
+    }
+
+    PutObjectRequest buildPutObjectRequest(String formattedDocument, ObjectMetadata metaData, String tempObjectName) throws UnsupportedEncodingException {
+        PutObjectRequest uploadRequest = new PutObjectRequest(untrustedS3BucketName, tempObjectName, new StringInputStream(formattedDocument), metaData);
+
+        if (StringUtils.hasValue(untrustedBucketKMSKey)) { // Will be empty when running local. Workaround because localstack doesn't use HTTPS
+            uploadRequest = uploadRequest.withSSEAwsKeyManagementParams(new SSEAwsKeyManagementParams(untrustedBucketKMSKey));
+        }
+        return uploadRequest;
+    }
+
+    String getTempObjectName() {
+        return UUID.randomUUID().toString();
+    }
+
+    ObjectMetadata buildObjectMetadata(String originalFilename, String formattedDocument) {
+        ObjectMetadata metaData = new ObjectMetadata();
+        metaData.setContentType("application/octet-stream");
+        metaData.addUserMetadata(META_DATA_LABEL, originalFilename);
+        metaData.setContentLength(formattedDocument.length());
+        return metaData;
     }
 }
