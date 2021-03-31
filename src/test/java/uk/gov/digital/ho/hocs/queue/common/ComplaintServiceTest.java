@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue;
+package uk.gov.digital.ho.hocs.queue.common;
 
 import org.junit.Before;
 import org.junit.Test;
