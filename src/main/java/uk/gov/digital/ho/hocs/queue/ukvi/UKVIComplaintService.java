@@ -26,7 +26,7 @@ public class UKVIComplaintService {
                                 ClientContext clientContext,
                                 UKVITypeData ukviTypeData,
                                 @Value("${case.creator.ukvi-complaint.user}") String user,
-                                @Value("${case.creator.ukvi-complaint.group}") String group)  {
+                                @Value("${case.creator.ukvi-complaint.group}") String group) {
         this.complaintService = complaintService;
         this.clientContext = clientContext;
         this.ukviTypeData = ukviTypeData;

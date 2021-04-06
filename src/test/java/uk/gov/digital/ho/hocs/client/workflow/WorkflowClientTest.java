@@ -11,13 +11,17 @@ import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.AdvanceCaseDataRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
+import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.when;
+import static uk.gov.digital.ho.hocs.queue.common.ComplaintService.DOCUMENT_TYPE;
+import static uk.gov.digital.ho.hocs.queue.common.ComplaintService.ORIGINAL_FILENAME;
 import static uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintService.CASE_TYPE;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -37,7 +41,9 @@ public class WorkflowClientTest {
     public void createCase() {
         UUID responseUUID = UUID.randomUUID();
         String caseRef = "COMP/0120003/21";
-        CreateCaseRequest request = new CreateCaseRequest(CASE_TYPE, LocalDate.of(2021, 1, 1));
+        String s3ObjectName = "8bdc5724-80e4-4fe3-a0a9-1f00262107b0";
+        DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, s3ObjectName);
+        CreateCaseRequest request = new CreateCaseRequest(CASE_TYPE, LocalDate.of(2021, 1, 1), List.of(documentSummary));
 
         CreateCaseResponse expectedResponse = new CreateCaseResponse(responseUUID, caseRef);
         ResponseEntity<CreateCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
