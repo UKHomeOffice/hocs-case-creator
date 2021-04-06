@@ -6,10 +6,13 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
+import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
+import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
+import java.util.List;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
@@ -20,27 +23,35 @@ public class ComplaintService {
 
     public static final String CORRESPONDENTS_LABEL = "Correspondents";
     public static final String COMPLAINT_TYPE_LABEL = "ComplaintType";
+    public static final String ORIGINAL_FILENAME = "WebFormContent.txt";
+    public static final String DOCUMENT_TYPE = "To document";
     private final WorkflowClient workflowClient;
     private final CaseworkClient caseworkClient;
     private final ClientContext clientContext;
     private final AuditClient auditClient;
+    private final DocumentS3Client documentS3Client;
 
     @Autowired
     public ComplaintService(WorkflowClient workflowClient,
                             CaseworkClient caseworkClient,
                             ClientContext clientContext,
-                            AuditClient auditClient) {
+                            AuditClient auditClient,
+                            DocumentS3Client documentS3Client) {
         this.workflowClient = workflowClient;
         this.caseworkClient = caseworkClient;
         this.clientContext = clientContext;
         this.auditClient = auditClient;
+        this.documentS3Client = documentS3Client;
     }
 
     public void createComplaint(ComplaintData complaintData, ComplaintTypeData complaintTypeData) throws IOException {
 
         log.info("createComplaint, started : type {}", complaintData.getComplaintType());
 
-        CreateCaseRequest request = new CreateCaseRequest(complaintTypeData.getCaseType(), complaintData.getDateReceived());
+        String untrustedS3ObjectName = documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, complaintData.getFormattedDocument());
+        DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, untrustedS3ObjectName);
+
+        CreateCaseRequest request = new CreateCaseRequest(complaintTypeData.getCaseType(), complaintData.getDateReceived(), List.of(documentSummary));
         CreateCaseResponse createCaseResponse = workflowClient.createCase(request);
 
         UUID caseUUID = createCaseResponse.getUuid();
