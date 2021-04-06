@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.client;
+package uk.gov.digital.ho.hocs.queue.ukvi;
 
 import org.junit.Test;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import static org.junit.Assert.assertEquals;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
-public class ComplaintDataTest {
+public class UKVIComplaintDataTest {
 
     @Test
     public void shouldGetDateReceived() {
