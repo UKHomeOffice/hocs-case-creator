@@ -12,7 +12,7 @@ import java.io.IOException;
 @Slf4j
 public class JSONToSimpleTextConverter {
     public static final String NEW_LINE_STR = "\n            ";
-    public static final int WRAP_LENGTH = 100;
+    public static final int WRAP_LENGTH = 60;
     public static final boolean WRAP_LONG_WORDS = false;
     private final String inputJson;
     private final StringBuilder convertedOutput = new StringBuilder();

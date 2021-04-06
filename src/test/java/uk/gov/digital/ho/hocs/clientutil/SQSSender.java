@@ -25,33 +25,33 @@ public class SQSSender {
         SendMessageRequest send_msg_request = new SendMessageRequest()
                 .withQueueUrl(queueUrl)
                 .withMessageBody("{\n" +
-                        "  \"creationDate\": \"2021-03-28\",\n" +
+                        "  \"creationDate\": \"2020-10-03\",\n" +
                         "  \"complaint\": {\n" +
                         "    \"complaintType\": \"POOR_STAFF_BEHAVIOUR\",\n" +
                         "    \"reference\": {\n" +
                         "      \"referenceType\": \"IHS_REF\",\n" +
-                        "      \"reference\": \"amet\"\n" +
+                        "      \"reference\": \"ABC12345\"\n" +
                         "    },\n" +
                         "    \"reporterDetails\": {\n" +
                         "      \"applicantType\": \"AGENT\",\n" +
                         "      \"applicantDetails\": {\n" +
-                        "        \"applicantName\": \"Boris\",\n" +
+                        "        \"applicantName\": \"Jack White\",\n" +
                         "        \"applicantNationality\": \"Lorem\",\n" +
                         "        \"applicantDob\": \"1989-08-23\"\n" +
                         "      },\n" +
                         "      \"agentDetails\": {\n" +
-                        "        \"agentName\": \"id\",\n" +
+                        "        \"agentName\": \"Peter Jones\",\n" +
                         "        \"agentType\": \"RELATIVE\",\n" +
-                        "        \"agentEmail\": \"cupidatat in\"\n" +
+                        "        \"agentEmail\": \"peterJ@gmailcom\"\n" +
                         "      }\n" +
                         "    },\n" +
                         "    \"complaintDetails\": {\n" +
-                        "      \"complaintText\": \"officia laborum dolore\",\n" +
+                        "      \"complaintText\": \"Lorem ipsum dolor sit amet, \\\"consectetur adipiscing elit, sed do eiusmod tempor incididunt ut \\\"labore et dolore magna aliqua. Facilisis magna etiam tempor orci eu lobortis elementum nibh tellus. Diam maecenas ultricies mi eget mauris pharetra et ultrices. Cras fermentum odio eu feugiat pretium nibh. Ut ornare lectus sit amet est. Gravida neque convallis a cras semper. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit. Ipsum a arcu cursus vitae congue mauris rhoncus aenean. Feugiat in ante metus dictum at tempor. Ipsum dolor sit amet consectetur adipiscing elit pellentesque habitant. Vel risus commodo viverra maecenas. Sed vulputate mi sit amet mauris commodo quis imperdiet. Magna sit amet purus gravida.\",\n" +
                         "      \"experience\": {\n" +
                         "        \"experienceType\": \"FACE_TO_FACE\",\n" +
                         "        \"location\": {\n" +
-                        "          \"country\": \"dolore consequat\",\n" +
-                        "          \"city\": \"sit aute incididunt mollit\",\n" +
+                        "          \"country\": \"United Kingdom\",\n" +
+                        "          \"city\": \"Dover\",\n" +
                         "          \"centreType\": \"VAC\"\n" +
                         "        }\n" +
                         "      }\n" +
