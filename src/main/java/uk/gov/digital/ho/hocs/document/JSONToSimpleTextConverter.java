@@ -5,11 +5,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.WordUtils;
 
 import java.io.IOException;
 
 @Slf4j
 public class JSONToSimpleTextConverter {
+    public static final String NEW_LINE_STR = "\n            ";
+    public static final int WRAP_LENGTH = 100;
+    public static final boolean WRAP_LONG_WORDS = false;
     private final String inputJson;
     private final StringBuilder convertedOutput = new StringBuilder();
 
@@ -49,7 +53,11 @@ public class JSONToSimpleTextConverter {
         if (isTraversable(node)) {
             convertedOutput.append(String.format("%n%" + (level * 4 - 3) + "s %s%n", "", fromJavaIdentifierToDisplayableString(keyName)));
         } else {
-            convertedOutput.append(String.format("%" + (level * 4 - 3) + "s %s : %s%n", "", fromJavaIdentifierToDisplayableString(keyName), node.textValue()));
+            String textValue = node.textValue();
+            if (keyName.equals("complaintText")) {
+                textValue = WordUtils.wrap(NEW_LINE_STR + textValue, WRAP_LENGTH, NEW_LINE_STR, WRAP_LONG_WORDS);
+            }
+            convertedOutput.append(String.format("%" + (level * 4 - 3) + "s %s : %s%n", "", fromJavaIdentifierToDisplayableString(keyName), textValue));
         }
     }
 
