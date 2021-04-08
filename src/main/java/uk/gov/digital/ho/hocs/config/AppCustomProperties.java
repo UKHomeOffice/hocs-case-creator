@@ -76,10 +76,6 @@ public class AppCustomProperties {
     @Setter
     private static class SQSCustomProperties {
         @NotBlank
-        private String region;
-        @NotBlank
-        private String accountId;
-        @NotBlank
         private String accessKey;
         @NotBlank
         private String secretKey;

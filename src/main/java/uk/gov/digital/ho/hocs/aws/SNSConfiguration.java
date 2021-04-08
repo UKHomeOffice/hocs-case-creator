@@ -19,7 +19,7 @@ public class SNSConfiguration {
     @Bean("auditSnsClient")
     public AmazonSNS auditSnsClient(@Value("${audit.sns.access-key}") String accessKey,
                                     @Value("${audit.sns.secret-key}") String secretKey,
-                                    @Value("${audit.sns.region}") String region) {
+                                    @Value("${aws.sqs.region}") String region) {
 
         if (StringUtils.isEmpty(accessKey)) {
             throw new BeanCreationException("Failed to create SNS client bean. Need non-blank value for access key");
@@ -40,11 +40,9 @@ public class SNSConfiguration {
                 .build();
     }
 
-    // audit.sns=aws-sns://arn:aws:sns:${aws.region}:${aws.account.id}:${audit.topic.name}?amazonSNSClient=#auditSnsClient
-
     @Bean
-    public SNSTopicPrefix topicPrefix(@Value("${audit.sns.region}") String region,
-                                      @Value("${audit.sns.account-id}") String accountId) {
+    public SNSTopicPrefix topicPrefix(@Value("${aws.sqs.region}") String region,
+                                      @Value("${aws.account.id}") String accountId) {
         return new SNSTopicPrefix("aws-sns://arn:aws:sns:" + region + ":" + accountId + ":");
     }
 

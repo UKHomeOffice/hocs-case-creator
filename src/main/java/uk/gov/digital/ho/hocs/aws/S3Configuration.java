@@ -20,7 +20,7 @@ public class S3Configuration {
     @Bean("s3Client")
     public static AmazonS3 s3Client(@Value("${document.s3.access-key}") String accessKey,
                                     @Value("${document.s3.secret-key}") String secretKey,
-                                    @Value("${document.s3.region}") String region) {
+                                    @Value("${aws.sqs.region}") String region) {
 
         if (StringUtils.isEmpty(accessKey)) {
             throw new BeanCreationException("Failed to create S3 client bean. Need non-blank value for access key");
