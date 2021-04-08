@@ -19,7 +19,7 @@ public class SQSConfiguration {
     @Bean(name = "sqsClient")
     public AmazonSQS sqsClient(@Value("${case.creator.sqs.access-key}") String accessKey,
                                @Value("${case.creator.sqs.secret-key}") String secretKey,
-                               @Value("${case.creator.sqs.region}") String region) {
+                               @Value("${aws.sqs.region}") String region) {
 
         if (StringUtils.isEmpty(accessKey)) {
             throw new BeanCreationException("Failed to create SQS client bean. Need non-blank value for access key");
@@ -41,8 +41,8 @@ public class SQSConfiguration {
     }
 
     @Bean
-    public SQSQueuePrefix queuePrefix(@Value("${case.creator.sqs.region}") String region,
-                                      @Value("${case.creator.sqs.account-id}") String accountId) {
+    public SQSQueuePrefix queuePrefix(@Value("${aws.sqs.region}") String region,
+                                      @Value("${aws.account.id}") String accountId) {
         return new SQSQueuePrefix("aws-sqs://arn:aws:sqs:" + region + ":" + accountId + ":");
     }
 }

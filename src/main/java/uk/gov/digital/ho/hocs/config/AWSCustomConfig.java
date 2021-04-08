@@ -8,25 +8,28 @@ import org.springframework.context.annotation.Configuration;
 import javax.validation.constraints.NotBlank;
 
 @Configuration
-@ConfigurationProperties(prefix = "document")
+@ConfigurationProperties(prefix = "aws")
 @Getter
 @Setter
-public class DocumentCustomProperties {
+public class AWSCustomConfig {
+
     @NotBlank
-    private String namespace;
+    private Account account;
     @NotBlank
-    private S3CustomProperties s3;
+    private SQSCustomProperties sqs;
 
     @Getter
     @Setter
-    private static class S3CustomProperties {
+    private static class Account {
         @NotBlank
-        private String accessKey;
-        @NotBlank
-        private String secretKey;
-        @NotBlank
-        private String untrustedBucketName;
-        @NotBlank
-        private String untrustedBucketKMSKey;
+        private String id;
     }
+
+    @Getter
+    @Setter
+    private static class SQSCustomProperties {
+        @NotBlank
+        private String region;
+    }
+
 }
