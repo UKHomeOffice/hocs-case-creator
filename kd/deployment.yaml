@@ -176,27 +176,82 @@ spec:
               value: '8080'
             - name: ENDPOINTS_INFO_ENABLED
               value: 'false'
-            - name: HOCS_CASE_SERVICE
+            - name: CASE_CREATOR_CASE_SERVICE
               value: 'https://hocs-casework.{{.KUBE_NAMESPACE}}.svc.cluster.local'
-            - name: HOCS_INFO_SERVICE
-              value: 'https://hocs-info-service.{{.KUBE_NAMESPACE}}.svc.cluster.local'
-            - name: HOCS_DOCUMENT_SERVICE
-              value: 'https://hocs-docs.{{.KUBE_NAMESPACE}}.svc.cluster.local'
-            - name: HOCS_BASICAUTH
+            - name: CASE_CREATOR_WORKFLOW_SERVICE
+              value: 'https://hocs-workflow.{{.KUBE_NAMESPACE}}.svc.cluster.local'
+            - name: CASE_CREATOR_BASICAUTH
               valueFrom:
                 secretKeyRef:
                   name: ui-casework-creds
                   key: plaintext
-            - name: AWS_SQS_ACCESS_KEY
+            - name: CASE_CREATOR_UKVI_COMPLAINT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-ukvi-complaint-identity
+                  key: user
+            - name: CASE_CREATOR_UKVI_COMPLAINT_GROUP
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-ukvi-complaint-identity
+                  key: group
+            - name: CASE_CREATOR_SQS_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-ukvi-complaint-sqs
                   key: access_key_id
-            - name: AWS_SQS_SECRET_KEY
+            - name: CASE_CREATOR_SQS_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-ukvi-complaint-sqs
                   key: secret_access_key
+            - name: CASE_CREATOR_UKVI_COMPLAINT_QUEUE_NAME
+              value:
+                '{{.KUBE_NAMESPACE}}-ukvi-complaint-queue'
+            - name: CASE_CREATOR_UKVI_COMPLAINT_DL_QUEUE_NAME
+              value:
+                '{{.KUBE_NAMESPACE}}-ukvi-complaint-queue-dlq'
+            - name: AUDIT_APP_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: AUDIT_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: AUDIT_SNS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-audit-sqs
+                  key: access_key_id
+            - name: AUDIT_SNS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-audit-sqs
+                  key: secret_access_key
+            - name: AUDIT_SNS_TOPIC_NAME
+              value:
+                '{{.KUBE_NAMESPACE}}-sns'
+            - name: DOCUMENT_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-untrusted-s3
+                  key: access_key_id
+            - name: DOCUMENT_S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-untrusted-s3
+                  key: secret_access_key
+            - name: DOCUMENT_S3_UNTRUSTED_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-untrusted-s3
+                  key: bucket_name
+            - name: DOCUMENT_S3_UNTRUSTED_BUCKET_KMS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{.KUBE_NAMESPACE}}-untrusted-s3
+                  key: kms_key_id
           resources:
             limits:
               cpu: 2000m
