@@ -10,12 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 @Slf4j
@@ -27,8 +25,8 @@ public class UKVIComplaintValidator {
     private final UKVITypeData ukviTypeData;
     private final AuditClient auditClient;
     private final ClientContext clientContext;
-    private String user;
-    private String group;
+    private final String user;
+    private final String group;
 
     @Autowired
     public UKVIComplaintValidator(ObjectMapper objectMapper,
@@ -36,15 +34,15 @@ public class UKVIComplaintValidator {
                                   AuditClient auditClient,
                                   ClientContext clientContext,
                                   @Value("${case.creator.ukvi-complaint.user}") String user,
-                                  @Value("${case.creator.ukvi-complaint.group}") String group) throws IOException {
+                                  @Value("${case.creator.ukvi-complaint.group}") String group) {
         this.ukviTypeData = ukviTypeData;
         this.auditClient = auditClient;
         this.clientContext = clientContext;
         this.user = user;
         this.group = group;
-        File file = ResourceUtils.getFile("classpath:cmsSchema.json");
+        InputStream in = getClass().getResourceAsStream("/cmsSchema.json");
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
-        schema = schemaFactory.getSchema(file.toURI());
+        schema = schemaFactory.getSchema(in);
         this.objectMapper = objectMapper;
     }
 
