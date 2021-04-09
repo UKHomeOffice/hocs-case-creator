@@ -17,6 +17,8 @@ public class AWSCustomConfig {
     private Account account;
     @NotBlank
     private SQSCustomProperties sqs;
+    @NotBlank
+    private String localHost;
 
     @Getter
     @Setter
