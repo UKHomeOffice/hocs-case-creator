@@ -3,11 +3,15 @@ package uk.gov.digital.ho.hocs.queue.ukvi;
 import org.junit.Test;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.queue.common.ComplaintData;
+import uk.gov.digital.ho.hocs.queue.common.CorrespondentType;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
 public class UKVIComplaintDataTest {
@@ -27,8 +31,11 @@ public class UKVIComplaintDataTest {
     @Test
     public void shouldGetUkviComplaintApplicantCorrespondent() {
         ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("applicantCorrespondent.json"));
-        ComplaintCorrespondent ukviComplaintApplicantCorrespondent = complaintData.getComplaintCorrespondent();
-        assertEquals("COMPLAINT", ukviComplaintApplicantCorrespondent.getType());
+        List<ComplaintCorrespondent> correspondents = complaintData.getComplaintCorrespondent();
+        assertTrue(correspondents.size() == 1);
+
+        ComplaintCorrespondent ukviComplaintApplicantCorrespondent = correspondents.get(0);
+        assertEquals(CorrespondentType.COMPLAINANT, ukviComplaintApplicantCorrespondent.getType());
         assertEquals("occaecat Lorem", ukviComplaintApplicantCorrespondent.getFullname());
         assertEquals("sss@uevptde.com", ukviComplaintApplicantCorrespondent.getEmail());
         assertEquals("0114 4960002", ukviComplaintApplicantCorrespondent.getTelephone());
@@ -37,16 +44,34 @@ public class UKVIComplaintDataTest {
     @Test
     public void shouldGetPartialUkviComplaintApplicantCorrespondent() {
         ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("applicantCorrespondentPartial.json"));
-        ComplaintCorrespondent ukviComplaintApplicantCorrespondent = complaintData.getComplaintCorrespondent();
-        assertEquals("COMPLAINT", ukviComplaintApplicantCorrespondent.getType());
+        List<ComplaintCorrespondent> correspondents = complaintData.getComplaintCorrespondent();
+        assertTrue(correspondents.size() == 1);
+
+        ComplaintCorrespondent ukviComplaintApplicantCorrespondent = correspondents.get(0);
+        assertEquals(CorrespondentType.COMPLAINANT, ukviComplaintApplicantCorrespondent.getType());
         assertEquals("occaecat Lorem", ukviComplaintApplicantCorrespondent.getFullname());
     }
 
     @Test
     public void shouldGetUkviComplaintAgentCorrespondent() {
         ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("agentCorrespondent.json"));
-        ComplaintCorrespondent ukviComplaintApplicantCorrespondent = complaintData.getComplaintCorrespondent();
-        assertEquals("COMPLAINT", ukviComplaintApplicantCorrespondent.getType());
-        assertEquals("tempor", ukviComplaintApplicantCorrespondent.getFullname());
+        List<ComplaintCorrespondent> correspondents = complaintData.getComplaintCorrespondent();
+        assertTrue(correspondents.size() == 2);
+
+        ComplaintCorrespondent applicantCorrespondent = correspondents.get(0);
+        assertEquals(CorrespondentType.COMPLAINANT, applicantCorrespondent.getType());
+        assertEquals("tempor", applicantCorrespondent.getFullname());
+
+        ComplaintCorrespondent agentCorrespondent = correspondents.get(1);
+        assertEquals(CorrespondentType.THIRD_PARTY_REP, agentCorrespondent.getType());
+        assertEquals("sint mollit est", agentCorrespondent.getFullname());
+        assertEquals("64E@fmZgjGfpG.cfb", agentCorrespondent.getEmail());
+    }
+
+    @Test
+    public void shouldGetUkviComplaintExistingNoCorrespondent() {
+        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("existingNoCorrespondent.json"));
+        List<ComplaintCorrespondent> correspondents = complaintData.getComplaintCorrespondent();
+        assertTrue(correspondents.size() == 0);
     }
 }

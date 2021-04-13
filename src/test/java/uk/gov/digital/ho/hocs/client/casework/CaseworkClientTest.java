@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
+import uk.gov.digital.ho.hocs.queue.common.CorrespondentType;
 
 import java.util.UUID;
 
@@ -99,7 +100,7 @@ public class CaseworkClientTest {
         UUID caseUUID = UUID.randomUUID();
         UUID stageForCaseUUID = UUID.randomUUID();
 
-        ComplaintCorrespondent ComplaintCorrespondent = new ComplaintCorrespondent("Baz Smith");
+        ComplaintCorrespondent ComplaintCorrespondent = new ComplaintCorrespondent("Baz Smith", CorrespondentType.COMPLAINANT);
 
         caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, ComplaintCorrespondent);
 

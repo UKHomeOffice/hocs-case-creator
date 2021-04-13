@@ -1,0 +1,12 @@
+{
+  "creationDate": "1948-08-23",
+  "complaint": {
+    "complaintType": "EXISTING",
+    "complaintDetails": {
+      "complaintText": "occaecat proident labore dolor sunt",
+      "previousComplaint": {
+        "complaintReferenceNumber": "id"
+      }
+    }
+  }
+}
