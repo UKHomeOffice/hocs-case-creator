@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
+import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
+import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
 import java.util.Map;
@@ -66,25 +68,33 @@ public class ComplaintService {
 
         caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
 
-        caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, complaintData.getComplaintCorrespondent());
+        List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
+        if (!correspondentsList.isEmpty()) {
 
-        UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
+            for (ComplaintCorrespondent correspondent: correspondentsList) {
+                caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, correspondent);
+            }
 
-        log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUUID, primaryCorrespondent);
+            UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
 
-        Map<String, String> correspondents = Map.of(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
+            log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUUID, primaryCorrespondent);
 
-        workflowClient.advanceCase(caseUUID, stageForCaseUUID, correspondents);
+            Map<String, String> correspondents = Collections.singletonMap(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
 
-        auditClient.audit(complaintTypeData.getCreateCorrespondentEventType(), caseUUID, stageForCaseUUID, correspondents);
+            workflowClient.advanceCase(caseUUID, stageForCaseUUID, correspondents);
 
-        log.info("createComplaint, case advanced for correspondent : caseUUID : {}", caseUUID);
+            auditClient.audit(complaintTypeData.getCreateCorrespondentEventType(), caseUUID, stageForCaseUUID, correspondents);
 
-        Map<String, String> complaintType = Map.of(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
+            log.info("createComplaint, case advanced for correspondent : caseUUID : {}", caseUUID);
 
-        workflowClient.advanceCase(caseUUID, stageForCaseUUID, complaintType);
+            Map<String, String> complaintType = Collections.singletonMap(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
 
-        log.info("createComplaint, case advanced for complaintType : caseUUID : {}", caseUUID);
+            workflowClient.advanceCase(caseUUID, stageForCaseUUID, complaintType);
+
+            log.info("createComplaint, case advanced for complaintType : caseUUID : {}", caseUUID);
+        } else {
+            log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
+        }
 
         log.info("createComplaint, completed : caseUUID : {}", caseUUID);
     }
