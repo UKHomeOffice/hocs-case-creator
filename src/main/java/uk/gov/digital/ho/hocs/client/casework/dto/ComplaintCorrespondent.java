@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.NonNull;
+import uk.gov.digital.ho.hocs.queue.common.CorrespondentType;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -16,7 +17,7 @@ public class ComplaintCorrespondent {
 
     @NonNull
     @JsonProperty(value = "type", required = true)
-    String type;
+    CorrespondentType type;
 
     @NonNull
     @NotEmpty
@@ -29,9 +30,9 @@ public class ComplaintCorrespondent {
     @JsonProperty("email")
     String email;
 
-    public ComplaintCorrespondent(@NonNull @NotEmpty String fullname) {
+    public ComplaintCorrespondent(@NonNull @NotEmpty String fullname, @NonNull @NotEmpty CorrespondentType type) {
         this.fullname = fullname;
-        this.type = "COMPLAINT";
+        this.type = type;
     }
 
 }
