@@ -13,6 +13,8 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class AuditCustomProperties {
     @NotBlank
+    private String appName;
+    @NotBlank
     private String namespace;
     @NotBlank
     private SNSCustomProperties sns;
@@ -20,10 +22,6 @@ public class AuditCustomProperties {
     @Getter
     @Setter
     private static class SNSCustomProperties {
-        @NotBlank
-        private String region;
-        @NotBlank
-        private String accountId;
         @NotBlank
         private String accessKey;
         @NotBlank
