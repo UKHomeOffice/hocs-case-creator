@@ -33,4 +33,15 @@ public class UKVIComplaintServiceTest {
         verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(complaintTypeData));
     }
 
+    @Test
+    public void shouldCreateComplaintWithNoCorrespondent() throws IOException {
+        UKVITypeData complaintTypeData = new UKVITypeData();
+        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group");
+        String json = getResourceFileAsString("existingNoCorrespondent.json");
+
+        ukviComplaintService.createComplaint(json, "messageId");
+
+        verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(complaintTypeData));
+    }
+
 }
