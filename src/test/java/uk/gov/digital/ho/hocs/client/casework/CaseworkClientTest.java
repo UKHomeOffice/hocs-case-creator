@@ -99,7 +99,7 @@ public class CaseworkClientTest {
         UUID caseUUID = UUID.randomUUID();
         UUID stageForCaseUUID = UUID.randomUUID();
 
-        ComplaintCorrespondent ComplaintCorrespondent = new ComplaintCorrespondent("Baz Smith");
+        ComplaintCorrespondent ComplaintCorrespondent = new ComplaintCorrespondent("Baz Smith", "COMPLAINANT");
 
         caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, ComplaintCorrespondent);
 
