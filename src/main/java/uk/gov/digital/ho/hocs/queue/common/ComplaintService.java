@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
+import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
@@ -66,7 +67,9 @@ public class ComplaintService {
 
         caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
 
-        caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, complaintData.getComplaintCorrespondent());
+        for (ComplaintCorrespondent correspondent: complaintData.getComplaintCorrespondent()) {
+            caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, correspondent);
+        }
 
         UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
 

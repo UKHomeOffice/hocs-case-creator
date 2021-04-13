@@ -29,9 +29,9 @@ public class ComplaintCorrespondent {
     @JsonProperty("email")
     String email;
 
-    public ComplaintCorrespondent(@NonNull @NotEmpty String fullname) {
+    public ComplaintCorrespondent(@NonNull @NotEmpty String fullname, @NonNull @NotEmpty String type) {
         this.fullname = fullname;
-        this.type = "COMPLAINT";
+        this.type = type;
     }
 
 }

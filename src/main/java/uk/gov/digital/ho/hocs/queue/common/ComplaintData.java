@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.queue.common;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public interface ComplaintData {
 
@@ -10,7 +11,7 @@ public interface ComplaintData {
 
     String getComplaintType();
 
-    ComplaintCorrespondent getComplaintCorrespondent();
+    ArrayList<ComplaintCorrespondent> getComplaintCorrespondent();
 
     String getFormattedDocument();
 
