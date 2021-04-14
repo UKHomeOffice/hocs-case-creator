@@ -25,7 +25,6 @@ public class UKVIComplaintData implements ComplaintData {
     public static final String AGENT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantDetails.applicantName";
     public static final String AGENT_AGENT_NAME = "$.complaint.reporterDetails.agentDetails.agentName";
     public static final String AGENT_AGENT_EMAIL = "$.complaint.reporterDetails.agentDetails.agentEmail";
-    public static final String AGENT_AGENT_TYPE = "$.complaint.reporterDetails.agentDetails.agentType";
 
     private final ReadContext ctx;
     private final String jsonBody;
@@ -47,23 +46,29 @@ public class UKVIComplaintData implements ComplaintData {
 
     @Override
     public ArrayList<ComplaintCorrespondent> getComplaintCorrespondent() {
-        String applicantType = ctx.read(APPLICANT_TYPE);
+
         ArrayList<ComplaintCorrespondent> correspondents = new ArrayList<>();
 
-        if (applicantType.equals("APPLICANT")) {
-            ComplaintCorrespondent applicantCorrespondent = new ComplaintCorrespondent(ctx.read(APPLICANT_APPLICANT_NAME), "COMPLAINANT");
-            optionalString(ctx, APPLICANT_APPLICANT_EMAIL).ifPresent(applicantCorrespondent::setEmail);
-            optionalString(ctx, APPLICANT_APPLICANT_PHONE).ifPresent(applicantCorrespondent::setTelephone);
-            correspondents.add(applicantCorrespondent);
-        } else if (applicantType.equals("AGENT")) {
-            ComplaintCorrespondent applicantCorrespondent = new ComplaintCorrespondent(ctx.read(AGENT_APPLICANT_NAME), "COMPLAINANT");
-            ComplaintCorrespondent agentCorrespondent = new ComplaintCorrespondent(ctx.read(AGENT_AGENT_NAME), "THIRD PARTY REPRESENTATIVE");
-            optionalString(ctx, AGENT_AGENT_EMAIL).ifPresent(agentCorrespondent::setEmail);
-            correspondents.add(applicantCorrespondent);
-            correspondents.add(agentCorrespondent);
-        } else {
-            throw new IllegalStateException("APPLICANT_TYPE Unknown : " + applicantType);
+        try {
+            String applicantType = ctx.read(APPLICANT_TYPE);
+            if (applicantType.equals("APPLICANT")) {
+                ComplaintCorrespondent applicantCorrespondent = new ComplaintCorrespondent(ctx.read(APPLICANT_APPLICANT_NAME), "COMPLAINANT");
+                optionalString(ctx, APPLICANT_APPLICANT_EMAIL).ifPresent(applicantCorrespondent::setEmail);
+                optionalString(ctx, APPLICANT_APPLICANT_PHONE).ifPresent(applicantCorrespondent::setTelephone);
+                correspondents.add(applicantCorrespondent);
+            } else if (applicantType.equals("AGENT")) {
+                ComplaintCorrespondent applicantCorrespondent = new ComplaintCorrespondent(ctx.read(AGENT_APPLICANT_NAME), "COMPLAINANT");
+                ComplaintCorrespondent agentCorrespondent = new ComplaintCorrespondent(ctx.read(AGENT_AGENT_NAME), "THIRD PARTY REPRESENTATIVE");
+                optionalString(ctx, AGENT_AGENT_EMAIL).ifPresent(agentCorrespondent::setEmail);
+                correspondents.add(applicantCorrespondent);
+                correspondents.add(agentCorrespondent);
+            } else {
+                throw new IllegalStateException("APPLICANT_TYPE Unknown : " + applicantType);
+            }
+        } catch(PathNotFoundException e){
+            log.info("getComplaintCorrespondent, no correspondents found for case.");
         }
+
         return correspondents;
     }
 

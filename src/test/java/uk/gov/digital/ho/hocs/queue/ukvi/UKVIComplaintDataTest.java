@@ -65,4 +65,11 @@ public class UKVIComplaintDataTest {
         assertEquals("sint mollit est", agentCorrespondent.getFullname());
         assertEquals("64E@fmZgjGfpG.cfb", agentCorrespondent.getEmail());
     }
+
+    @Test
+    public void shouldGetUkviComplaintExistingNoCorrespondent() {
+        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("existingNoCorrespondent.json"));
+        ArrayList<ComplaintCorrespondent> correspondents = complaintData.getComplaintCorrespondent();
+        assertTrue(correspondents.size() == 0);
+    }
 }
