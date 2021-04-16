@@ -83,6 +83,8 @@ steps:
     image: plugins/git
     commands:
       - git clone https://github.com/UKHomeOffice/kube-hocs-case-creator.git
+      - cd kube-hocs-case-creator
+      - git checkout feature/HOCS-2611-k8s-refinement
     when:
       event:
         - push
