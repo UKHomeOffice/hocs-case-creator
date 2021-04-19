@@ -56,9 +56,4 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                 .setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
 
     }
-
-    @PreDestroy
-    public void preDestroy() {
-        log.info("preDestroy");
-    }
 }

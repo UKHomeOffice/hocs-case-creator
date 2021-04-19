@@ -24,11 +24,7 @@ public class CaseCreatorApplication {
 
         application.addListeners((ApplicationListener<ApplicationStartedEvent>) event -> {
             log.info("ApplicationStartedEvent");
-            try {
-                setHealthy();
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
+            setHealthy();
         });
 
         application.addListeners((ApplicationListener<ContextClosedEvent>) event -> {

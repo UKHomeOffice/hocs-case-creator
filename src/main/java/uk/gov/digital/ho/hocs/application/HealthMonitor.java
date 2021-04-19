@@ -13,11 +13,15 @@ public class HealthMonitor {
     public static final String DEFAULT_HEALTH_FILE_NAME = "./healthy";
     public static final String CASE_CREATOR_HEALTH_FILE = "CASE_CREATOR_HEALTH_FILE";
 
-    public static void setHealthy() throws IOException {
-        if (getHealthFile().createNewFile()) {
-            log.info("Health file {} created.", healthFileName);
-        } else {
-            log.info("Failed to create Health file {}.", healthFileName);
+    public static void setHealthy()  {
+        try {
+            if (getHealthFile().createNewFile()) {
+                log.info("Health file {} created.", healthFileName);
+            } else {
+                log.info("Failed to create Health file {}.", healthFileName);
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
         }
     }
 
