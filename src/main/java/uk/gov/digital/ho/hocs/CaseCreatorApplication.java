@@ -3,9 +3,14 @@ package uk.gov.digital.ho.hocs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.retry.annotation.EnableRetry;
-import uk.gov.digital.ho.hocs.application.HealthMonitor;
 
+import java.io.IOException;
+
+import static uk.gov.digital.ho.hocs.application.HealthMonitor.setHealthy;
 import static uk.gov.digital.ho.hocs.application.HealthMonitor.setUnhealthy;
 
 @Slf4j
@@ -14,17 +19,24 @@ import static uk.gov.digital.ho.hocs.application.HealthMonitor.setUnhealthy;
 public class CaseCreatorApplication {
 
     public static void main(String[] args) {
-        
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            log.info("Running Shutdown Hook");
-            setUnhealthy();
-        }));
 
-        try {
-            SpringApplication.run(CaseCreatorApplication.class, args);
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        SpringApplication application = new SpringApplication(CaseCreatorApplication.class);
+
+        application.addListeners((ApplicationListener<ApplicationStartedEvent>) event -> {
+            log.info("ApplicationStartedEvent");
+            try {
+                setHealthy();
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        });
+
+        application.addListeners((ApplicationListener<ContextClosedEvent>) event -> {
+            log.info("ContextClosedEvent");
             setUnhealthy();
-        }
+        });
+
+        application.run(args);
+
     }
 }

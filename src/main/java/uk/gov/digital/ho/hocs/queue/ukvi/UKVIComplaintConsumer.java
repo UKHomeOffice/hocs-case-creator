@@ -7,9 +7,8 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.aws.sqs.SqsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.digital.ho.hocs.application.HealthMonitor;
 
-import static uk.gov.digital.ho.hocs.application.HealthMonitor.setHealthy;
+import javax.annotation.PreDestroy;
 
 @Slf4j
 @Component
@@ -29,7 +28,7 @@ public class UKVIComplaintConsumer extends RouteBuilder {
     }
 
     @Override
-    public void configure() throws Exception {
+    public void configure() {
 
         errorHandler(deadLetterChannel(queueDetails.getDlq())
                 .log(log)
@@ -56,6 +55,10 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                 .log(LoggingLevel.INFO, log, "UKVI Complaint processed, MessageId : ${headers.CamelAwsSqsMessageId}")
                 .setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
 
-        setHealthy();
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        log.info("preDestroy");
     }
 }
