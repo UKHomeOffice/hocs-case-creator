@@ -14,6 +14,12 @@ import static uk.gov.digital.ho.hocs.application.HealthMonitor.setUnhealthy;
 public class CaseCreatorApplication {
 
     public static void main(String[] args) {
+        
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Running Shutdown Hook");
+            setUnhealthy();
+        }));
+
         try {
             SpringApplication.run(CaseCreatorApplication.class, args);
         } catch (Exception e) {
