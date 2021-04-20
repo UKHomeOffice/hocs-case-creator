@@ -33,10 +33,6 @@ public class HealthMonitor {
         }
     }
 
-    public static boolean isHealthy() {
-        return getHealthFile().exists();
-    }
-
     private static File getHealthFile() {
         return new File(healthFileName);
     }
