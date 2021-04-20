@@ -6,7 +6,7 @@ JAR=$(find . -name ${NAME}*.jar|head -1)
 
 handleSigTerm() {
   echo "Caught SIGTERM"
-  kill -TERM "$child" 2>/dev/null
+  kill -TERM "$child"
 }
 
 trap handleSigTerm SIGTERM
