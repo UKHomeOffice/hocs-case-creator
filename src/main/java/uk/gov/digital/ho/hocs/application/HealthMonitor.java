@@ -1,43 +1,64 @@
 package uk.gov.digital.ho.hocs.application;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 @Slf4j
+@Component
 public class HealthMonitor {
 
-    private static final String healthFileName = getHealthName();
-    public static final String DEFAULT_HEALTH_FILE_NAME = "./healthy";
-    public static final String CASE_CREATOR_HEALTH_FILE = "CASE_CREATOR_HEALTH_FILE";
+    private final String healthFile;
+    private final Integer shutdownWaitSeconds;
 
-    public static void setHealthy()  {
+    public HealthMonitor(@Value("${case.creator.health-file}") String healthFile,
+                         @Value("${case.creator.shutdown-delay-seconds}") Integer shutdownWaitSeconds) {
+        this.healthFile = healthFile;
+        this.shutdownWaitSeconds = shutdownWaitSeconds;
+    }
+
+    private void setHealthy() {
+        File f = new File(healthFile);
         try {
-            if (getHealthFile().createNewFile()) {
-                log.info("Health file {} created.", healthFileName);
+            if (f.createNewFile()) {
+                log.info("Health file {} created.", healthFile);
             } else {
-                log.info("Failed to create Health file {}.", healthFileName);
+                log.info("Failed to create Health file {}.", healthFile);
             }
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
 
-    public static void setUnhealthy() {
-        if (getHealthFile().delete()) {
-            log.info("Health file {} deleted.", healthFileName);
+    private void setUnhealthy() {
+        File f = new File(healthFile);
+        if (f.delete()) {
+            log.info("Health file {} deleted.", healthFile);
         } else {
-            log.info("Failed to delete Health file {}.", healthFileName);
+            log.info("Failed to delete Health file {}.", healthFile);
         }
     }
 
-    private static File getHealthFile() {
-        return new File(healthFileName);
+    @PostConstruct
+    public void onStarted() {
+        setHealthy();
     }
 
-    private static String getHealthName() {
-        return Optional.ofNullable(System.getenv().get(CASE_CREATOR_HEALTH_FILE)).orElse(DEFAULT_HEALTH_FILE_NAME);
+    @PreDestroy
+    public void onExit() {
+        log.info("PreDestroy start");
+        try {
+            log.info("Sleep...");
+            Thread.sleep(shutdownWaitSeconds * 1000);
+            setUnhealthy();
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
+        log.info("PreDestroy done");
     }
 }
