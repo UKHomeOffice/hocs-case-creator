@@ -8,8 +8,6 @@ import org.apache.camel.component.aws.sqs.SqsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PreDestroy;
-
 @Slf4j
 @Component
 public class UKVIComplaintConsumer extends RouteBuilder {
@@ -46,7 +44,6 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                     exchange.getIn().setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
                 }));
 
-
         from(queueDetails.getQueue())
                 .setProperty(SqsConstants.RECEIPT_HANDLE, header(SqsConstants.RECEIPT_HANDLE))
                 .log(LoggingLevel.INFO, log, "UKVI Complaint received, MessageId : ${headers.CamelAwsSqsMessageId}")
@@ -54,6 +51,6 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                 .bean(ukviComplaintService, "createComplaint(${body}, ${headers.CamelAwsSqsMessageId})")
                 .log(LoggingLevel.INFO, log, "UKVI Complaint processed, MessageId : ${headers.CamelAwsSqsMessageId}")
                 .setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
-
     }
+
 }
