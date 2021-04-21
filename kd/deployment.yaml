@@ -6,15 +6,12 @@ metadata:
   labels:
     version: {{.VERSION}}
 spec:
-  replicas: {{.MIN_REPLICAS}}
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       name: hocs-case-creator
-  strategy:
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 2
-    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -93,64 +90,6 @@ spec:
               memory: 8Mi
               cpu: 100m
 
-        - name: proxy
-          image: quay.io/ukhomeofficedigital/nginx-proxy:v3.4.12
-          imagePullPolicy: Always
-          securityContext:
-            runAsNonRoot: true
-            capabilities:
-              drop:
-                - SETUID
-                - SETGID
-          env:
-            - name: PROXY_SERVICE_HOST
-              value: '127.0.0.1'
-            - name: PROXY_SERVICE_PORT
-              value: '8080'
-            - name: NAXSI_USE_DEFAULT_RULES
-              value: 'FALSE'
-            - name: ENABLE_UUID_PARAM
-              value: 'FALSE'
-            - name: HTTPS_REDIRECT
-              value: 'FALSE'
-            - name: BASIC_AUTH
-              value: /etc/nginx/authsecrets/htpasswd
-            - name: SERVER_CERT
-              value: /certs/tls.pem
-            - name: SERVER_KEY
-              value: /certs/tls-key.pem
-            - name: ADD_NGINX_SERVER_CFG
-              value: >
-                location = /reload {
-                  allow 127.0.0.1;
-                  deny all;
-                  content_by_lua_block {
-                    os.execute("touch /tmp/nginx-reload-triggered;
-                      /usr/local/openresty/nginx/sbin/nginx -s reload;
-                      touch /tmp/nginx-reload-complete;")
-                    }
-                 }
-          volumeMounts:
-            - name: certs
-              mountPath: /certs
-              readOnly: true
-            - name: secrets
-              mountPath: /etc/nginx/secrets
-              readOnly: true
-            - name: auth-secrets
-              mountPath: /etc/nginx/authsecrets
-              readOnly: true
-          ports:
-            - name: https
-              containerPort: 10443
-          resources:
-            limits:
-              memory: 32Mi
-              cpu: 400m
-            requests:
-              memory: 4Mi
-              cpu: 100m
-
         - name: hocs-case-creator
           image: quay.io/ukhomeofficedigital/hocs-case-creator:{{.VERSION}}
           imagePullPolicy: Always
@@ -172,16 +111,14 @@ spec:
                 -Dhttp.nonProxyHosts=*.{{.KUBE_NAMESPACE}}.svc.cluster.local
             - name: JDK_TRUST_FILE
               value: '/etc/keystore/truststore.jks'
-            - name: SERVER_PORT
-              value: '8080'
-            - name: ENDPOINTS_INFO_ENABLED
-              value: 'false'
             - name: SPRING_PROFILES_ACTIVE
               value: 'sqs, sns, s3'
             - name: CASE_CREATOR_CASE_SERVICE
               value: 'https://hocs-casework.{{.KUBE_NAMESPACE}}.svc.cluster.local'
             - name: CASE_CREATOR_WORKFLOW_SERVICE
               value: 'https://hocs-workflow.{{.KUBE_NAMESPACE}}.svc.cluster.local'
+            - name: CASE_CREATOR_SHUTDOWN_DELAY_SECONDS
+              value: '20'
             - name: CASE_CREATOR_BASICAUTH
               valueFrom:
                 secretKeyRef:
@@ -261,29 +198,6 @@ spec:
             requests:
               cpu: 400m
               memory: 768Mi
-          ports:
-            - name: http
-              containerPort: 8080
-          livenessProbe:
-            httpGet:
-              path: /actuator/health
-              port: http
-              httpHeaders:
-                - name: X-probe
-                  value: kubelet
-            initialDelaySeconds: 60
-            periodSeconds: 20
-            timeoutSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: http
-              httpHeaders:
-                - name: X-probe
-                  value: kubelet
-            initialDelaySeconds: 60
-            periodSeconds: 20
-            timeoutSeconds: 10
           volumeMounts:
             - mountPath: /etc/keystore
               name: keystore
