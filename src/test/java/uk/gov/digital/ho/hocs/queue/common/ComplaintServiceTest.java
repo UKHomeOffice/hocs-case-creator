@@ -88,7 +88,7 @@ public class ComplaintServiceTest {
 
         verify(caseworkClient).updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(user));
 
-        verify(caseworkClient).addCorrespondentToCase(eq(caseUUID), eq(stageForCaseUUID), any(ComplaintCorrespondent.class));
+        verify(caseworkClient, times(2)).addCorrespondentToCase(eq(caseUUID), eq(stageForCaseUUID), any(ComplaintCorrespondent.class));
 
         verify(workflowClient, times(2)).advanceCase(eq(caseUUID), eq(stageForCaseUUID), anyMap());
 

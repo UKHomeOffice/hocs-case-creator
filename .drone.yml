@@ -9,11 +9,21 @@ steps:
     image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
     commands:
       - ./gradlew assemble --no-daemon
+    environment:
+      ARTIFACTORY_TOKEN:
+        from_secret: ARTIFACTORY_TOKEN
+      ARTIFACTORY_USER:
+        from_secret: ARTIFACTORY_USER
 
   - name: test project
     image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
     commands:
       - ./gradlew check --no-daemon
+    environment:
+      ARTIFACTORY_TOKEN:
+        from_secret: ARTIFACTORY_TOKEN
+      ARTIFACTORY_USER:
+        from_secret: ARTIFACTORY_USER
     depends_on:
       - build project
 
@@ -35,6 +45,10 @@ steps:
       DOCKER_PASSWORD:
         from_secret: QUAY_ROBOT_TOKEN
       DOCKER_USERNAME: ukhomeofficedigital+hocs_quay_robot
+      ARTIFACTORY_TOKEN:
+        from_secret: ARTIFACTORY_TOKEN
+      ARTIFACTORY_USER:
+        from_secret: ARTIFACTORY_USER
     depends_on:
       - test project
 
@@ -49,6 +63,10 @@ steps:
       DOCKER_PASSWORD:
         from_secret: QUAY_ROBOT_TOKEN
       DOCKER_USERNAME: ukhomeofficedigital+hocs_quay_robot
+      ARTIFACTORY_TOKEN:
+        from_secret: ARTIFACTORY_TOKEN
+      ARTIFACTORY_USER:
+        from_secret: ARTIFACTORY_USER
     when:
       branch:
         - main

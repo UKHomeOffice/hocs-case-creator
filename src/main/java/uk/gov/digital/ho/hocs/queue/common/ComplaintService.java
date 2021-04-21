@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
+import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -74,13 +76,18 @@ public class ComplaintService {
 
             caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
 
-            caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, complaintData.getComplaintCorrespondent());
+        List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
+        if (!correspondentsList.isEmpty()) {
+
+            for (ComplaintCorrespondent correspondent: correspondentsList) {
+                caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, correspondent);
+            }
 
             UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
 
             log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUUID, primaryCorrespondent);
 
-            Map<String, String> correspondents = Map.of(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
+            Map<String, String> correspondents = Collections.singletonMap(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
 
             workflowClient.advanceCase(caseUUID, stageForCaseUUID, correspondents);
 
@@ -88,11 +95,14 @@ public class ComplaintService {
 
             log.info("createComplaint, case advanced for correspondent : caseUUID : {}", caseUUID);
 
-            Map<String, String> complaintType = Map.of(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
+            Map<String, String> complaintType = Collections.singletonMap(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
 
             workflowClient.advanceCase(caseUUID, stageForCaseUUID, complaintType);
 
             log.info("createComplaint, case advanced for complaintType : caseUUID : {}", caseUUID);
+        } else {
+            log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
+        }
 
             log.info("createComplaint, completed : caseUUID : {}", caseUUID);
             
@@ -101,4 +111,5 @@ public class ComplaintService {
             log.warn(e.getMessage());
         }
     }
+
 }
