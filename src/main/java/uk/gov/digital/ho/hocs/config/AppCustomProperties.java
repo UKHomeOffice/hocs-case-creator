@@ -19,8 +19,6 @@ public class AppCustomProperties {
     @NotBlank
     private String basicAuth;
     @NotBlank
-    private String healthFile;
-    @NotBlank
     private Integer shutdownDelaySeconds;
     @NotBlank
     private RestClientProperties restClient;

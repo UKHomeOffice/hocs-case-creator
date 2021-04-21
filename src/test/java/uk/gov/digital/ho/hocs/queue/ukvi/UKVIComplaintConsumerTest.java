@@ -34,7 +34,7 @@ public class UKVIComplaintConsumerTest extends CamelTestSupport {
     protected RouteBuilder createRouteBuilder() {
         when(queueDetails.getDlq()).thenReturn(dlq);
         when(queueDetails.getQueue()).thenReturn(complaintQueue);
-        return new UKVIComplaintConsumer(mockUKVIComplaintService, queueDetails, ukviComplaintValidator);
+        return new UKVIComplaintConsumer(mockUKVIComplaintService, queueDetails, ukviComplaintValidator, 10);
     }
 
     @Test
