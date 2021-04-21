@@ -36,7 +36,7 @@ dependencies {
         exclude module: "spring-boot-starter-tomcat"
     }
     compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile group: 'uk.gov.digital.ho.hocs', name: 'hocs-ukvi-complaint-schema', version: '0.0.3'
+    compile group: 'uk.gov.digital.ho.hocs', name: 'hocs-ukvi-complaint-schema', version: '1.0.0'
     implementation('org.springframework.boot:spring-boot-starter-undertow')
     implementation('org.springframework.boot:spring-boot-starter-aop')
     implementation('org.springframework.retry:spring-retry')
