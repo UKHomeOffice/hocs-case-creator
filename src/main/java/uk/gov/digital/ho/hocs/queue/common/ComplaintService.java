@@ -50,7 +50,7 @@ public class ComplaintService {
         log.info("createComplaint, started : type {}", complaintData.getComplaintType());
 
         String untrustedS3ObjectName = documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, complaintData.getFormattedDocument());
-        
+
         log.info("Untrusted document stored in {}, for messageId: {}", untrustedS3ObjectName, clientContext.getCorrelationId());
 
         DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, untrustedS3ObjectName);
@@ -67,7 +67,7 @@ public class ComplaintService {
             point we have the document stored, and the case is created.
          */
         try {
-            
+
             UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
 
             auditClient.audit(complaintTypeData.getCreateComplaintEventType(), caseUUID, stageForCaseUUID, complaintData.getRawPayload());
@@ -76,36 +76,36 @@ public class ComplaintService {
 
             caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
 
-        List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
-        if (!correspondentsList.isEmpty()) {
+            List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
+            if (!correspondentsList.isEmpty()) {
 
-            for (ComplaintCorrespondent correspondent: correspondentsList) {
-                caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, correspondent);
+                for (ComplaintCorrespondent correspondent : correspondentsList) {
+                    caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, correspondent);
+                }
+
+                UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
+
+                log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUUID, primaryCorrespondent);
+
+                Map<String, String> correspondents = Collections.singletonMap(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
+
+                workflowClient.advanceCase(caseUUID, stageForCaseUUID, correspondents);
+
+                auditClient.audit(complaintTypeData.getCreateCorrespondentEventType(), caseUUID, stageForCaseUUID, correspondents);
+
+                log.info("createComplaint, case advanced for correspondent : caseUUID : {}", caseUUID);
+
+                Map<String, String> complaintType = Collections.singletonMap(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
+
+                workflowClient.advanceCase(caseUUID, stageForCaseUUID, complaintType);
+
+                log.info("createComplaint, case advanced for complaintType : caseUUID : {}", caseUUID);
+            } else {
+                log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
             }
 
-            UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
-
-            log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUUID, primaryCorrespondent);
-
-            Map<String, String> correspondents = Collections.singletonMap(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
-
-            workflowClient.advanceCase(caseUUID, stageForCaseUUID, correspondents);
-
-            auditClient.audit(complaintTypeData.getCreateCorrespondentEventType(), caseUUID, stageForCaseUUID, correspondents);
-
-            log.info("createComplaint, case advanced for correspondent : caseUUID : {}", caseUUID);
-
-            Map<String, String> complaintType = Collections.singletonMap(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
-
-            workflowClient.advanceCase(caseUUID, stageForCaseUUID, complaintType);
-
-            log.info("createComplaint, case advanced for complaintType : caseUUID : {}", caseUUID);
-        } else {
-            log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
-        }
-
             log.info("createComplaint, completed : caseUUID : {}", caseUUID);
-            
+
         } catch (Exception e) {
             log.warn("Partial case creation for messageId: {}, caseId:{}, untrusted s3 name :{}", clientContext.getCorrelationId(), caseUUID, untrustedS3ObjectName);
             log.warn(e.getMessage());

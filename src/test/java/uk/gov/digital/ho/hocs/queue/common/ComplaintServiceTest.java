@@ -15,8 +15,6 @@ import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
-import uk.gov.digital.ho.hocs.queue.common.ComplaintService;
-import uk.gov.digital.ho.hocs.queue.common.ComplaintTypeData;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVITypeData;
 
@@ -25,7 +23,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -113,7 +110,7 @@ public class ComplaintServiceTest {
         when(documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, expectedText)).thenThrow(new NullPointerException());
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void createCaseShouldThrowException() {
         goodSetup();
@@ -127,40 +124,40 @@ public class ComplaintServiceTest {
         when(caseworkClient.getStageForCase(caseUUID)).thenThrow(new NullPointerException());
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
     }
-    
+
     @Test
     public void auditShouldCatchException() throws IOException {
         goodSetup();
         doThrow(IOException.class).when(auditClient).audit(EventType.CREATOR_CASE_CREATED, caseUUID, stageForCaseUUID, json);
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
     }
-    
+
     @Test
     public void updateStageUserShouldCatchException() {
         goodSetup();
         when(caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(user))).thenThrow(new NullPointerException());
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
     }
-    
+
     @Test
     public void addCorrespondentToCaseShouldCatchException() {
         goodSetup();
         when(caseworkClient.addCorrespondentToCase(eq(caseUUID), eq(stageForCaseUUID), any(ComplaintCorrespondent.class))).thenThrow(new NullPointerException());
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
     }
-    
+
     @Test
     public void getPrimaryCorrespondentShouldCatchException() {
         goodSetup();
         when(caseworkClient.getPrimaryCorrespondent(caseUUID)).thenThrow(new NullPointerException());
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
     }
-    
+
     @Test
     public void advanceCaseShouldCatchException() {
         goodSetup();
         when(workflowClient.advanceCase(eq(caseUUID), eq(stageForCaseUUID), anyMap())).thenThrow(new NullPointerException());
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
     }
-    
+
 }
