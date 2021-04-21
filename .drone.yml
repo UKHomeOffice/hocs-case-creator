@@ -82,7 +82,7 @@ steps:
   - name: clone kube repo
     image: plugins/git
     commands:
-      - git clone --branch feature/HOCS-2611-k8s-refinement https://github.com/UKHomeOffice/kube-hocs-case-creator.git
+      - git clone --branch main https://github.com/UKHomeOffice/kube-hocs-case-creator.git
     when:
       event:
         - push
