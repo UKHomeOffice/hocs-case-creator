@@ -63,4 +63,7 @@ sending messages to the local queue.
 
 The service uses the JSON schema defined
 in [hocs-ukvi-complaint-schema](https://github.com/UKHomeOffice/hocs-ukvi-complaint-schema). The schema is pulled into
-the build by a task which the gradle assemble jobs depends on. See the `build.gradle` file for more information.
+the build as a dependency in the gradle file.
+
+For local development, build the schema locally and publish
+to a Maven local repository. View the README in `hocs-ukvi-complaint-schema` for more information.

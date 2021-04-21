@@ -22,12 +22,21 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = '11'
 repositories {
     mavenCentral()
+    mavenLocal()
+    maven {
+        url 'https://artifactory.digital.homeoffice.gov.uk/artifactory/DECS/'
+        credentials {
+            username System.getenv('ARTIFACTORY_USER')
+            password System.getenv('ARTIFACTORY_TOKEN')
+        }
+    }
 }
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
     compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile group: 'uk.gov.digital.ho.hocs', name: 'hocs-ukvi-complaint-schema', version: '0.0.3'
     implementation('org.springframework.boot:spring-boot-starter-undertow')
     implementation('org.springframework.boot:spring-boot-starter-aop')
     implementation('org.springframework.retry:spring-retry')
