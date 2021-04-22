@@ -19,6 +19,8 @@ public class AppCustomProperties {
     @NotBlank
     private String basicAuth;
     @NotBlank
+    private Integer shutdownDelaySeconds;
+    @NotBlank
     private RestClientProperties restClient;
     @NotBlank
     private SQSCustomProperties sqs;
@@ -29,10 +31,9 @@ public class AppCustomProperties {
     @Setter
     private static class RestClientProperties {
         @NotBlank
-        private int retries;
+        private Integer retries;
         @NotBlank
-        private int delay;
-
+        private Integer delay;
     }
 
     @Getter
