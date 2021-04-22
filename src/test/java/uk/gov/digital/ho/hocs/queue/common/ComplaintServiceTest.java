@@ -53,7 +53,7 @@ public class ComplaintServiceTest {
     private CreateCaseResponse createCaseResponse;
     private String json;
     private String expectedText;
-    private final String s3ObjectName = "8bdc5724-80e4-4fe3-a0a9-1f00262107b0";
+    private String s3ObjectName;
     private UUID caseUUID;
     private ComplaintTypeData complaintTypeData;
 
@@ -64,6 +64,7 @@ public class ComplaintServiceTest {
 
         LocalDate receivedDate = LocalDate.parse("2020-10-03");
         String decsReference = "COMP/01";
+        s3ObjectName = UUID.randomUUID().toString();
         caseUUID = UUID.randomUUID();
         stageForCaseUUID = UUID.randomUUID();
         primaryCorrespondent = UUID.randomUUID();
