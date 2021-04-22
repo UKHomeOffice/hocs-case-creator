@@ -6,7 +6,10 @@ import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.aws.sqs.SqsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PreDestroy;
 
 @Slf4j
 @Component
@@ -15,14 +18,17 @@ public class UKVIComplaintConsumer extends RouteBuilder {
     private final UKVIComplaintService ukviComplaintService;
     private final UKVIComplaintQueueBuilder queueDetails;
     private final UKVIComplaintValidator ukviComplaintValidator;
+    private final Integer shutdownWaitSeconds;
 
     @Autowired
     public UKVIComplaintConsumer(UKVIComplaintService ukviComplaintService,
                                  UKVIComplaintQueueBuilder queueDetails,
-                                 UKVIComplaintValidator ukviComplaintValidator) {
+                                 UKVIComplaintValidator ukviComplaintValidator,
+                                 @Value("${case.creator.shutdown-delay-seconds}") Integer shutdownWaitSeconds) {
         this.ukviComplaintService = ukviComplaintService;
         this.queueDetails = queueDetails;
         this.ukviComplaintValidator = ukviComplaintValidator;
+        this.shutdownWaitSeconds = shutdownWaitSeconds;
     }
 
     @Override
@@ -51,6 +57,17 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                 .bean(ukviComplaintService, "createComplaint(${body}, ${headers.CamelAwsSqsMessageId})")
                 .log(LoggingLevel.INFO, log, "UKVI Complaint processed, MessageId : ${headers.CamelAwsSqsMessageId}")
                 .setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
+    }
+
+    @PreDestroy
+    public void onExit() {
+        try {
+            log.info("Sleeping {} seconds to allow in-flight threads to complete.", shutdownWaitSeconds);
+            Thread.sleep(shutdownWaitSeconds * 1000);
+        } catch (InterruptedException e) {
+            log.error("Sleep failed : {}", e.getMessage());
+        }
+        log.info("Sleep done");
     }
 
 }
