@@ -39,6 +39,7 @@ public class AuditClientTest {
     private final String namespace = "local";
     private final String userId = UUID.randomUUID().toString();
     private final String groups = "groupsString";
+    private final String team = "teamString";
     private final String correlationId = UUID.randomUUID().toString();
     private final UUID caseId = UUID.randomUUID();
     private final UUID stageId = UUID.randomUUID();
@@ -54,7 +55,7 @@ public class AuditClientTest {
         SNSTopicPrefix topicPrefix = new LocalStackConfiguration().topicPrefix();
         AuditTopicBuilder auditTopicBuilder = new AuditTopicBuilder(topicPrefix, topicName);
         topic = auditTopicBuilder.getTopic();
-        clientContext.setContext(userId, groups, correlationId);
+        clientContext.setContext(userId, groups, team, correlationId);
         auditClient = new AuditClient(
                 auditTopicBuilder,
                 raisingService,

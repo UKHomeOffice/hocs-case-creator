@@ -99,6 +99,8 @@ public class ComplaintService {
 
                 workflowClient.advanceCase(caseUUID, stageForCaseUUID, complaintType);
 
+                caseworkClient.updateStageTeam(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getTeamId()));
+
                 log.info("createComplaint, case advanced for complaintType : caseUUID : {}", caseUUID);
             } else {
                 log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);

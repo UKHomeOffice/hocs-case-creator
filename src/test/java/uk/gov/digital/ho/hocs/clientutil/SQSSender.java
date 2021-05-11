@@ -25,7 +25,7 @@ public class SQSSender {
         SendMessageRequest send_msg_request = new SendMessageRequest()
                 .withQueueUrl(queueUrl)
                 .withMessageBody("{\n" +
-                        "  \"creationDate\": \"2020-10-03\",\n" +
+                        "  \"creationDate\": \"2021-05-10\",\n" +
                         "  \"complaint\": {\n" +
                         "    \"complaintType\": \"POOR_STAFF_BEHAVIOUR\",\n" +
                         "    \"reference\": {\n" +

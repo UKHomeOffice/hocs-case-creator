@@ -47,7 +47,7 @@ public class UKVIComplaintValidator {
     }
 
     public void validate(String jsonBody, String messageId) throws Exception {
-        clientContext.setContext(user, group, messageId);
+        clientContext.setContext(user, group, "TODO", messageId);
         JsonNode json = objectMapper.readTree(jsonBody);
         Set<ValidationMessage> validationMessages = schema.validate(json);
         if (!validationMessages.isEmpty()) {
