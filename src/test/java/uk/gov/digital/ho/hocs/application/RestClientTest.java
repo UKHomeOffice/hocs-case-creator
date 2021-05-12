@@ -36,7 +36,7 @@ public class RestClientTest {
         url = "/url";
         expectedUrl = String.format("%s%s", baseUrl, url);
         request = "body";
-        clientContext.setContext("u1", "g1", "c1");
+        clientContext.setContext("u1", "g1", "t1", "c1");
         expectedAuthHeaders = restClient.createAuthHeaders(clientContext);
     }
 

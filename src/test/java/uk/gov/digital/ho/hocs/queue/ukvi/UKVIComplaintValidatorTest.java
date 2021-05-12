@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.application.SpringConfiguration;
 import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 import uk.gov.digital.ho.hocs.client.audit.dto.EventType;
@@ -27,21 +26,17 @@ public class UKVIComplaintValidatorTest {
 
     @Mock
     private AuditClient auditClient;
-    @Mock
-    ClientContext clientContext;
 
     private String goodJson;
     private String badJson;
     private final String messageId = UUID.randomUUID().toString();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         complaintValidator = new UKVIComplaintValidator(
                 new SpringConfiguration().objectMapper(),
                 new UKVITypeData(),
-                auditClient,
-                clientContext,
-                "user", "group");
+                auditClient);
         goodJson = getResourceFileAsString("staffBehaviour.json");
         badJson = getResourceFileAsString("incorrect.json");
     }
