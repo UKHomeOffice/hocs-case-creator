@@ -23,9 +23,9 @@ public class UKVIComplaintServiceTest {
     ClientContext clientContext;
 
     @Test
-    public void shouldCreateComplaint() throws IOException {
+    public void shouldCreateComplaint() {
         UKVITypeData complaintTypeData = new UKVITypeData();
-        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group");
+        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group", "team");
         String json = getResourceFileAsString("staffBehaviour.json");
 
         ukviComplaintService.createComplaint(json, "messageId");
@@ -34,9 +34,9 @@ public class UKVIComplaintServiceTest {
     }
 
     @Test
-    public void shouldCreateComplaintWithNoCorrespondent() throws IOException {
+    public void shouldCreateComplaintWithNoCorrespondent() {
         UKVITypeData complaintTypeData = new UKVITypeData();
-        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group");
+        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group", "team");
         String json = getResourceFileAsString("existingNoCorrespondent.json");
 
         ukviComplaintService.createComplaint(json, "messageId");

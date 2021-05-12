@@ -21,7 +21,7 @@ public class ClientContextTest {
     @Test
     public void ThreadOne() {
         log.debug("ThreadOne start");
-        clientContext.setContext("u1", "g1", "c1");
+        clientContext.setContext("u1", "g1", "t1", "c1");
         assertEquals("u1", clientContext.getUserId());
         assertEquals("g1", clientContext.getGroups());
         assertEquals("c1", clientContext.getCorrelationId());
@@ -31,7 +31,7 @@ public class ClientContextTest {
     @Test
     public void ThreadTwo() {
         log.debug("ThreadTwo start");
-        clientContext.setContext("u2", "g2", "c2");
+        clientContext.setContext("u2", "g2", "t2", "c2");
         assertEquals("u2", clientContext.getUserId());
         assertEquals("g2", clientContext.getGroups());
         assertEquals("c2", clientContext.getCorrelationId());
@@ -41,7 +41,7 @@ public class ClientContextTest {
     @Test
     public void ThreadThree() {
         log.debug("ThreadThree start");
-        clientContext.setContext("u3", "g3", "c3");
+        clientContext.setContext("u3", "g3", "t3", "c3");
         assertEquals("u3", clientContext.getUserId());
         assertEquals("g3", clientContext.getGroups());
         assertEquals("c3", clientContext.getCorrelationId());

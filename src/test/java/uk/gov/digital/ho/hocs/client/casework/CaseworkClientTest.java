@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageTeamRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
 import uk.gov.digital.ho.hocs.queue.common.CorrespondentType;
 
@@ -68,6 +69,22 @@ public class CaseworkClientTest {
 
         assertEquals(voidResponseEntity.getStatusCode(), HttpStatus.OK);
 
+    }
+
+    @Test
+    public void shouldUpdateCaseTeam() {
+        UUID caseUUID = UUID.randomUUID();
+        UUID stageUUID = UUID.randomUUID();
+        UUID teamUUID = UUID.randomUUID();
+        UpdateStageTeamRequest request = new UpdateStageTeamRequest(caseUUID, stageUUID, teamUUID);
+
+        ResponseEntity<Void> responseEntity = new ResponseEntity<>(HttpStatus.OK);
+
+        when(restClient.put(serviceUrl, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), request, Void.class)).thenReturn(responseEntity);
+
+        ResponseEntity<Void> voidResponseEntity = caseworkClient.updateStageTeam(caseUUID, stageUUID, teamUUID);
+
+        assertEquals(voidResponseEntity.getStatusCode(), HttpStatus.OK);
     }
 
     @Test(expected = IllegalStateException.class)

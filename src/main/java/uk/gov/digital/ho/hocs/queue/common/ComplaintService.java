@@ -104,6 +104,10 @@ public class ComplaintService {
                 log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
             }
 
+            caseworkClient.updateStageTeam(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getTeamId()));
+
+            log.info("createComplaint, team updated for case : caseUUID : {}, teamUUID : {}", caseUUID, clientContext.getTeamId());
+
             log.info("createComplaint, completed : caseUUID : {}", caseUUID);
 
         } catch (Exception e) {

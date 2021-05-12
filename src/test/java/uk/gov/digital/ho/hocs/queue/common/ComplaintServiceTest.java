@@ -47,6 +47,7 @@ public class ComplaintServiceTest {
     private ComplaintService complaintService;
 
     private String user;
+    private String team;
     private UUID stageForCaseUUID;
     private UUID primaryCorrespondent;
     private CreateCaseRequest createCaseRequest;
@@ -74,6 +75,8 @@ public class ComplaintServiceTest {
         createCaseResponse = new CreateCaseResponse(caseUUID, decsReference);
         user = UUID.randomUUID().toString();
         when(clientContext.getUserId()).thenReturn(user);
+        team = UUID.randomUUID().toString();
+        when(clientContext.getTeamId()).thenReturn(team);
         complaintService = new ComplaintService(workflowClient, caseworkClient, clientContext, auditClient, documentS3Client);
     }
 
@@ -93,6 +96,8 @@ public class ComplaintServiceTest {
         verify(auditClient).audit(EventType.CREATOR_CASE_CREATED, caseUUID, stageForCaseUUID, json);
 
         verify(auditClient).audit(eq(EventType.CREATOR_CORRESPONDENT_CREATED), eq(caseUUID), eq(stageForCaseUUID), anyMap());
+
+        verify(caseworkClient).updateStageTeam(caseUUID, stageForCaseUUID, UUID.fromString(team));
     }
 
     private void goodSetup() {

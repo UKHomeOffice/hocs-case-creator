@@ -44,6 +44,8 @@ public class AppCustomProperties {
         @NotBlank
         private String group;
         @NotBlank
+        private String team;
+        @NotBlank
         private String queueName;
         @NotBlank
         private String queue;

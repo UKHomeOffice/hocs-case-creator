@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageTeamRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
 
 import java.util.UUID;
@@ -48,4 +49,10 @@ public class CaseworkClient {
         ResponseEntity<String> responseEntity = restClient.get(serviceBaseURL, String.format("/case/%s", caseUUID), String.class);
         return UUID.fromString(JsonPath.read(responseEntity.getBody(), "$.primaryCorrespondentUUID"));
     }
+
+    public ResponseEntity<Void> updateStageTeam(UUID caseUUID, UUID stageUUID, UUID teamUUID) {
+        UpdateStageTeamRequest request = new UpdateStageTeamRequest(caseUUID, stageUUID, teamUUID);
+        return restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), request, Void.class);
+    }
+
 }
