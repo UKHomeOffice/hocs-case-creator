@@ -50,10 +50,9 @@ public class CaseworkClient {
         return UUID.fromString(JsonPath.read(responseEntity.getBody(), "$.primaryCorrespondentUUID"));
     }
 
-    public void updateStageTeam(UUID caseUUID, UUID stageUUID, UUID teamUUID) {
+    public ResponseEntity<Void> updateStageTeam(UUID caseUUID, UUID stageUUID, UUID teamUUID) {
         UpdateStageTeamRequest request = new UpdateStageTeamRequest(caseUUID, stageUUID, teamUUID);
-        restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), request, Void.class);
-        log.info("Updated Team {} on Stage: {} for Case {}", teamUUID, stageUUID, caseUUID);
+        return restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), request, Void.class);
     }
 
 }

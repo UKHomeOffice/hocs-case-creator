@@ -1,9 +1,15 @@
 package uk.gov.digital.ho.hocs.client.casework.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.util.UUID;
 
+@AllArgsConstructor
+@Getter
+@EqualsAndHashCode
 public class UpdateStageTeamRequest {
 
     @JsonProperty("caseUUID")
@@ -15,9 +21,4 @@ public class UpdateStageTeamRequest {
     @JsonProperty("teamUUID")
     private UUID teamUUID;
 
-    public UpdateStageTeamRequest(UUID caseUUID, UUID stageUUID, UUID teamUUID) {
-        this.caseUUID = caseUUID;
-        this.stageUUID = stageUUID;
-        this.teamUUID = teamUUID;
-    }
 }
