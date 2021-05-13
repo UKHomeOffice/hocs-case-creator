@@ -102,12 +102,14 @@ spec:
           envFrom:
             - configMapRef:
                 name: hocs-queue-config
+            - configMapRef:
+                name: complaint-identity
           env:
             - name: JAVA_OPTS
               value: >
                 -Xms768m -Xmx4096m -XX:+UseG1GC -Djavax.net.ssl.trustStore=/etc/keystore/truststore.jks
                 -Dhttps.proxyHost=hocs-outbound-proxy.{{.KUBE_NAMESPACE}}.svc.cluster.local
-                -Dhttps.proxyPort=31290 
+                -Dhttps.proxyPort=31290
                 -Dhttp.nonProxyHosts=*.{{.KUBE_NAMESPACE}}.svc.cluster.local
             - name: JDK_TRUST_FILE
               value: '/etc/keystore/truststore.jks'
@@ -124,16 +126,6 @@ spec:
                 secretKeyRef:
                   name: ui-casework-creds
                   key: plaintext
-            - name: CASE_CREATOR_UKVI_COMPLAINT_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-ukvi-complaint-identity
-                  key: user
-            - name: CASE_CREATOR_UKVI_COMPLAINT_GROUP
-              valueFrom:
-                secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-ukvi-complaint-identity
-                  key: group
             - name: CASE_CREATOR_SQS_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
