@@ -103,7 +103,7 @@ spec:
             - configMapRef:
                 name: hocs-queue-config
             - configMapRef:
-                name: complaint-identity
+                name: hocs-complaint-identity
           env:
             - name: JAVA_OPTS
               value: >
