@@ -5,6 +5,8 @@ metadata:
   name: hocs-case-creator
   labels:
     version: {{.VERSION}}
+  annotations:
+    downscaler/uptime: {{.UPTIME_PERIOD}}
 spec:
   replicas: 1
   strategy:
