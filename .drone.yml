@@ -125,25 +125,6 @@ steps:
     depends_on:
       - clone kube repo
 
-  - name: deploy to wcs-dev
-    image: quay.io/ukhomeofficedigital/kd:v1.16.0
-    commands:
-      - cd kube-hocs-case-creator
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: wcs-dev
-      KUBE_TOKEN:
-        from_secret: hocs_case_creator_wcs_dev
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      VERSION: build_${DRONE_BUILD_NUMBER}
-    when:
-      branch:
-        - main
-      event:
-        - push
-    depends_on:
-      - clone kube repo
-
   - name: deploy to delta
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
     commands:
@@ -215,27 +196,6 @@ steps:
       ENVIRONMENT: cs-qa
       KUBE_TOKEN:
         from_secret: hocs_case_creator_cs_qa
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-    when:
-      event:
-        - promote
-      target:
-        - release
-    depends_on:
-      - clone kube repo
-      - generate & tag build
-
-  - name: deploy to wcs-qa
-    image: quay.io/ukhomeofficedigital/kd:v1.16.0
-    commands:
-      - source version.txt
-      - echo $VERSION
-      - cd kube-hocs-case-creator
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: wcs-qa
-      KUBE_TOKEN:
-        from_secret: hocs_case_creator_wcs_qa
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
     when:
       event:
