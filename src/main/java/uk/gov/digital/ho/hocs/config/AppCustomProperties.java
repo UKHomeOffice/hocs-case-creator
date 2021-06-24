@@ -68,6 +68,8 @@ public class AppCustomProperties {
         @NotBlank
         private Integer queueInitialDelay;
         @NotBlank
+        private Integer maxMessagesPerPoll;
+        @NotBlank
         private String redrivePolicy;
         @NotBlank
         private String queueProperties;
