@@ -24,6 +24,7 @@ public class UKVIComplaintQueueBuilder {
     private final int backOffMultiplier;
     private final int backoffIdleThreshold;
     private final int waitTimeSeconds;
+    private final int maxMessagesPerPoll;
     private final int initialDelay;
     private final int pollDelay;
 
@@ -38,6 +39,7 @@ public class UKVIComplaintQueueBuilder {
                                      @Value("${case.creator.ukvi-complaint.queue-backoff-idle-threshold}") int backoffIdleThreshold,
                                      @Value("${case.creator.ukvi-complaint.queue-backOff-multiplier}") int backOffMultiplier,
                                      @Value("${case.creator.ukvi-complaint.queue-wait-time-seconds}") int waitTimeSeconds,
+                                     @Value("${case.creator.ukvi-complaint.queue-max-messages-per-poll}") int maxMessagesPerPoll, 
                                      @Value("${case.creator.ukvi-complaint.queue-initial-delay}") int initialDelay,
                                      @Value("${case.creator.ukvi-complaint.queue-poll-delay}") int pollDelay) {
         this.sqsQueuePrefix = sqsQueuePrefix;
@@ -50,6 +52,7 @@ public class UKVIComplaintQueueBuilder {
         this.backoffIdleThreshold = backoffIdleThreshold;
         this.backOffMultiplier = backOffMultiplier;
         this.waitTimeSeconds = waitTimeSeconds;
+        this.maxMessagesPerPoll = maxMessagesPerPoll;
         this.initialDelay = initialDelay;
         this.pollDelay = pollDelay;
 
@@ -69,9 +72,17 @@ public class UKVIComplaintQueueBuilder {
                 "&waitTimeSeconds=%s" +
                 "&backoffIdleThreshold=%s" +
                 "&backoffMultiplier=%s" +
+                "&maxMessagesPerPoll=%s" +
                 "&initialDelay=%s" +
                 "&delay=%s";
-        String queueProperties = String.format(queuePropertiesTemplate, redrivePolicy, waitTimeSeconds, backoffIdleThreshold, backOffMultiplier, initialDelay, pollDelay);
+        String queueProperties = String.format(queuePropertiesTemplate, 
+                redrivePolicy, 
+                waitTimeSeconds, 
+                backoffIdleThreshold, 
+                backOffMultiplier, 
+                maxMessagesPerPoll, 
+                initialDelay, 
+                pollDelay);
 
         return sqsQueuePrefix.getPrefix() + queueName + queueProperties;
     }

@@ -17,6 +17,7 @@ public class UKVIComplaintQueueBuilderTest {
     int backoffIdleThreshold = 3;
     int backOffMultiplier = 4;
     int waitTimeSeconds = 5;
+    int maxMessagesPerPoll = 1;
     int initialDelay = 6;
     int pollDelay = 7;
 
@@ -36,6 +37,7 @@ public class UKVIComplaintQueueBuilderTest {
                 backoffIdleThreshold,
                 backOffMultiplier,
                 waitTimeSeconds,
+                maxMessagesPerPoll, 
                 initialDelay,
                 pollDelay);
 
@@ -44,10 +46,11 @@ public class UKVIComplaintQueueBuilderTest {
                 "&waitTimeSeconds=%d" +
                 "&backoffIdleThreshold=%d" +
                 "&backoffMultiplier=%d" +
+                "&maxMessagesPerPoll=%d" +
                 "&initialDelay=%d" +
                 "&delay=%d",
                 queueName, maximumRedeliveries, region, accountId, dlQueueName, waitTimeSeconds,
-                backoffIdleThreshold, backOffMultiplier, initialDelay, pollDelay), queueBuilder.getQueue());
+                backoffIdleThreshold, backOffMultiplier, maxMessagesPerPoll, initialDelay, pollDelay), queueBuilder.getQueue());
     }
 
     @Test
@@ -66,6 +69,7 @@ public class UKVIComplaintQueueBuilderTest {
                 backoffIdleThreshold,
                 backOffMultiplier,
                 waitTimeSeconds,
+                maxMessagesPerPoll, 
                 initialDelay,
                 pollDelay);
 
@@ -74,10 +78,11 @@ public class UKVIComplaintQueueBuilderTest {
                 "&waitTimeSeconds=%d" +
                 "&backoffIdleThreshold=%d" +
                 "&backoffMultiplier=%d" +
+                "&maxMessagesPerPoll=%d" +
                 "&initialDelay=%d" +
                 "&delay=%d",
                 region, accountId, queueName, maximumRedeliveries, region, accountId, dlQueueName, waitTimeSeconds,
-                backoffIdleThreshold, backOffMultiplier, initialDelay, pollDelay
+                backoffIdleThreshold, backOffMultiplier, maxMessagesPerPoll, initialDelay, pollDelay
                 ), queueBuilder.getQueue());
     }
 

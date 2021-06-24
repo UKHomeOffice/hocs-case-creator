@@ -33,6 +33,7 @@ The following table contains the mandatory and optional properties that need to 
 | CASE_CREATOR_UKVI_COMPLAINT_QUEUE_BACKOFF_MULTIPLIER | Enables exponential backoff and sets the multiplier used to increase the delay between redeliveries | 5 | No |
 | CASE_CREATOR_UKVI_COMPLAINT_QUEUE_BACKOFF_IDLE_THRESHOLD | The number of subsequent idle polls that should happen before the backoffMultipler should kick-in. | 1 | No |
 | CASE_CREATOR_UKVI_COMPLAINT_QUEUE_WAIT_TIME_SECONDS | The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. | 20 | No |
+| CASE_CREATOR_UKVI_COMPLAINT_QUEUE_MAX_MESSAGES_PER_POLL | The maximum number of messages at each polling | 1 | No |
 | CASE_CREATOR_UKVI_COMPLAINT_QUEUE_INITIAL_DELAY | Milliseconds before the first poll starts. | 5000 | No |
 | CASE_CREATOR_UKVI_COMPLAINT_QUEUE_POLL_DELAY | Milliseconds before the next poll. | 100 | No |
 | CASE_CREATOR_REST_CLIENT_RETRIES |The maximum number of retry attempts | 10 | No |
