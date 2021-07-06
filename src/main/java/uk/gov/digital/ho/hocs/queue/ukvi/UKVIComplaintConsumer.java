@@ -59,15 +59,4 @@ public class UKVIComplaintConsumer extends RouteBuilder {
                 .setHeader(SqsConstants.RECEIPT_HANDLE, exchangeProperty(SqsConstants.RECEIPT_HANDLE));
     }
 
-    @PreDestroy
-    public void onExit() {
-        try {
-            log.info("Sleeping {} seconds to allow in-flight threads to complete.", shutdownWaitSeconds);
-            Thread.sleep(shutdownWaitSeconds * 1000);
-        } catch (InterruptedException e) {
-            log.error("Sleep failed : {}", e.getMessage());
-        }
-        log.info("Sleep done");
-    }
-
 }
