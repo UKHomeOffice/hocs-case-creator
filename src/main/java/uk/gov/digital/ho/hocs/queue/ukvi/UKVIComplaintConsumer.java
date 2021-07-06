@@ -61,13 +61,7 @@ public class UKVIComplaintConsumer extends RouteBuilder {
 
     @PreDestroy
     public void onExit() {
-        try {
-            log.info("Sleeping {} seconds to allow in-flight threads to complete.", shutdownWaitSeconds);
-            Thread.sleep(shutdownWaitSeconds * 1000);
-        } catch (InterruptedException e) {
-            log.error("Sleep failed : {}", e.getMessage());
-        }
-        log.info("Sleep done");
+        log.info("hocs-case-creator stopping gracefully");
     }
 
 }
