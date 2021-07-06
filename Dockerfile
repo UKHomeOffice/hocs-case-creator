@@ -13,7 +13,7 @@ RUN apk add openjdk11-jre
 WORKDIR /app
 
 RUN addgroup -S ${GROUP} && \
-    adduser -S ${USER} -G ${GROUP} -h /app && \
+    adduser -S -u ${USER_ID} ${USER} -G ${GROUP} -h /app && \
     mkdir -p /app && \
     chown -R ${USER}:${GROUP} /app
 
@@ -25,7 +25,7 @@ RUN chmod a+x /app/scripts/*
 
 EXPOSE 8080
 
-USER ${USER}
+USER ${USER_ID}
 
 CMD ["sh", "/app/scripts/run.sh"]
 
