@@ -5,6 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.retry.annotation.EnableRetry;
 
+import javax.annotation.PreDestroy;
+
 @Slf4j
 @SpringBootApplication
 @EnableRetry
@@ -12,5 +14,10 @@ public class CaseCreatorApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CaseCreatorApplication.class, args);
+    }
+
+    @PreDestroy
+    public void onExit() {
+        log.info("Stopping gracefully");
     }
 }
