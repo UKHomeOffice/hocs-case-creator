@@ -89,7 +89,7 @@ public class AuditClient {
             String jsonPayload = objectMapper.writeValueAsString(request);
             producerTemplate.sendBodyAndHeaders(auditTopic, jsonPayload, queueHeaders);
             log.info("Create audit of type {} for Case UUID: {}, correlationID: {}, UserID: {}, event: {}",
-                    eventType, caseUUID, clientContext.getCorrelationId(), clientContext.getCorrelationId(), value(EVENT, AUDIT_EVENT_CREATED));
+                    eventType, caseUUID, clientContext.getCorrelationId(), clientContext.getUserId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
             log.error("Failed to create audit event for case UUID {}, event {}, exception: {}", caseUUID, value(EVENT, AUDIT_FAILED), value(EXCEPTION, e));
         }
