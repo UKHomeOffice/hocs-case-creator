@@ -29,6 +29,7 @@ public class UKVIComplaintValidatorTest {
 
     private String goodJson;
     private String badJson;
+    private String notJson;
     private final String messageId = UUID.randomUUID().toString();
 
     @Before
@@ -39,6 +40,7 @@ public class UKVIComplaintValidatorTest {
                 auditClient);
         goodJson = getResourceFileAsString("staffBehaviour.json");
         badJson = getResourceFileAsString("incorrect.json");
+        notJson = getResourceFileAsString("notJson.txt");
     }
 
     @Test
@@ -51,6 +53,16 @@ public class UKVIComplaintValidatorTest {
     public void shouldAuditValidationFail() {
         try {
             complaintValidator.validate(badJson, messageId);
+        } catch (Exception e) {
+            // ignore
+        }
+        verify(auditClient).audit(EventType.UKVI_PAYLOAD_FAILED_VALIDATED, null, null);
+    }
+
+    @Test
+    public void shouldAuditNotJsonValidationFail() {
+        try {
+            complaintValidator.validate(notJson, messageId);
         } catch (Exception e) {
             // ignore
         }
