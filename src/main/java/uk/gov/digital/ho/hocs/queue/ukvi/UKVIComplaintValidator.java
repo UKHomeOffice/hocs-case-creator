@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.queue.ukvi;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchema;
@@ -8,9 +9,7 @@ import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 
 import java.io.InputStream;
@@ -38,14 +37,20 @@ public class UKVIComplaintValidator {
     }
 
     public void validate(String jsonBody, String messageId) throws Exception {
-        JsonNode json = objectMapper.readTree(jsonBody);
-        Set<ValidationMessage> validationMessages = schema.validate(json);
-        if (!validationMessages.isEmpty()) {
-            for (ValidationMessage validationMessage : validationMessages) {
-                log.warn("MessageId : {}, {}", messageId, validationMessage.getMessage());
+        try {
+            JsonNode json = objectMapper.readTree(jsonBody);
+            Set<ValidationMessage> validationMessages = schema.validate(json);
+            if (!validationMessages.isEmpty()) {
+                for (ValidationMessage validationMessage : validationMessages) {
+                    log.warn("MessageId : {}, {}", messageId, validationMessage.getMessage());
+                }
+                auditClient.audit(ukviTypeData.getUnsuccessfulValidationEvent(), null, null);
+                throw new Exception("Schema validation failed for messageId : " + messageId);
             }
+        } catch (JsonParseException e) {
             auditClient.audit(ukviTypeData.getUnsuccessfulValidationEvent(), null, null);
-            throw new Exception("Schema validation failed for messageId : " + messageId);
+            log.error("Schema validation failed for messageId {}, Exception : {} ", messageId, e.getMessage());
+            throw e;
         }
     }
 }
