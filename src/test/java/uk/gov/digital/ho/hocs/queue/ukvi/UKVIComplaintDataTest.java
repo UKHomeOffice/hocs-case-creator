@@ -66,6 +66,7 @@ public class UKVIComplaintDataTest {
         assertEquals(CorrespondentType.THIRD_PARTY_REP, agentCorrespondent.getType());
         assertEquals("sint mollit est", agentCorrespondent.getFullname());
         assertEquals("64E@fmZgjGfpG.cfb", agentCorrespondent.getEmail());
+        assertEquals("01234567890", agentCorrespondent.getTelephone());
     }
 
     @Test
