@@ -27,6 +27,7 @@ public class UKVIComplaintData implements ComplaintData {
     public static final String AGENT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantDetails.applicantName";
     public static final String AGENT_AGENT_NAME = "$.complaint.reporterDetails.agentDetails.agentName";
     public static final String AGENT_AGENT_EMAIL = "$.complaint.reporterDetails.agentDetails.agentEmail";
+    public static final String AGENT_AGENT_PHONE = "$.complaint.reporterDetails.agentDetails.agentPhone";
 
     private final ReadContext ctx;
     private final String jsonBody;
@@ -62,6 +63,7 @@ public class UKVIComplaintData implements ComplaintData {
                 ComplaintCorrespondent applicantCorrespondent = new ComplaintCorrespondent(ctx.read(AGENT_APPLICANT_NAME), CorrespondentType.COMPLAINANT);
                 ComplaintCorrespondent agentCorrespondent = new ComplaintCorrespondent(ctx.read(AGENT_AGENT_NAME), CorrespondentType.THIRD_PARTY_REP);
                 optionalString(ctx, AGENT_AGENT_EMAIL).ifPresent(agentCorrespondent::setEmail);
+                optionalString(ctx, AGENT_AGENT_PHONE).ifPresent(agentCorrespondent::setTelephone);
                 //First correspondent added becomes the primary correspondent for the case.
                 correspondents.add(applicantCorrespondent);
                 correspondents.add(agentCorrespondent);
