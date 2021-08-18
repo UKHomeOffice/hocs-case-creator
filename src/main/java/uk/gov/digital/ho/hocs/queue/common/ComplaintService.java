@@ -89,8 +89,17 @@ public class ComplaintService {
 
                 Map<String, String> correspondents = Collections.singletonMap(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
 
+                workflowClient.advanceCase(caseUUID, stageForCaseUUID, correspondents);
+
                 auditClient.audit(complaintTypeData.getCreateCorrespondentEventType(), caseUUID, stageForCaseUUID, correspondents);
 
+                log.info("createComplaint, case advanced for correspondent : caseUUID : {}", caseUUID);
+
+                Map<String, String> complaintType = Collections.singletonMap(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
+
+                workflowClient.advanceCase(caseUUID, stageForCaseUUID, complaintType);
+
+                log.info("createComplaint, case advanced for complaintType : caseUUID : {}", caseUUID);
             } else {
                 log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
             }
