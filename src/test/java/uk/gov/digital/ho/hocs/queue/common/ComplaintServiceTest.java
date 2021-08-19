@@ -91,7 +91,7 @@ public class ComplaintServiceTest {
 
         verify(caseworkClient, times(2)).addCorrespondentToCase(eq(caseUUID), eq(stageForCaseUUID), any(ComplaintCorrespondent.class));
 
-        verify(workflowClient, times(2)).advanceCase(eq(caseUUID), eq(stageForCaseUUID), anyMap());
+        verify(caseworkClient, times(1)).updateCase(eq(caseUUID), eq(stageForCaseUUID), anyMap());
 
         verify(auditClient).audit(EventType.CREATOR_CASE_CREATED, caseUUID, stageForCaseUUID, json);
 
@@ -158,12 +158,4 @@ public class ComplaintServiceTest {
         when(caseworkClient.getPrimaryCorrespondent(caseUUID)).thenThrow(new NullPointerException());
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
     }
-
-    @Test
-    public void advanceCaseShouldCatchException() {
-        goodSetup();
-        when(workflowClient.advanceCase(eq(caseUUID), eq(stageForCaseUUID), anyMap())).thenThrow(new NullPointerException());
-        complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
-    }
-
 }
