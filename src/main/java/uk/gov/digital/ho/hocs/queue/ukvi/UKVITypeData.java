@@ -22,6 +22,11 @@ public class UKVITypeData implements ComplaintTypeData {
     }
 
     @Override
+    public EventType getUpdateCaseEventType() {
+        return EventType.CREATOR_CASE_UPDATED;
+    }
+
+    @Override
     public EventType getUnsuccessfulValidationEvent() {
         return EventType.UKVI_PAYLOAD_FAILED_VALIDATED;
     }

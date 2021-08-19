@@ -13,10 +13,7 @@ import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -89,17 +86,19 @@ public class ComplaintService {
 
                 Map<String, String> correspondents = Collections.singletonMap(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
 
-                workflowClient.advanceCase(caseUUID, stageForCaseUUID, correspondents);
-
                 auditClient.audit(complaintTypeData.getCreateCorrespondentEventType(), caseUUID, stageForCaseUUID, correspondents);
-
-                log.info("createComplaint, case advanced for correspondent : caseUUID : {}", caseUUID);
 
                 Map<String, String> complaintType = Collections.singletonMap(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
 
-                workflowClient.advanceCase(caseUUID, stageForCaseUUID, complaintType);
+                HashMap<String, String> data = new HashMap<>();
+                data.putAll(correspondents);
+                data.putAll(complaintType);
 
-                log.info("createComplaint, case advanced for complaintType : caseUUID : {}", caseUUID);
+                caseworkClient.updateCase(caseUUID, stageForCaseUUID, data);
+
+                log.info("createComplaint, case data updated for correspondent and complaint type : caseUUID : {}, complaintType : {}", caseUUID, complaintType);
+
+                auditClient.audit(complaintTypeData.getUpdateCaseEventType(), caseUUID, stageForCaseUUID, data);
             } else {
                 log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
             }

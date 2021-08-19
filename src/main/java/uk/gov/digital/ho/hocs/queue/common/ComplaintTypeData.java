@@ -7,4 +7,5 @@ public interface ComplaintTypeData {
     EventType getCreateComplaintEventType();
     EventType getCreateCorrespondentEventType();
     EventType getUnsuccessfulValidationEvent();
+    EventType getUpdateCaseEventType();
 }

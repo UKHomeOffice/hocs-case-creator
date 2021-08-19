@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.casework.dto.UpdateCaseworkCaseDataRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageTeamRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -53,6 +55,12 @@ public class CaseworkClient {
     public ResponseEntity<Void> updateStageTeam(UUID caseUUID, UUID stageUUID, UUID teamUUID) {
         UpdateStageTeamRequest request = new UpdateStageTeamRequest(caseUUID, stageUUID, teamUUID);
         return restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), request, Void.class);
+    }
+
+    public void updateCase(UUID caseUUID, UUID stageUUID, Map<String, String> data) {
+        UpdateCaseworkCaseDataRequest request = new UpdateCaseworkCaseDataRequest(data);
+        restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/data", caseUUID, stageUUID), request, Void.class);
+        log.info("Set Case Data for Case {}", caseUUID);
     }
 
 }
