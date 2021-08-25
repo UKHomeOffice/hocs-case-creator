@@ -55,6 +55,7 @@ public class JSONToSimpleTextConverter {
         } else {
             String textValue = node.textValue();
             if (keyName.equals("complaintText")) {
+                textValue = textValue.replaceAll("[\\n]", NEW_LINE_STR);
                 textValue = WordUtils.wrap(NEW_LINE_STR + textValue, WRAP_LENGTH, NEW_LINE_STR, WRAP_LONG_WORDS);
             }
             convertedOutput.append(String.format("%" + (level * 4 - 3) + "s %s : %s%n", "", fromJavaIdentifierToDisplayableString(keyName), textValue));
