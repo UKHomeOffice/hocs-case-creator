@@ -49,6 +49,10 @@ steps:
         from_secret: ARTIFACTORY_TOKEN
       ARTIFACTORY_USER:
         from_secret: ARTIFACTORY_USER
+    when:
+      branch:
+        exclude:
+          - main
     depends_on:
       - test project
 
@@ -58,6 +62,8 @@ steps:
       registry: quay.io
       repo: quay.io/ukhomeofficedigital/hocs-case-creator
       tags:
+        - build_${DRONE_BUILD_NUMBER}
+        - ${DRONE_COMMIT_SHA}
         - latest
     environment:
       DOCKER_PASSWORD:
@@ -69,7 +75,8 @@ steps:
         from_secret: ARTIFACTORY_USER
     when:
       branch:
-        - main
+        include:
+          - main
     depends_on:
       - test project
 
