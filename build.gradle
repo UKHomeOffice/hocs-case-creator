@@ -1,0 +1,75 @@
+buildscript {
+    ext {
+        springBootVersion = '2.5.1'
+        camelVersion = '2.23.0'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+plugins {
+    id "io.freefair.lombok" version "5.3.0"
+}
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+group 'uk.gov.digital.ho.hocs'
+version '1.0-SNAPSHOT'
+sourceCompatibility = '11'
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url 'https://artifactory.digital.homeoffice.gov.uk/artifactory/DECS/'
+        credentials {
+            username System.getenv('ARTIFACTORY_USER')
+            password System.getenv('ARTIFACTORY_TOKEN')
+        }
+    }
+}
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:1.0.0')
+    implementation('org.springframework.boot:spring-boot-starter-undertow')
+    implementation('org.springframework.boot:spring-boot-starter-aop')
+    implementation('org.springframework.retry:spring-retry')
+    implementation('org.springframework.boot:spring-boot-starter-validation')
+    implementation("org.apache.camel:camel-spring-boot-starter:${camelVersion}")
+    implementation("org.apache.camel:camel-jackson:${camelVersion}")
+    implementation("org.apache.camel:camel-aws:${camelVersion}")
+    implementation("org.apache.camel:camel-json-validator:${camelVersion}")
+    implementation('com.amazonaws:aws-java-sdk:1.11.380')
+    implementation('net.logstash.logback:logstash-logback-encoder:5.3')
+    implementation('com.jayway.jsonpath:json-path:2.5.0')
+    implementation('javax.xml.bind:jaxb-api:2.3.0')
+    implementation('com.networknt:json-schema-validator:1.0.49')
+    implementation('org.apache.commons:commons-text:1.9')
+
+    annotationProcessor "org.springframework:spring-context-indexer:5.3.12"
+
+    testImplementation('junit:junit:4.12')
+    testImplementation("org.apache.camel:camel-test-spring:${camelVersion}")
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('com.google.code.tempus-fugit:tempus-fugit:1.1')
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+}
+bootRun {
+    String activeProfile = System.properties['spring.profiles.active']
+    systemProperty "spring.profiles.active", activeProfile
+}
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+jar {
+    enabled = false
+}
