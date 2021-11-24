@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.config;
+package uk.gov.digital.ho.hocs.application.properties;
 
 import lombok.Getter;
 import lombok.Setter;
