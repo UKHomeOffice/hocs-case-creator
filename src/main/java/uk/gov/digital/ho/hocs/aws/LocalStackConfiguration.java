@@ -41,17 +41,14 @@ public class LocalStackConfiguration {
                 .build();
     }
 
+    @Primary
     @Bean
-    public SNSTopicPrefix topicPrefix() {
-        return new SNSTopicPrefix("aws-sns://");
-    }
-
-    @Bean("auditSnsClient")
-    public AmazonSNS auditSnsClient() {
-       return AmazonSNSClientBuilder.standard()
-                .withCredentials(awsCredentialsProvider)
-                .withEndpointConfiguration(endpoint)
-                .build();
+    public AmazonSNS snsClient() {
+       return AmazonSNSClientBuilder
+               .standard()
+               .withCredentials(awsCredentialsProvider)
+               .withEndpointConfiguration(endpoint)
+               .build();
     }
 
     @Bean("s3Client")

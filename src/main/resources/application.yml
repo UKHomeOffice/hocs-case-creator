@@ -28,6 +28,16 @@ aws:
       attributes:
         max-messages: 10
         wait-time: 20
+  sns:
+    config:
+      region: eu-west-2
+    audit:
+      account:
+        access-key:
+        secret-key:
+        id:
+      topic-name:
+      arn: arn:aws:sns:${aws.sns.config.region}:${aws.sns.audit.account}:${aws.sns.audit.topic-name}
 
 case:
   creator:
@@ -39,14 +49,8 @@ case:
       user: 22ca514d-c205-47a0-9e38-68daee4c1299
     workflow-service: http://localhost:8091
 
-
 audit:
   namespace: local
-  app-name: ${info.app.name}
-  sns:
-    access-key: 12345
-    secret-key: 12345
-    topic-name: hocs-audit-topic
 
 document:
   s3:

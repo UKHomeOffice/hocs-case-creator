@@ -1,13 +1,16 @@
 package uk.gov.digital.ho.hocs.client.audit;
 
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.model.MessageAttributeValue;
+import com.amazonaws.services.sns.model.PublishRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.ClientContext;
+import uk.gov.digital.ho.hocs.application.properties.AwsSnsProperties;
 import uk.gov.digital.ho.hocs.client.audit.dto.CreateAuditRequest;
 import uk.gov.digital.ho.hocs.client.audit.dto.EventType;
 
@@ -23,26 +26,26 @@ import static uk.gov.digital.ho.hocs.application.LogEvent.*;
 @Component
 public class AuditClient {
 
-    private final String auditTopic;
     private final String raisingService;
     private final String namespace;
     private final ObjectMapper objectMapper;
     private final ClientContext clientContext;
-    private final ProducerTemplate producerTemplate;
     public static final String EVENT_TYPE_HEADER = "event_type";
+    private final AmazonSNS snsClient;
+    private final AwsSnsProperties snsProperties;
 
     @Autowired
-    public AuditClient(AuditTopicBuilder auditTopicBuilder,
-                       @Value("${info.app.name}") String raisingService,
+    public AuditClient(@Value("${info.app.name}") String raisingService,
                        @Value("${audit.namespace}") String namespace,
                        ObjectMapper objectMapper, ClientContext clientContext,
-                       ProducerTemplate producerTemplate) {
-        this.auditTopic = auditTopicBuilder.getTopic();
+                       AmazonSNS snsClient,
+                       AwsSnsProperties snsProperties) {
         this.raisingService = raisingService;
         this.namespace = namespace;
         this.objectMapper = objectMapper;
         this.clientContext = clientContext;
-        this.producerTemplate = producerTemplate;
+        this.snsClient = snsClient;
+        this.snsProperties = snsProperties;
     }
 
     public void audit(EventType eventType, UUID caseUUID, UUID stageUUID) {
@@ -80,9 +83,15 @@ public class AuditClient {
                 clientContext.getUserId());
 
         try {
-            Map<String, Object> queueHeaders = getQueueHeaders(eventType.toString());
             String jsonPayload = objectMapper.writeValueAsString(request);
-            producerTemplate.sendBodyAndHeaders(auditTopic, jsonPayload, queueHeaders);
+
+            var publishRequest = new PublishRequest()
+                    .withTopicArn(snsProperties.getAudit().getArn())
+                    .withMessage(jsonPayload)
+                    .withMessageAttributes(getQueueHeaders(eventType.toString()));
+
+            snsClient.publish(publishRequest);
+
             log.info("Create audit of type {} for Case UUID: {}, correlationID: {}, UserID: {}, event: {}",
                     eventType, caseUUID, clientContext.getCorrelationId(), clientContext.getUserId(), value(EVENT, AUDIT_EVENT_CREATED));
         } catch (Exception e) {
@@ -90,12 +99,12 @@ public class AuditClient {
         }
     }
 
-    private Map<String, Object> getQueueHeaders(String eventType) {
+    private Map<String, MessageAttributeValue> getQueueHeaders(String eventType) {
         return Map.of(
-                EVENT_TYPE_HEADER, eventType,
-                ClientContext.CORRELATION_ID_HEADER, clientContext.getCorrelationId(),
-                ClientContext.USER_ID_HEADER, clientContext.getUserId(),
-                ClientContext.GROUP_HEADER, clientContext.getGroups());
+                EVENT_TYPE_HEADER, new MessageAttributeValue().withDataType("String").withStringValue(eventType),
+                ClientContext.CORRELATION_ID_HEADER, new MessageAttributeValue().withDataType("String").withStringValue(clientContext.getCorrelationId()),
+                ClientContext.USER_ID_HEADER, new MessageAttributeValue().withDataType("String").withStringValue(clientContext.getUserId()),
+                ClientContext.GROUP_HEADER, new MessageAttributeValue().withDataType("String").withStringValue(clientContext.getGroups()));
     }
 
 }
