@@ -37,21 +37,8 @@ case:
       delay: 1000
       retries: 10
     shutdown-delay-seconds: 20
-    sqs:
-      access-key: 12345
-      secret-key: 12345
     ukvi-complaint:
-      dl-queue-name: ukvi-complaint-queue-dlq
       group: /COMP_CCH_zqxmzQ6iEkTRw
-      queue-backOff-multiplier: 5
-      queue-backoff-idle-threshold: 1
-      queue-initial-delay: 5000
-      queue-max-messages-per-poll: 1
-      queue-maximum-redeliveries: 10
-      queue-name: ukvi-complaint-queue
-      queue-poll-delay: 10000
-      queue-redelivery-delay: 10000
-      queue-wait-time-seconds: 20
       team: 08e30ffc-2087-ff3a-b19b-343a88491347
       user: 22ca514d-c205-47a0-9e38-68daee4c1299
     workflow-service: http://localhost:8091
