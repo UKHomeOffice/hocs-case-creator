@@ -2,54 +2,48 @@ package uk.gov.digital.ho.hocs.aws;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.AnonymousAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSAsync;
+import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Profile({"local"})
 public class LocalStackConfiguration {
 
-    public static final String REGION = "eu-west-2";
+    private static final String REGION = "eu-west-2";
+    private final AWSCredentialsProvider AWS_CREDENTIALS_PROVIDER
+            = new AWSStaticCredentialsProvider(new AnonymousAWSCredentials());
+
     @Value("${aws.local-host:localhost}")
     private String awsHost;
-    
-    private final AWSCredentialsProvider awsCredentialsProvider = new AWSCredentialsProvider() {
-
-        @Override
-        public AWSCredentials getCredentials() {
-            return new BasicAWSCredentials("test", "test");
-        }
-
-        @Override
-        public void refresh() {
-
-        }
-    };
 
     @Bean
     public SQSQueuePrefix queuePrefix() {
         return new SQSQueuePrefix("aws-sqs://");
     }
 
-    @Bean("sqsClient")
-    public AmazonSQS sqsClient() {
+    @Primary
+    @Bean
+    public AmazonSQSAsync sqsClient() {
         String host = String.format("http://%s:4576/", awsHost);
         AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(host, "eu-west-2");
-        return AmazonSQSClientBuilder.standard()
+        return AmazonSQSAsyncClientBuilder.standard()
                 .withClientConfiguration(new ClientConfiguration().withProtocol(Protocol.HTTP))
-                .withCredentials(awsCredentialsProvider)
+                .withCredentials(AWS_CREDENTIALS_PROVIDER)
                 .withEndpointConfiguration(endpoint)
                 .build();
     }
@@ -65,7 +59,7 @@ public class LocalStackConfiguration {
         AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(host, REGION);
         return AmazonSNSClientBuilder.standard()
                 .withClientConfiguration(new ClientConfiguration().withProtocol(Protocol.HTTP))
-                .withCredentials(awsCredentialsProvider)
+                .withCredentials(AWS_CREDENTIALS_PROVIDER)
                 .withEndpointConfiguration(endpoint)
                 .build();
     }
@@ -76,7 +70,7 @@ public class LocalStackConfiguration {
         AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(host, REGION);
         return AmazonS3ClientBuilder.standard()
                 .withClientConfiguration(new ClientConfiguration().withProtocol(Protocol.HTTP))
-                .withCredentials(awsCredentialsProvider)
+                .withCredentials(AWS_CREDENTIALS_PROVIDER)
                 .withPathStyleAccessEnabled(true)
                 .withEndpointConfiguration(endpoint)
                 .disableChunkedEncoding()
