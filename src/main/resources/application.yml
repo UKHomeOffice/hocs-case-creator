@@ -33,10 +33,6 @@ case:
   creator:
     basicauth: UNSET
     case-service: http://localhost:8082
-    rest-client:
-      delay: 1000
-      retries: 10
-    shutdown-delay-seconds: 20
     ukvi-complaint:
       group: /COMP_CCH_zqxmzQ6iEkTRw
       team: 08e30ffc-2087-ff3a-b19b-343a88491347
@@ -51,8 +47,6 @@ audit:
     access-key: 12345
     secret-key: 12345
     topic-name: hocs-audit-topic
-    retries: 10
-    delay: 2000
 
 document:
   s3:

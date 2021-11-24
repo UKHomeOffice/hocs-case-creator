@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.audit.dto.CreateAuditRequest;
@@ -47,12 +45,10 @@ public class AuditClient {
         this.producerTemplate = producerTemplate;
     }
 
-    @Retryable(maxAttemptsExpression = "${audit.sns.retries}", backoff = @Backoff(delayExpression = "${audit.sns.delay}"))
     public void audit(EventType eventType, UUID caseUUID, UUID stageUUID) {
         sendAuditMessage(eventType, caseUUID, stageUUID);
     }
 
-    @Retryable(maxAttemptsExpression = "${audit.sns.retries}", backoff = @Backoff(delayExpression = "${audit.sns.delay}"))
     public void audit(EventType eventType, UUID caseUUID, UUID stageForCaseUUID, Map<String, String> data) {
         try {
             String json = objectMapper.writeValueAsString(data);
@@ -62,7 +58,6 @@ public class AuditClient {
         }
     }
 
-    @Retryable(maxAttemptsExpression = "${audit.sns.retries}", backoff = @Backoff(delayExpression = "${audit.sns.delay}"))
     public void audit(EventType eventType, UUID caseUUID, UUID stageForCaseUUID, String json) throws IOException {
         objectMapper.readTree(json);
         sendAuditMessage(eventType, caseUUID, stageForCaseUUID, json);
