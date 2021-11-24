@@ -1,4 +1,18 @@
-case:
-    creator:
+localstack:
+    host: localhost
+    sqs:
+        config:
+            region: eu-west-2
+            port: 4566
+            base-url: http://${localstack.host}:${localstack.sqs.config.port}
+
+aws:
+    sqs:
         ukvi-complaint:
-            queue-maximum-redeliveries: 2
+            url: ${localstack.sqs.config.base-url}/queue/ukvi-complaint-queue
+            account:
+                access-key: 12345
+                secret-key: 12345
+            attributes:
+                max-messages: 1
+                wait-time: 5

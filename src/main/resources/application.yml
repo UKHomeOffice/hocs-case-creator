@@ -18,9 +18,16 @@ camel:
 
 aws:
   sqs:
-    region: eu-west-2
-  account:
-    id: 12345
+    config:
+      region: eu-west-2
+    ukvi-complaint:
+      url:
+      account:
+        access-key:
+        secret-key:
+      attributes:
+        max-messages: 10
+        wait-time: 20
 
 case:
   creator:
