@@ -38,6 +38,15 @@ aws:
         id:
       topic-name:
       arn: arn:aws:sns:${aws.sns.config.region}:${aws.sns.audit.account}:${aws.sns.audit.topic-name}
+  s3:
+    config:
+      region: eu-west-2
+    untrusted:
+      account:
+        access-key:
+        secret-key:
+        bucket-kms-key:
+      bucket-name:
 
 case:
   creator:
@@ -51,13 +60,6 @@ case:
 
 audit:
   namespace: local
-
-document:
-  s3:
-    access-key: 12345
-    secret-key: 12345
-    untrusted-bucket-name: untrusted-bucket
-    untrusted-bucket-kms-key:
 
 management:
   endpoints:

@@ -51,7 +51,8 @@ public class LocalStackConfiguration {
                .build();
     }
 
-    @Bean("s3Client")
+    @Primary
+    @Bean
     public AmazonS3 s3Client() {
        return AmazonS3ClientBuilder.standard()
                 .withCredentials(awsCredentialsProvider)
