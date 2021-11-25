@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.application.properties.AwsS3Properties;
@@ -16,15 +15,13 @@ import uk.gov.digital.ho.hocs.application.properties.AwsS3Properties;
 import java.io.UnsupportedEncodingException;
 
 import static junit.framework.TestCase.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ActiveProfiles("local")
 public class DocumentS3ClientTest {
 
-    @MockBean
+    @Autowired
     private AmazonS3 s3Client;
 
     @Autowired
@@ -43,9 +40,11 @@ public class DocumentS3ClientTest {
 
     @Test
     public void shouldStoreADocument() {
-        documentS3Client.storeUntrustedDocument(fileName, payload);
+        var resultFileUuid = documentS3Client.storeUntrustedDocument(fileName, payload);
 
-        verify(s3Client).putObject(any(PutObjectRequest.class));
+        var file = s3Client.getObject(awsS3Properties.getUntrusted().getBucketName(), resultFileUuid);
+
+        assertEquals(file.getObjectMetadata().getContentLength(), payload.length());
     }
 
     @Test
