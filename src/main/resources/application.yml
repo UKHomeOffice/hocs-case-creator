@@ -3,6 +3,7 @@ info:
     name: ${name:hocs-case-creator}
     fullname: HOCS Case Creator
     version: ${version:0.0.1}
+  namespace: local
 
 spring:
   main:
@@ -58,8 +59,7 @@ case:
       user: 22ca514d-c205-47a0-9e38-68daee4c1299
     workflow-service: http://localhost:8091
 
-audit:
-  namespace: local
+
 
 management:
   endpoints:

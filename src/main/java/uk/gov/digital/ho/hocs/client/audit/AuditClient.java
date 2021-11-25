@@ -36,7 +36,7 @@ public class AuditClient {
 
     @Autowired
     public AuditClient(@Value("${info.app.name}") String raisingService,
-                       @Value("${audit.namespace}") String namespace,
+                       @Value("${info.namespace}") String namespace,
                        ObjectMapper objectMapper, ClientContext clientContext,
                        AmazonSNS snsClient,
                        AwsSnsProperties snsProperties) {
