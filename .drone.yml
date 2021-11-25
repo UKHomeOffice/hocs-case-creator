@@ -4,7 +4,24 @@ kind: pipeline
 type: kubernetes
 name: build
 
+services:
+  - name: localstack
+    image: quay.io/ukhomeofficedigital/localstack
+    environment:
+      SERVICES: sqs,sns,s3
+      DEFAULT_REGION: eu-west-2
+
 steps:
+  - name: setup localstack
+    image: quay.io/ukhomeofficedigital/localstack # need curl which is not in alpine
+    commands:
+      - cd config/localstack
+      - ./1-setup-sqs.sh
+      - ./2-setup-sns.sh
+      - ./3-setup-s3.sh
+    depends_on:
+      - clone
+
   - name: build project
     image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
     commands:
@@ -14,6 +31,8 @@ steps:
         from_secret: ARTIFACTORY_TOKEN
       ARTIFACTORY_USER:
         from_secret: ARTIFACTORY_USER
+    depends_on:
+      - setup localstack
 
   - name: test project
     image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
@@ -24,11 +43,7 @@ steps:
         from_secret: ARTIFACTORY_TOKEN
       ARTIFACTORY_USER:
         from_secret: ARTIFACTORY_USER
-    depends_on:
-      - build project
-
-  - name: sonar scanner
-    image: quay.io/ukhomeofficedigital/sonar-scanner:v3.0.3
+      LOCALSTACK_HOST: "localstack"
     depends_on:
       - test project
 
