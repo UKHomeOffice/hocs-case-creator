@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.client.audit;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import org.junit.Before;
@@ -10,9 +11,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
@@ -24,7 +27,10 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
@@ -32,7 +38,7 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("local")
 public class AuditClientTest {
 
-    @MockBean
+    @SpyBean
     private AmazonSNS amazonSNS;
 
     @Autowired
@@ -53,23 +59,30 @@ public class AuditClientTest {
     @Captor
     ArgumentCaptor<PublishRequest> snsPublishedMessage;
 
+    private ResultCaptor<PublishResult> snsPublishedResponse;
+
     @Before
     public void setUp() {
+        snsPublishedResponse = new ResultCaptor<>();
+        doAnswer(snsPublishedResponse).when(amazonSNS).publish(any());
+
         clientContext.setContext(userId, groups, team, correlationId);
-        auditClient = new AuditClient(
+
+
+        this.auditClient = new AuditClient(
                 raisingService,
                 namespace,
                 new SpringConfiguration().objectMapper(),
                 clientContext,
                 amazonSNS,
-                awsSnsProperties
-                );
+                awsSnsProperties);
     }
 
     @Test
     public void shouldWriteAuditWithoutPayload() {
         auditClient.audit(EventType.CREATOR_CASE_CREATED, caseId, stageId);
 
+        assertNotNull(snsPublishedResponse.getResult().getMessageId());
         verify(amazonSNS).publish(snsPublishedMessage.capture());
         ReadContext ctx = JsonPath.parse(snsPublishedMessage.getValue().getMessage());
         validateMainJsonBody(ctx);
@@ -82,6 +95,7 @@ public class AuditClientTest {
 
         auditClient.audit(EventType.CREATOR_CASE_CREATED, caseId, stageId, data);
 
+        assertNotNull(snsPublishedResponse.getResult().getMessageId());
         verify(amazonSNS).publish(snsPublishedMessage.capture());
         ReadContext ctx = JsonPath.parse(snsPublishedMessage.getValue().getMessage());
         validateMainJsonBody(ctx);
@@ -94,6 +108,7 @@ public class AuditClientTest {
         String jsonString = "{\"key\":\"value\"}";
         auditClient.audit(EventType.CREATOR_CASE_CREATED, caseId, stageId, jsonString);
 
+        assertNotNull(snsPublishedResponse.getResult().getMessageId());
         verify(amazonSNS).publish(snsPublishedMessage.capture());
         ReadContext ctx = JsonPath.parse(snsPublishedMessage.getValue().getMessage());
         validateMainJsonBody(ctx);
@@ -119,6 +134,22 @@ public class AuditClientTest {
         assertEquals(correlationId, headerCaptor.get(ClientContext.CORRELATION_ID_HEADER).getStringValue());
         assertEquals(groups, headerCaptor.get(ClientContext.GROUP_HEADER).getStringValue());
         assertEquals(userId, headerCaptor.get(ClientContext.USER_ID_HEADER).getStringValue());
+    }
+
+    /*
+     * Used for returning the MessageID from the SNS to confirm message acceptance.
+     */
+    public static class ResultCaptor<T> implements Answer<T> {
+        private T result = null;
+        public T getResult() {
+            return result;
+        }
+
+        @Override
+        public T answer(InvocationOnMock invocationOnMock) throws Throwable {
+            result = (T) invocationOnMock.callRealMethod();
+            return result;
+        }
     }
 
 }
