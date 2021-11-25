@@ -69,6 +69,7 @@ dependencies {
 
     annotationProcessor "org.springframework:spring-context-indexer:5.3.12"
 
+    testImplementation 'org.awaitility:awaitility:4.1.1'
     testImplementation('junit:junit:4.12')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('com.google.code.tempus-fugit:tempus-fugit:1.1')
