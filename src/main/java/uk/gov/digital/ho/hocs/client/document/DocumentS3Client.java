@@ -6,9 +6,9 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.SSEAwsKeyManagementParams;
 import com.amazonaws.util.StringInputStream;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import uk.gov.digital.ho.hocs.application.properties.AwsS3Properties;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -20,12 +20,15 @@ public class DocumentS3Client {
     private static final String META_DATA_LABEL = "originalName";
 
     private final AmazonS3 s3Client;
-    private final AwsS3Properties awsS3Properties;
+    private final String bucketName;
+    private final String bucketKmsKey;
 
     public DocumentS3Client(AmazonS3 s3Client,
-                            AwsS3Properties awsS3Properties) {
+                            @Value("${aws.s3.untrusted.bucket-name}") String bucketName,
+                            @Value("${aws.s3.untrusted.account.bucket-kms-key}") String bucketKmsKey) {
         this.s3Client = s3Client;
-        this.awsS3Properties = awsS3Properties;
+        this.bucketName = bucketName;
+        this.bucketKmsKey = bucketKmsKey;
     }
 
     public String storeUntrustedDocument(String originalFilename, String formattedDocument) {
@@ -42,13 +45,11 @@ public class DocumentS3Client {
     }
 
     PutObjectRequest buildPutObjectRequest(String formattedDocument, ObjectMetadata metaData, String tempObjectName) throws UnsupportedEncodingException {
-        PutObjectRequest uploadRequest = new PutObjectRequest(awsS3Properties.getUntrusted().getBucketName(), tempObjectName,
+        PutObjectRequest uploadRequest = new PutObjectRequest(bucketName, tempObjectName,
                 new StringInputStream(formattedDocument), metaData);
 
-        String untrustedKmsKey = awsS3Properties.getUntrusted().getAccount().getBucketKmsKey();
-
-        if (StringUtils.hasText(untrustedKmsKey)) { // Will be empty when running local. Workaround because localstack doesn't use HTTPS
-            uploadRequest = uploadRequest.withSSEAwsKeyManagementParams(new SSEAwsKeyManagementParams(untrustedKmsKey));
+        if (StringUtils.hasText(bucketKmsKey)) { // Will be empty when running local. Workaround because localstack doesn't use HTTPS
+            uploadRequest = uploadRequest.withSSEAwsKeyManagementParams(new SSEAwsKeyManagementParams(bucketKmsKey));
         }
 
         return uploadRequest;

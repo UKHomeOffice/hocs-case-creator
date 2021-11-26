@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.application.properties.AwsSnsProperties;
 import uk.gov.digital.ho.hocs.client.audit.dto.CreateAuditRequest;
 import uk.gov.digital.ho.hocs.client.audit.dto.EventType;
 
@@ -32,20 +31,20 @@ public class AuditClient {
     private final ClientContext clientContext;
     public static final String EVENT_TYPE_HEADER = "event_type";
     private final AmazonSNS snsClient;
-    private final AwsSnsProperties snsProperties;
+    private final String topicArn;
 
     @Autowired
     public AuditClient(@Value("${info.app.name}") String raisingService,
                        @Value("${info.namespace}") String namespace,
+                       @Value("${aws.sns.audit.arn}") String topicArn,
                        ObjectMapper objectMapper, ClientContext clientContext,
-                       AmazonSNS snsClient,
-                       AwsSnsProperties snsProperties) {
+                       AmazonSNS snsClient) {
         this.raisingService = raisingService;
         this.namespace = namespace;
         this.objectMapper = objectMapper;
         this.clientContext = clientContext;
         this.snsClient = snsClient;
-        this.snsProperties = snsProperties;
+        this.topicArn = topicArn;
     }
 
     public void audit(EventType eventType, UUID caseUUID, UUID stageUUID) {
@@ -86,7 +85,7 @@ public class AuditClient {
             String jsonPayload = objectMapper.writeValueAsString(request);
 
             var publishRequest = new PublishRequest()
-                    .withTopicArn(snsProperties.getAudit().getArn())
+                    .withTopicArn(topicArn)
                     .withMessage(jsonPayload)
                     .withMessageAttributes(getQueueHeaders(eventType.toString()));
 

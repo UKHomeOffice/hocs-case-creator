@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.digital.ho.hocs.application.properties.AwsSqsProperties;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintService;
 import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintValidator;
 import uk.gov.digital.ho.hocs.testutil.TestFileReader;
@@ -33,16 +33,13 @@ public class UKVIComplaintQueueTest extends BaseAwsSqsIntegrationTest {
     public UKVIComplaintValidator ukviComplaintValidator;
 
     @Autowired
-    public AwsSqsProperties awsSqsProperties;
-
-    @Autowired
     public ObjectMapper objectMapper;
 
     @Test
     public void consumeMessageFromQueue() {
         String validMessage = TestFileReader.getResourceFileAsString("agentCorrespondent.json");
 
-        var result = amazonSQSAsync.sendMessage(awsSqsProperties.getUkviComplaint().getUrl(), validMessage);
+        var result = amazonSQSAsync.sendMessage(queueUrl, validMessage);
 
         await().until(() -> getNumberOfMessagesOnQueue() == 0);
         await().untilAsserted(() -> verify(ukviComplaintValidator).validate(validMessage, result.getMessageId()));
@@ -55,7 +52,7 @@ public class UKVIComplaintQueueTest extends BaseAwsSqsIntegrationTest {
 
         doThrow(new NullPointerException("TEST")).when(ukviComplaintValidator).validate(eq(validMessage), any());
 
-        var result = amazonSQSAsync.sendMessage(awsSqsProperties.getUkviComplaint().getUrl(), validMessage);
+        var result = amazonSQSAsync.sendMessage(queueUrl, validMessage);
 
         await().until(() -> getNumberOfMessagesOnQueue() == 0);
         await().until(() -> getNumberOfMessagesNotVisibleOnQueue() == 1);

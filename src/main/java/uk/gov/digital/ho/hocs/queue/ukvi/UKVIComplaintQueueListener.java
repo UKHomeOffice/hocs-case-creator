@@ -17,7 +17,7 @@ public class UKVIComplaintQueueListener {
         this.ukviComplaintValidator = ukviComplaintValidator;
     }
 
-    @SqsListener(value = "#{awsSqsConfig.ukviComplaint.url}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+    @SqsListener(value = "${aws.sqs.ukvi-complaint.url}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
     public void onAuditEvent(String message, @Header("MessageId") String messageId) throws Exception {
         ukviComplaintValidator.validate(message, messageId);
         ukviComplaintService.createComplaint(message, messageId);

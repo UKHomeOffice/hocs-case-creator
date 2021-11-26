@@ -5,8 +5,8 @@ import com.amazonaws.services.sqs.model.PurgeQueueRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.digital.ho.hocs.application.properties.AwsSqsProperties;
 
 import java.util.List;
 
@@ -19,25 +19,25 @@ public class BaseAwsSqsIntegrationTest {
     @Autowired
     public AmazonSQSAsync amazonSQSAsync;
 
-    @Autowired
-    public AwsSqsProperties awsSqsProperties;
+    @Value("${aws.sqs.ukvi-complaint.url}")
+    protected String queueUrl;
 
     @BeforeEach
     public void setup() {
-        amazonSQSAsync.purgeQueue(new PurgeQueueRequest(awsSqsProperties.getUkviComplaint().getUrl()));
+        amazonSQSAsync.purgeQueue(new PurgeQueueRequest(queueUrl));
     }
 
     @AfterEach
     public void teardown() {
-        amazonSQSAsync.purgeQueue(new PurgeQueueRequest(awsSqsProperties.getUkviComplaint().getUrl()));
+        amazonSQSAsync.purgeQueue(new PurgeQueueRequest(queueUrl));
     }
 
     public int getNumberOfMessagesOnQueue() {
-        return getValueFromQueue(awsSqsProperties.getUkviComplaint().getUrl(), APPROXIMATE_NUMBER_OF_MESSAGES);
+        return getValueFromQueue(queueUrl, APPROXIMATE_NUMBER_OF_MESSAGES);
     }
 
     public int getNumberOfMessagesNotVisibleOnQueue() {
-        return getValueFromQueue(awsSqsProperties.getUkviComplaint().getUrl(), APPROXIMATE_NUMBER_OF_MESSAGES_NOT_VISIBLE);
+        return getValueFromQueue(queueUrl, APPROXIMATE_NUMBER_OF_MESSAGES_NOT_VISIBLE);
     }
 
     private int getValueFromQueue(String queue, String attribute) {

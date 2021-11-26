@@ -13,14 +13,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.application.SpringConfiguration;
-import uk.gov.digital.ho.hocs.application.properties.AwsSnsProperties;
 import uk.gov.digital.ho.hocs.client.audit.dto.EventType;
 
 import java.io.IOException;
@@ -41,8 +40,9 @@ public class AuditClientTest {
     @SpyBean
     private AmazonSNS amazonSNS;
 
-    @Autowired
-    private AwsSnsProperties awsSnsProperties;
+
+    @Value("${aws.sns.audit.arn}")
+    private String topicArn;
 
     private AuditClient auditClient;
 
@@ -72,10 +72,10 @@ public class AuditClientTest {
         this.auditClient = new AuditClient(
                 raisingService,
                 namespace,
+                topicArn,
                 new SpringConfiguration().objectMapper(),
                 clientContext,
-                amazonSNS,
-                awsSnsProperties);
+                amazonSNS);
     }
 
     @Test

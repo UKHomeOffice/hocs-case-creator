@@ -1,15 +1,14 @@
 localstack:
-  host: localhost
-  sqs:
-    config:
-      region: eu-west-2
-      port: 4566
-      base-url: http://${localstack.host}:${localstack.sqs.config.port}
+  base-url: http://${localstack.config.host}:${localstack.config.port}
+  config:
+    host: localhost
+    port: 4566
+    region: eu-west-2
 
 aws:
   sqs:
     ukvi-complaint:
-      url: ${localstack.sqs.config.base-url}/queue/ukvi-complaint-queue
+      url: ${localstack.base-url}/queue/ukvi-complaint-queue
       account:
         access-key: 12345
         secret-key: 12345

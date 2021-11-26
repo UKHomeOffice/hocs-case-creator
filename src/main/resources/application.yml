@@ -28,7 +28,6 @@ aws:
         secret-key:
       attributes:
         max-messages: 10
-        wait-time: 20
   sns:
     config:
       region: eu-west-2
