@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.audit.dto.CreateAuditRequest;
 import uk.gov.digital.ho.hocs.client.audit.dto.EventType;
@@ -100,10 +101,23 @@ public class AuditClient {
 
     private Map<String, MessageAttributeValue> getQueueHeaders(String eventType) {
         return Map.of(
-                EVENT_TYPE_HEADER, new MessageAttributeValue().withDataType("String").withStringValue(eventType),
-                ClientContext.CORRELATION_ID_HEADER, new MessageAttributeValue().withDataType("String").withStringValue(clientContext.getCorrelationId()),
-                ClientContext.USER_ID_HEADER, new MessageAttributeValue().withDataType("String").withStringValue(clientContext.getUserId()),
-                ClientContext.GROUP_HEADER, new MessageAttributeValue().withDataType("String").withStringValue(clientContext.getGroups()));
+                EVENT_TYPE_HEADER, new StringMessageAttributeValue(eventType),
+                ClientContext.CORRELATION_ID_HEADER, new StringMessageAttributeValue(clientContext.getCorrelationId()),
+                ClientContext.USER_ID_HEADER, new StringMessageAttributeValue(clientContext.getUserId()),
+                ClientContext.GROUP_HEADER, new StringMessageAttributeValue(clientContext.getGroups()));
+    }
+
+    private static class StringMessageAttributeValue extends MessageAttributeValue {
+        private static final String type = "String";
+
+        public StringMessageAttributeValue(String value) {
+            if (!StringUtils.hasText(value)) {
+                throw new IllegalArgumentException("Value should be a non-empty String");
+            }
+
+            this.setDataType(type);
+            this.setStringValue(value);
+        }
     }
 
 }
