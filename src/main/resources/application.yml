@@ -13,10 +13,6 @@ server:
   port: 8092
   shutdown: graceful
 
-camel:
-  springboot:
-    main-run-controller: false
-
 aws:
   sqs:
     config:
@@ -57,8 +53,6 @@ case:
       team: 08e30ffc-2087-ff3a-b19b-343a88491347
       user: 22ca514d-c205-47a0-9e38-68daee4c1299
     workflow-service: http://localhost:8091
-
-
 
 management:
   endpoints:
