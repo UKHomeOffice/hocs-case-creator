@@ -1,0 +1,36 @@
+localstack:
+  base-url: http://${localstack.config.host}:${localstack.config.port}
+  config:
+    host: localhost
+    port: 4566
+    region: eu-west-2
+
+aws:
+  sqs:
+    ukvi-complaint:
+      url: ${localstack.base-url}/queue/ukvi-complaint-queue
+      account:
+        access-key: 12345
+        secret-key: 12345
+      attributes:
+        max-messages: 1
+        wait-time: 5
+  sns:
+    config:
+      region: eu-west-2
+    audit:
+      account:
+        access-key: 12345
+        secret-key: 12345
+        id: "000000000000"
+      topic-name: hocs-audit-topic
+      arn: arn:aws:sns:${aws.sns.config.region}:${aws.sns.audit.account.id}:${aws.sns.audit.topic-name}
+  s3:
+    config:
+      region: eu-west-2
+    untrusted:
+      account:
+        access-key: 12345
+        secret-key: 12345
+        bucket-kms-key:
+      bucket-name: untrusted-bucket

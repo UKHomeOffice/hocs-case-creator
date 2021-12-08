@@ -3,44 +3,48 @@ package uk.gov.digital.ho.hocs.client.document;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.UnsupportedEncodingException;
 
 import static junit.framework.TestCase.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-@Slf4j
-@RunWith(MockitoJUnitRunner.class)
+
+@SpringBootTest
+@RunWith(SpringRunner.class)
+@ActiveProfiles("local")
 public class DocumentS3ClientTest {
 
-    @Mock
+    @Autowired
     private AmazonS3 s3Client;
+
+    @Value("${aws.s3.untrusted.bucket-name}")
+    private String bucketName;
 
     private DocumentS3Client documentS3Client;
     private String payload;
     private String fileName;
-    private String bucketName;
 
     @Before
     public void setUp() {
         payload = "{json}";
         fileName = "text.txt";
-        bucketName = "bucket";
         documentS3Client = new DocumentS3Client(s3Client, bucketName, "");
     }
 
     @Test
     public void shouldStoreADocument() {
+        var resultFileUuid = documentS3Client.storeUntrustedDocument(fileName, payload);
 
-        documentS3Client.storeUntrustedDocument(fileName, payload);
+        var file = s3Client.getObject(bucketName, resultFileUuid);
 
-        verify(s3Client).putObject(any(PutObjectRequest.class));
+        assertEquals(file.getObjectMetadata().getContentLength(), payload.length());
     }
 
     @Test
@@ -63,9 +67,8 @@ public class DocumentS3ClientTest {
 
     @Test
     public void shouldBuildAPutRequestWithKMS() throws UnsupportedEncodingException {
-        String kmsKey = "kmsKey";
         String tempName = "1234";
-        documentS3Client = new DocumentS3Client(s3Client, bucketName, kmsKey);
+        documentS3Client = new DocumentS3Client(s3Client, bucketName, "TEST");
         ObjectMetadata objectMetadata = documentS3Client.buildObjectMetadata(fileName, payload);
         PutObjectRequest putObjectRequest = documentS3Client.buildPutObjectRequest(payload, objectMetadata, tempName);
         assertNotNull(putObjectRequest.getSSEAwsKeyManagementParams());
