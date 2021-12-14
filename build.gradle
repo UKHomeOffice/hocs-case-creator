@@ -1,29 +1,16 @@
-buildscript {
-    ext {
-        springBootVersion = '2.5.1'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
-}
 plugins {
-    id "io.freefair.lombok" version "5.3.0"
+    id 'java'
+    id 'jacoco'
+    id 'org.springframework.boot' version '2.6.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
 group 'uk.gov.digital.ho.hocs'
 version '1.0-SNAPSHOT'
 sourceCompatibility = '11'
+
 repositories {
     mavenCentral()
-    mavenLocal()
     maven {
         url 'https://artifactory.digital.homeoffice.gov.uk/artifactory/DECS/'
         credentials {
@@ -53,36 +40,31 @@ jacocoTestReport {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web") {
-        exclude module: "spring-boot-starter-tomcat"
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude(module: 'spring-boot-starter-tomcat')
     }
-    implementation('org.springframework.boot:spring-boot-starter-actuator')
+
+    implementation 'org.springframework.boot:spring-boot-starter-undertow'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+
     implementation('uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:1.0.0')
-    implementation('org.springframework.boot:spring-boot-starter-undertow')
-    implementation('org.springframework.boot:spring-boot-starter-aop')
-    implementation('org.springframework.boot:spring-boot-starter-validation')
-    implementation('net.logstash.logback:logstash-logback-encoder:5.3')
+
     implementation('com.jayway.jsonpath:json-path:2.5.0')
     implementation('javax.xml.bind:jaxb-api:2.3.0')
     implementation('org.apache.commons:commons-text:1.9')
     implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE'
 
-    annotationProcessor "org.springframework:spring-context-indexer:5.3.12"
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.springframework:spring-context-indexer:5.3.13'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.awaitility:awaitility:4.1.1'
-    testImplementation('junit:junit:4.12')
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testImplementation('com.google.code.tempus-fugit:tempus-fugit:1.1')
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-}
-bootRun {
-    String activeProfile = System.properties['spring.profiles.active']
-    systemProperty "spring.profiles.active", activeProfile
-}
-test {
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'com.google.code.tempus-fugit:tempus-fugit:1.1'
 }
 
 dependencyManagement {
