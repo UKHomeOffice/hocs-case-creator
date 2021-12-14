@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.queue.ukvi;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +16,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
-@Slf4j
 @ActiveProfiles(profiles = "local")
 @RunWith(MockitoJUnitRunner.class)
 public class UKVIComplaintValidatorTest {

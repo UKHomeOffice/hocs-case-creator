@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.application;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import static org.mockito.Mockito.verify;
 
-@Slf4j
 @RunWith(MockitoJUnitRunner.class)
 public class RestClientTest {
 

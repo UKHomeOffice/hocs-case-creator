@@ -11,13 +11,7 @@ sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://artifactory.digital.homeoffice.gov.uk/artifactory/DECS/'
-        credentials {
-            username System.getenv('ARTIFACTORY_USER')
-            password System.getenv('ARTIFACTORY_TOKEN')
-        }
-    }
+    maven { url 'https://jitpack.io' }
 }
 
 plugins.withType(JacocoPlugin) {
@@ -46,12 +40,11 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-undertow'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
-    implementation 'uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:1.0.0'
+    implementation 'com.github.ukhomeoffice:hocs-ukvi-complaint-schema:1.0.0'
 
     implementation 'com.jayway.jsonpath:json-path:2.5.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
@@ -65,7 +58,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.awaitility:awaitility:4.1.1'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.google.code.tempus-fugit:tempus-fugit:1.1'
 }
 
