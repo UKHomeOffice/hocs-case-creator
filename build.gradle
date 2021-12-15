@@ -53,7 +53,7 @@ dependencies {
 
     implementation 'uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:1.0.0'
 
-    implementation 'com.jayway.jsonpath:json-path:2.5.0'
+    implementation 'com.jayway.jsonpath:json-path:2.6.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
     implementation 'org.apache.commons:commons-text:1.9'
     implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE'
