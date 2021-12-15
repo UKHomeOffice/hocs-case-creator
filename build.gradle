@@ -11,7 +11,14 @@ sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
+    mavenLocal()
+    maven {
+        url 'https://artifactory.digital.homeoffice.gov.uk/artifactory/DECS/'
+        credentials {
+            username System.getenv('ARTIFACTORY_USER')
+            password System.getenv('ARTIFACTORY_TOKEN')
+        }
+    }
 }
 
 plugins.withType(JacocoPlugin) {
@@ -44,7 +51,7 @@ dependencies {
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
-    implementation 'com.github.ukhomeoffice:hocs-ukvi-complaint-schema:1.0.0'
+    implementation 'uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:1.0.0'
 
     implementation 'com.jayway.jsonpath:json-path:2.5.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
