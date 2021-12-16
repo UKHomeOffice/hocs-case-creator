@@ -2,8 +2,8 @@ package uk.gov.digital.ho.hocs.queue.ukvi.integration;
 
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.model.PurgeQueueRequest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.After;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ActiveProfiles;
@@ -13,7 +13,6 @@ import java.util.List;
 @ActiveProfiles("local")
 public class BaseAwsSqsIntegrationTest {
 
-    private static final String APPROXIMATE_NUMBER_OF_MESSAGES = "ApproximateNumberOfMessages";
     private static final String APPROXIMATE_NUMBER_OF_MESSAGES_NOT_VISIBLE = "ApproximateNumberOfMessagesNotVisible";
 
     @Autowired
@@ -22,18 +21,14 @@ public class BaseAwsSqsIntegrationTest {
     @Value("${aws.sqs.ukvi-complaint.url}")
     protected String queueUrl;
 
-    @BeforeEach
+    @Before
     public void setup() {
         amazonSQSAsync.purgeQueue(new PurgeQueueRequest(queueUrl));
     }
 
-    @AfterEach
+    @After
     public void teardown() {
         amazonSQSAsync.purgeQueue(new PurgeQueueRequest(queueUrl));
-    }
-
-    public int getNumberOfMessagesOnQueue() {
-        return getValueFromQueue(queueUrl, APPROXIMATE_NUMBER_OF_MESSAGES);
     }
 
     public int getNumberOfMessagesNotVisibleOnQueue() {

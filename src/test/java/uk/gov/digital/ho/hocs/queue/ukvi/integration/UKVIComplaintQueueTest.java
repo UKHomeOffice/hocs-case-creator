@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Profile;
@@ -41,7 +40,6 @@ public class UKVIComplaintQueueTest extends BaseAwsSqsIntegrationTest {
 
         var result = amazonSQSAsync.sendMessage(queueUrl, validMessage);
 
-        await().until(() -> getNumberOfMessagesOnQueue() == 0);
         await().untilAsserted(() -> verify(ukviComplaintValidator).validate(validMessage, result.getMessageId()));
         await().untilAsserted(() -> verify(ukviComplaintService).createComplaint(validMessage, result.getMessageId()));
     }
@@ -54,12 +52,10 @@ public class UKVIComplaintQueueTest extends BaseAwsSqsIntegrationTest {
 
         var result = amazonSQSAsync.sendMessage(queueUrl, validMessage);
 
-        await().until(() -> getNumberOfMessagesOnQueue() == 0);
-        await().until(() -> getNumberOfMessagesNotVisibleOnQueue() == 1);
-
         await().untilAsserted(() -> verify(ukviComplaintValidator).validate(validMessage, result.getMessageId()));
         await().untilAsserted(() -> verifyNoMoreInteractions(ukviComplaintValidator));
         await().untilAsserted(() -> verifyNoMoreInteractions(ukviComplaintService));
+        await().until(() -> getNumberOfMessagesNotVisibleOnQueue() == 1);
     }
 
 }
