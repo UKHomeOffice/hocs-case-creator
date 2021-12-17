@@ -49,7 +49,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     implementation 'uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:1.0.0'
 
@@ -60,7 +60,7 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.springframework:spring-context-indexer:5.3.13'
+    annotationProcessor 'org.springframework:spring-context-indexer:5.3.14'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
