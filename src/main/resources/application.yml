@@ -33,7 +33,7 @@ aws:
         secret-key:
         id:
       topic-name:
-      arn: arn:aws:sns:${aws.sns.config.region}:${aws.sns.audit.account}:${aws.sns.audit.topic-name}
+      arn: arn:aws:sns:${aws.sns.config.region}:${aws.sns.audit.account.id}:${aws.sns.audit.topic-name}
   s3:
     config:
       region: eu-west-2
