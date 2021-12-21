@@ -139,6 +139,7 @@ steps:
         from_secret: hocs_case_creator_cs_dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       VERSION: build_${DRONE_BUILD_NUMBER}
+      CLUSTER_NAME: acp-notprod
     when:
       branch:
         - main
@@ -198,6 +199,7 @@ steps:
       KUBE_TOKEN:
         from_secret: hocs_case_creator_cs_qa
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      CLUSTER_NAME: acp-notprod
     when:
       event:
         - promote
@@ -216,6 +218,7 @@ steps:
       KUBE_TOKEN:
         from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      CLUSTER_NAME: acp-notprod
     when:
       event:
         - promote
@@ -234,6 +237,7 @@ steps:
       KUBE_TOKEN:
         from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
       KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
+      CLUSTER_NAME: acp-prod
     when:
       event:
         - promote
