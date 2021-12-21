@@ -155,8 +155,6 @@ spec:
                 - SETGID
           envFrom:
             - configMapRef:
-                name: hocs-queue-config
-            - configMapRef:
                 name: hocs-complaint-identity
           env:
             - name: JAVA_OPTS
@@ -203,6 +201,11 @@ spec:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-audit-sqs
                   key: secret_access_key
+            - name: AWS_SNS_AUDIT_ACCOUNT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: hocs-queue-config
+                  key: AWS_ACCOUNT_ID
             - name: AUDIT_SNS_TOPIC_NAME
               value:
                 '{{.KUBE_NAMESPACE}}-sns'
