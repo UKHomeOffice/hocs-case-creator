@@ -6,3 +6,5 @@ updates:
           interval: "daily"
       pull-request-branch-name:
         separator: "-"
+      reviewers:
+        - "UKHomeOffice/hocs-core"
