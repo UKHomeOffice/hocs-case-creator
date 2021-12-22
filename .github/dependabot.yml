@@ -5,7 +5,7 @@ updates:
       schedule:
           interval: "daily"
       commit-message:
-      prefix: "⬆️ "    
+          prefix: "⬆️ "    
       pull-request-branch-name:
         separator: "-"
       reviewers:
