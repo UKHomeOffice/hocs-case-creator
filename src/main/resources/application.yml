@@ -24,16 +24,6 @@ aws:
         secret-key:
       attributes:
         max-messages: 10
-  sns:
-    config:
-      region: eu-west-2
-    audit:
-      account:
-        access-key:
-        secret-key:
-        id:
-      topic-name:
-      arn: arn:aws:sns:${aws.sns.config.region}:${aws.sns.audit.account.id}:${aws.sns.audit.topic-name}
   s3:
     config:
       region: eu-west-2
