@@ -10,7 +10,6 @@ import com.networknt.schema.ValidationMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 
 import java.io.InputStream;
 import java.util.Set;
@@ -21,15 +20,10 @@ public class UKVIComplaintValidator {
 
     private final ObjectMapper objectMapper;
     private final JsonSchema schema;
-    private final UKVITypeData ukviTypeData;
-    private final AuditClient auditClient;
 
     @Autowired
     public UKVIComplaintValidator(ObjectMapper objectMapper,
-                                  UKVITypeData ukviTypeData,
-                                  AuditClient auditClient) {
-        this.ukviTypeData = ukviTypeData;
-        this.auditClient = auditClient;
+                                  UKVITypeData ukviTypeData) {
         InputStream in = getClass().getResourceAsStream("/cmsSchema.json");
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
         schema = schemaFactory.getSchema(in);
@@ -44,11 +38,9 @@ public class UKVIComplaintValidator {
                 for (ValidationMessage validationMessage : validationMessages) {
                     log.warn("MessageId : {}, {}", messageId, validationMessage.getMessage());
                 }
-                auditClient.audit(ukviTypeData.getUnsuccessfulValidationEvent(), null, null);
                 throw new Exception("Schema validation failed for messageId : " + messageId);
             }
         } catch (JsonParseException e) {
-            auditClient.audit(ukviTypeData.getUnsuccessfulValidationEvent(), null, null);
             log.error("Schema validation failed for messageId {}, Exception : {} ", messageId, e.getMessage());
             throw e;
         }
