@@ -6,8 +6,6 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.sns.AmazonSNS;
-import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,16 +37,6 @@ public class LocalStackConfiguration {
                 .withCredentials(awsCredentialsProvider)
                 .withEndpointConfiguration(endpoint)
                 .build();
-    }
-
-    @Primary
-    @Bean
-    public AmazonSNS snsClient() {
-       return AmazonSNSClientBuilder
-               .standard()
-               .withCredentials(awsCredentialsProvider)
-               .withEndpointConfiguration(endpoint)
-               .build();
     }
 
     @Primary
