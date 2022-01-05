@@ -6,8 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.client.audit.AuditClient;
-import uk.gov.digital.ho.hocs.client.audit.dto.EventType;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
@@ -39,8 +37,6 @@ public class ComplaintServiceTest {
     private CaseworkClient caseworkClient;
     @Mock
     private ClientContext clientContext;
-    @Mock
-    private AuditClient auditClient;
     @Mock
     private DocumentS3Client documentS3Client;
 
@@ -77,12 +73,11 @@ public class ComplaintServiceTest {
         when(clientContext.getUserId()).thenReturn(user);
         team = UUID.randomUUID().toString();
         when(clientContext.getTeamId()).thenReturn(team);
-        complaintService = new ComplaintService(workflowClient, caseworkClient, clientContext, auditClient, documentS3Client);
+        complaintService = new ComplaintService(workflowClient, caseworkClient, clientContext, documentS3Client);
     }
 
     @Test
     public void shouldCreateComplaint() throws IOException {
-
         goodSetup();
 
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
@@ -92,10 +87,6 @@ public class ComplaintServiceTest {
         verify(caseworkClient, times(2)).addCorrespondentToCase(eq(caseUUID), eq(stageForCaseUUID), any(ComplaintCorrespondent.class));
 
         verify(caseworkClient, times(1)).updateCase(eq(caseUUID), eq(stageForCaseUUID), anyMap());
-
-        verify(auditClient).audit(EventType.CREATOR_CASE_CREATED, caseUUID, stageForCaseUUID, json);
-
-        verify(auditClient).audit(eq(EventType.CREATOR_CORRESPONDENT_CREATED), eq(caseUUID), eq(stageForCaseUUID), anyMap());
 
         verify(caseworkClient).updateStageTeam(caseUUID, stageForCaseUUID, UUID.fromString(team));
     }
@@ -128,13 +119,6 @@ public class ComplaintServiceTest {
     public void getStageForCaseShouldCatchException() {
         goodSetup();
         when(caseworkClient.getStageForCase(caseUUID)).thenThrow(new NullPointerException());
-        complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
-    }
-
-    @Test
-    public void auditShouldCatchException() throws IOException {
-        goodSetup();
-        doThrow(IOException.class).when(auditClient).audit(EventType.CREATOR_CASE_CREATED, caseUUID, stageForCaseUUID, json);
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
     }
 

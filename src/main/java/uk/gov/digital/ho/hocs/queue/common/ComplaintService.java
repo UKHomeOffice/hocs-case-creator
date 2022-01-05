@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.client.audit.AuditClient;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
@@ -26,19 +25,16 @@ public class ComplaintService {
     private final WorkflowClient workflowClient;
     private final CaseworkClient caseworkClient;
     private final ClientContext clientContext;
-    private final AuditClient auditClient;
     private final DocumentS3Client documentS3Client;
 
     @Autowired
     public ComplaintService(WorkflowClient workflowClient,
                             CaseworkClient caseworkClient,
                             ClientContext clientContext,
-                            AuditClient auditClient,
                             DocumentS3Client documentS3Client) {
         this.workflowClient = workflowClient;
         this.caseworkClient = caseworkClient;
         this.clientContext = clientContext;
-        this.auditClient = auditClient;
         this.documentS3Client = documentS3Client;
     }
 
@@ -67,15 +63,12 @@ public class ComplaintService {
 
             UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
 
-            auditClient.audit(complaintTypeData.getCreateComplaintEventType(), caseUUID, stageForCaseUUID, complaintData.getRawPayload());
-
             log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageForCaseUUID);
 
             caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
 
             List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
             if (!correspondentsList.isEmpty()) {
-
                 for (ComplaintCorrespondent correspondent : correspondentsList) {
                     caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, correspondent);
                 }
@@ -86,8 +79,6 @@ public class ComplaintService {
 
                 Map<String, String> correspondents = Collections.singletonMap(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
 
-                auditClient.audit(complaintTypeData.getCreateCorrespondentEventType(), caseUUID, stageForCaseUUID, correspondents);
-
                 Map<String, String> complaintType = Collections.singletonMap(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
 
                 HashMap<String, String> data = new HashMap<>();
@@ -97,8 +88,6 @@ public class ComplaintService {
                 caseworkClient.updateCase(caseUUID, stageForCaseUUID, data);
 
                 log.info("createComplaint, case data updated for correspondent and complaint type : caseUUID : {}, complaintType : {}", caseUUID, complaintType);
-
-                auditClient.audit(complaintTypeData.getUpdateCaseEventType(), caseUUID, stageForCaseUUID, data);
             } else {
                 log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
             }
