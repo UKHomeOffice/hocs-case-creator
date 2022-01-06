@@ -13,6 +13,9 @@ server:
   port: 8092
   shutdown: graceful
 
+messages:
+  ignored-types:
+
 aws:
   sqs:
     config:

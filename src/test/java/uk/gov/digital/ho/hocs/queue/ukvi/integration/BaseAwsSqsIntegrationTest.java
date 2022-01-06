@@ -21,7 +21,7 @@ public class BaseAwsSqsIntegrationTest {
     @Value("${aws.sqs.ukvi-complaint.url}")
     protected String queueUrl;
 
-    @Before
+    /*@Before
     public void setup() {
         amazonSQSAsync.purgeQueue(new PurgeQueueRequest(queueUrl));
     }
@@ -29,7 +29,7 @@ public class BaseAwsSqsIntegrationTest {
     @After
     public void teardown() {
         amazonSQSAsync.purgeQueue(new PurgeQueueRequest(queueUrl));
-    }
+    }*/
 
     public int getNumberOfMessagesNotVisibleOnQueue() {
         return getValueFromQueue(queueUrl, APPROXIMATE_NUMBER_OF_MESSAGES_NOT_VISIBLE);
