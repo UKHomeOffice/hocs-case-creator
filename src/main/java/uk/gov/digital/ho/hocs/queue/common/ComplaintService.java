@@ -67,6 +67,9 @@ public class ComplaintService {
 
             caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
 
+            Map<String, String> data = new HashMap<>();
+            data.put(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
+
             List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
             if (!correspondentsList.isEmpty()) {
                 for (ComplaintCorrespondent correspondent : correspondentsList) {
@@ -74,23 +77,14 @@ public class ComplaintService {
                 }
 
                 UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
-
+                data.put(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
                 log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUUID, primaryCorrespondent);
-
-                Map<String, String> correspondents = Collections.singletonMap(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
-
-                Map<String, String> complaintType = Collections.singletonMap(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
-
-                HashMap<String, String> data = new HashMap<>();
-                data.putAll(correspondents);
-                data.putAll(complaintType);
-
-                caseworkClient.updateCase(caseUUID, stageForCaseUUID, data);
-
-                log.info("createComplaint, case data updated for correspondent and complaint type : caseUUID : {}, complaintType : {}", caseUUID, complaintType);
             } else {
                 log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
             }
+
+            caseworkClient.updateCase(caseUUID, stageForCaseUUID, data);
+            log.info("createComplaint, case data updated : caseUUID : {}, complaintType : {}", caseUUID, complaintData.getComplaintType());
 
             caseworkClient.updateStageTeam(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getTeamId()));
 
