@@ -6,6 +6,11 @@ export KUBE_SERVER=${KUBE_SERVER}
 export KUBE_TOKEN=${KUBE_TOKEN}
 export VERSION=${VERSION}
 
+echo
+echo "Deploying hocs-case-creator to ${ENVIRONMENT}"
+echo "Service version: ${VERSION}"
+echo
+
 if [[ ${KUBE_NAMESPACE} == *prod ]]
 then
     export CASE_CREATOR_UKVI_COMPLAINT_USER="TBD"
