@@ -12,6 +12,7 @@ services:
       DEFAULT_REGION: eu-west-2
 
 steps:
+
   - name: setup localstack
     image: quay.io/ukhomeofficedigital/localstack # need curl which is not in alpine
     commands:
@@ -59,7 +60,6 @@ steps:
       registry: quay.io
       repo: quay.io/ukhomeofficedigital/hocs-case-creator
       tags:
-        - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
         - branch-${DRONE_COMMIT_BRANCH/\//_}
     environment:
@@ -84,7 +84,6 @@ steps:
       registry: quay.io
       repo: quay.io/ukhomeofficedigital/hocs-case-creator
       tags:
-        - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
         - latest
     environment:
@@ -117,6 +116,8 @@ trigger:
     exclude:
       - pull_request
       - tag
+clone:
+  disable: true
 
 services:
   - name: docker
@@ -126,6 +127,11 @@ environment:
   DOCKER_HOST: tcp://docker:2375
 
 steps:
+  - name: clone
+    image: alpine/git
+    commands:
+      - git clone https://github.com/UKHomeOffice/hocs-case-creator.git .
+      - git checkout $${VERSION}
 
   - name: deploy to cs-dev
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
@@ -137,7 +143,7 @@ steps:
       KUBE_TOKEN:
         from_secret: hocs_case_creator_cs_dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      VERSION: build_${DRONE_BUILD_NUMBER}
+      VERSION: ${DRONE_COMMIT_SHA}
       CLUSTER_NAME: acp-notprod
     when:
       branch:
@@ -189,8 +195,6 @@ steps:
   - name: deploy to cs-qa
     image: quay.io/ukhomeofficedigital/kd:v1.16.0
     commands:
-      - source version.txt
-      - echo $VERSION
       - cd kube
       - ./deploy.sh
     environment:
