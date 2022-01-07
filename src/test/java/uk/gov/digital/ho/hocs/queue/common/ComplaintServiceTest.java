@@ -18,7 +18,9 @@ import uk.gov.digital.ho.hocs.queue.ukvi.UKVITypeData;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -141,5 +143,18 @@ public class ComplaintServiceTest {
         goodSetup();
         when(caseworkClient.getPrimaryCorrespondent(caseUUID)).thenThrow(new NullPointerException());
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
+    }
+
+    @Test
+    public void createComplaintWithoutCorrespondentShouldSendType() {
+        Map<String, String> caseData  = Collections.singletonMap("ComplaintType", "EXISTING");
+
+        goodSetup();
+        when(workflowClient.createCase(any(CreateCaseRequest.class))).thenReturn(createCaseResponse);
+
+        var noCorrespondentJsonString = getResourceFileAsString("existingNoCorrespondent.json");
+        complaintService.createComplaint(new UKVIComplaintData(noCorrespondentJsonString), complaintTypeData);
+
+        verify(caseworkClient).updateCase(any(), any(), eq(caseData));
     }
 }
