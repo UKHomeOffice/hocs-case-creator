@@ -50,11 +50,11 @@ The following table contains the mandatory and optional properties that need to 
 | Property | Description | Example | Mandatory |
 | -------- | -------- |-------- |-------- |
 | AWS_SQS_CONFIG_REGION | The region for the AWS SQS queue | eu-west-2 | Yes |
-| AWS_SQS_UKVI_COMPLAINT_URL | The full AWS SQS queue URL | http://localhost:4566/queue/ukvi-complaint-queue | Yes |
-| AWS_SQS_UKVI_COMPLAINT_ACCOUNT_ACCESS_KEY | The SQS access key | 12345 | Yes
-| AWS_SQS_UKVI_COMPLAINT_ACCOUNT_SECRET_KEY | The SQS secret key | 12345 | Yes
-| AWS_SQS_UKVI_COMPLAINT_ATTRIBUTE_MAX_MESSAGES | The amount of messages to read at one time | 10 | No |
-| AWS_SQS_UKVI_COMPLAINT_ATTRIBUTE_WAIT_TIME | The poll time for the queue listener | 5 | No |
+| AWS_SQS_CASE_CREATOR_URL | The full AWS SQS queue URL | http://localhost:4566/queue/case-creator-queue | Yes |
+| AWS_SQS_CASE_CREATOR_ACCOUNT_ACCESS_KEY | The SQS access key | 12345 | Yes
+| AWS_SQS_CASE_CREATOR_ACCOUNT_SECRET_KEY | The SQS secret key | 12345 | Yes
+| AWS_SQS_CASE_CREATOR_ATTRIBUTE_MAX_MESSAGES | The amount of messages to read at one time | 10 | No |
+| AWS_SQS_CASE_CREATOR_ATTRIBUTE_WAIT_TIME | The poll time for the queue listener | 5 | No |
 | AWS_SNS_CONFIG_REGION | The region for the AWS SNS queue | eu-west-2 | Yes |
 | AWS_SNS_AUDIT_ACCOUNT_ACCESS_KEY | The SNS access key | 12345 | Yes
 | AWS_SNS_AUDIT_ACCOUNT_SECRET_KEY | The SNS secret key | 12345 | Yes

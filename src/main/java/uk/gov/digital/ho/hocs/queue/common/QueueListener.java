@@ -20,7 +20,7 @@ public class QueueListener {
         this.queueMessageHandlers = queueMessageHandlers;
     }
 
-    @SqsListener(value = "${aws.sqs.ukvi-complaint.url}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+    @SqsListener(value = "${aws.sqs.case-creator.url}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
     public void onComplaintEvent(String message, @Header("MessageId") String messageId) throws Exception {
         for (BaseMessageHandler messageHandler :
                 queueMessageHandlers) {

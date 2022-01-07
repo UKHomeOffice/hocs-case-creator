@@ -15,7 +15,7 @@ public class SqsMessageListenerContainerFactory {
     @Bean
     @Profile("sqs")
     public SimpleMessageListenerContainerFactory awsMessageListenerContainerFactory(AmazonSQSAsync amazonSqs,
-                                                                                       @Value("${aws.sqs.ukvi-complaint.attributes.max-messages}") Integer maxMessages) {
+                                                                                       @Value("${aws.sqs.case-creator.attributes.max-messages}") Integer maxMessages) {
         return createMessageFactory(amazonSqs, maxMessages, null);
     }
 
@@ -23,8 +23,8 @@ public class SqsMessageListenerContainerFactory {
     @Bean
     @Profile("local")
     public SimpleMessageListenerContainerFactory localstackMessageListenerContainerFactory(AmazonSQSAsync amazonSqs,
-                                                                                           @Value("${aws.sqs.ukvi-complaint.attributes.max-messages}") Integer maxMessages,
-                                                                                           @Value("${aws.sqs.ukvi-complaint.attributes.wait-time}") Integer waitTime) {
+                                                                                           @Value("${aws.sqs.case-creator.attributes.max-messages}") Integer maxMessages,
+                                                                                           @Value("${aws.sqs.case-creator.attributes.wait-time}") Integer waitTime) {
         return createMessageFactory(amazonSqs, maxMessages, waitTime);
     }
 
