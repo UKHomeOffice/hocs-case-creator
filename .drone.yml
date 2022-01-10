@@ -116,8 +116,6 @@ trigger:
     exclude:
       - pull_request
       - tag
-clone:
-  disable: true
 
 services:
   - name: docker
@@ -127,10 +125,10 @@ environment:
   DOCKER_HOST: tcp://docker:2375
 
 steps:
-  - name: clone
+  - name: fetch and checkout
     image: alpine/git
     commands:
-      - git clone https://github.com/UKHomeOffice/hocs-case-creator.git .
+      - git fetch --tags
       - git checkout $${VERSION}
 
   - name: deploy to cs-dev
@@ -143,8 +141,10 @@ steps:
       KUBE_TOKEN:
         from_secret: hocs_case_creator_cs_dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      VERSION: ${DRONE_COMMIT_SHA}
+      VERSION: "${DRONE_COMMIT_SHA}"
       CLUSTER_NAME: acp-notprod
+    depends_on:
+      - fetch and checkout
     when:
       branch:
         - main
@@ -186,6 +186,7 @@ steps:
         from_secret: GITHUB_TOKEN
     depends_on:
       - wait for docker
+      - fetch and checkout
     when:
       event:
         - promote
@@ -222,6 +223,8 @@ steps:
         from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       CLUSTER_NAME: acp-notprod
+    depends_on:
+      - fetch and checkout
     when:
       event:
         - promote
@@ -241,6 +244,8 @@ steps:
         from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
       KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
       CLUSTER_NAME: acp-prod
+    depends_on:
+      - fetch and checkout
     when:
       event:
         - promote
