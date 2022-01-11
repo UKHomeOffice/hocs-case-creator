@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue.common;
+package uk.gov.digital.ho.hocs.queue.complaints;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue.ukvi.integration;
+package uk.gov.digital.ho.hocs.queue.common.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.testutil.TestFileReader;
 
@@ -14,8 +15,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringRunner.class)
-@Profile("local")
-public class UKVIComplaintQueueTest extends BaseAwsSqsIntegrationTest {
+@ActiveProfiles("local")
+public class QueueListenerIntegrationTest extends AwsSqsIntegrationTestBase {
 
     @Autowired
     public ObjectMapper objectMapper;

@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue.ukvi;
+package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
@@ -6,8 +6,8 @@ import com.jayway.jsonpath.ReadContext;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.document.JSONToSimpleTextConverter;
-import uk.gov.digital.ho.hocs.queue.common.ComplaintData;
-import uk.gov.digital.ho.hocs.queue.common.CorrespondentType;
+import uk.gov.digital.ho.hocs.queue.complaints.ComplaintData;
+import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 
 import java.io.IOException;
 import java.time.LocalDate;

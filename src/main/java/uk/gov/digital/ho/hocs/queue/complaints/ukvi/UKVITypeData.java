@@ -1,7 +1,7 @@
-package uk.gov.digital.ho.hocs.queue.ukvi;
+package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
 import org.springframework.stereotype.Component;
-import uk.gov.digital.ho.hocs.queue.common.ComplaintTypeData;
+import uk.gov.digital.ho.hocs.queue.complaints.ComplaintTypeData;
 
 @Component
 public class UKVITypeData implements ComplaintTypeData {
