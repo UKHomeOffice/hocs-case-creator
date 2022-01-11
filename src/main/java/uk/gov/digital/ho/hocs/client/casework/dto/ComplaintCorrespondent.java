@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.NonNull;
-import uk.gov.digital.ho.hocs.queue.common.CorrespondentType;
+import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 
 import javax.validation.constraints.NotEmpty;
 

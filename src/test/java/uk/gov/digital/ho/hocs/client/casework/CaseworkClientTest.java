@@ -11,7 +11,7 @@ import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageTeamRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
-import uk.gov.digital.ho.hocs.queue.common.CorrespondentType;
+import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 
 import java.util.UUID;
 

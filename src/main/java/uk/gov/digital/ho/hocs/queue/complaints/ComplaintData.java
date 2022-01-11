@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue.common;
+package uk.gov.digital.ho.hocs.queue.complaints;
 
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 

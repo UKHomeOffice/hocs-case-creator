@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue.common;
+package uk.gov.digital.ho.hocs.queue.complaints;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +13,8 @@ import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
-import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
-import uk.gov.digital.ho.hocs.queue.ukvi.UKVITypeData;
+import uk.gov.digital.ho.hocs.queue.complaints.ukvi.UKVIComplaintData;
+import uk.gov.digital.ho.hocs.queue.complaints.ukvi.UKVITypeData;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -26,8 +26,8 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static uk.gov.digital.ho.hocs.queue.common.ComplaintService.DOCUMENT_TYPE;
-import static uk.gov.digital.ho.hocs.queue.common.ComplaintService.ORIGINAL_FILENAME;
+import static uk.gov.digital.ho.hocs.queue.complaints.ComplaintService.DOCUMENT_TYPE;
+import static uk.gov.digital.ho.hocs.queue.complaints.ComplaintService.ORIGINAL_FILENAME;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
 @RunWith(MockitoJUnitRunner.class)

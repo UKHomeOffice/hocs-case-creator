@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue.ukvi;
+package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
 import org.junit.Before;
 import org.junit.Test;

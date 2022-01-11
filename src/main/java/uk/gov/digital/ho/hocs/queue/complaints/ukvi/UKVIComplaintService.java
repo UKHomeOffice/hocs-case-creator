@@ -1,13 +1,11 @@
-package uk.gov.digital.ho.hocs.queue.ukvi;
+package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.queue.common.ComplaintService;
-
-import java.io.IOException;
+import uk.gov.digital.ho.hocs.queue.complaints.ComplaintService;
 
 @Slf4j
 @Service
