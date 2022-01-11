@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.queue.common;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
 import org.springframework.messaging.handler.annotation.Header;
@@ -33,4 +34,5 @@ public class QueueListener {
             }
         }
     }
+
 }
