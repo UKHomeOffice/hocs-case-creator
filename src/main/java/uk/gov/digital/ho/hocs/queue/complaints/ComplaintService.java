@@ -20,6 +20,7 @@ public class ComplaintService {
 
     public static final String CORRESPONDENTS_LABEL = "Correspondents";
     public static final String COMPLAINT_TYPE_LABEL = "ComplaintType";
+    public static final String CHANNEL_LABEL = "Channel";
     public static final String ORIGINAL_FILENAME = "WebFormContent.txt";
     public static final String DOCUMENT_TYPE = "To document";
     private final WorkflowClient workflowClient;
@@ -69,6 +70,7 @@ public class ComplaintService {
 
             Map<String, String> data = new HashMap<>();
             data.put(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
+            data.put(CHANNEL_LABEL, complaintTypeData.getOrigin());
 
             List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
             if (!correspondentsList.isEmpty()) {

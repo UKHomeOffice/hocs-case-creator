@@ -146,8 +146,10 @@ public class ComplaintServiceTest {
     }
 
     @Test
-    public void createComplaintWithoutCorrespondentShouldSendType() {
-        Map<String, String> caseData  = Collections.singletonMap("ComplaintType", "EXISTING");
+    public void createComplaintWithoutCorrespondentShouldSendTypeAndChannel() {
+        Map<String, String> caseData  = Map.of(
+                "ComplaintType", "EXISTING",
+                "Channel", "Webform");
 
         goodSetup();
         when(workflowClient.createCase(any(CreateCaseRequest.class))).thenReturn(createCaseResponse);

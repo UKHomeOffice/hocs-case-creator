@@ -9,4 +9,10 @@ public class UKVITypeData implements ComplaintTypeData {
     public String getCaseType() {
         return "COMP";
     }
+
+    @Override
+    public String getOrigin() {
+        return "Webform";
+    }
+
 }
