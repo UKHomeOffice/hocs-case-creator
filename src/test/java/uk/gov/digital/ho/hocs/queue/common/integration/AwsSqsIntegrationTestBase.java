@@ -18,7 +18,7 @@ public class AwsSqsIntegrationTestBase {
     @Autowired
     public AmazonSQSAsync amazonSQSAsync;
 
-    @Value("${aws.sqs.ukvi-complaint.url}")
+    @Value("${aws.sqs.case-creator.url}")
     protected String queueUrl;
 
     @Before

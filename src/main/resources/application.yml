@@ -17,7 +17,7 @@ aws:
   sqs:
     config:
       region: eu-west-2
-    ukvi-complaint:
+    case-creator:
       url:
       account:
         access-key:
