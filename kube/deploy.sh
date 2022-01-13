@@ -13,16 +13,13 @@ echo
 
 if [[ ${KUBE_NAMESPACE} == *prod ]]
 then
-    export MIN_REPLICAS="1"
-    export MAX_REPLICAS="2"
-
     export UPTIME_PERIOD="Mon-Sun 05:10-22:50 Europe/London"
 else
-    export MIN_REPLICAS="1"
-    export MAX_REPLICAS="2"
-
     export UPTIME_PERIOD="Mon-Fri 08:10-17:50 Europe/London"
 fi
+
+export MIN_REPLICAS="1"
+export MAX_REPLICAS="2"
 
 export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/${CLUSTER_NAME}.crt"
 
