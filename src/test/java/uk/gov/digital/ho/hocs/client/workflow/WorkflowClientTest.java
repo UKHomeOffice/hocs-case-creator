@@ -22,7 +22,6 @@ import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.when;
 import static uk.gov.digital.ho.hocs.queue.complaints.ComplaintService.DOCUMENT_TYPE;
 import static uk.gov.digital.ho.hocs.queue.complaints.ComplaintService.ORIGINAL_FILENAME;
-import static uk.gov.digital.ho.hocs.queue.complaints.ukvi.UKVIComplaintService.CASE_TYPE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkflowClientTest {
@@ -42,8 +41,9 @@ public class WorkflowClientTest {
         UUID responseUUID = UUID.randomUUID();
         String caseRef = "COMP/0120003/21";
         String s3ObjectName = "8bdc5724-80e4-4fe3-a0a9-1f00262107b0";
+        String caseType = "COMP";
         DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, s3ObjectName);
-        CreateCaseRequest request = new CreateCaseRequest(CASE_TYPE, LocalDate.of(2021, 1, 1), List.of(documentSummary));
+        CreateCaseRequest request = new CreateCaseRequest(caseType, LocalDate.of(2021, 1, 1), List.of(documentSummary));
 
         CreateCaseResponse expectedResponse = new CreateCaseResponse(responseUUID, caseRef);
         ResponseEntity<CreateCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
