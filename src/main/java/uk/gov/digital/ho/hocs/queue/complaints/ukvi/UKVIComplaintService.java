@@ -10,7 +10,7 @@ import uk.gov.digital.ho.hocs.queue.complaints.ComplaintService;
 @Slf4j
 @Service
 public class UKVIComplaintService {
-    public static final String CASE_TYPE = "COMP";
+
     private final ComplaintService complaintService;
     private final ClientContext clientContext;
     private final UKVITypeData ukviTypeData;
@@ -22,9 +22,9 @@ public class UKVIComplaintService {
     public UKVIComplaintService(ComplaintService complaintService,
                                 ClientContext clientContext,
                                 UKVITypeData ukviTypeData,
-                                @Value("${case.creator.ukvi-complaint.user}") String user,
-                                @Value("${case.creator.ukvi-complaint.group}") String group,
-                                @Value("${case.creator.ukvi-complaint.team}") String team) {
+                                @Value("${case.creator.identities.complaints.ukvi.user}") String user,
+                                @Value("${case.creator.identities.complaints.ukvi.group}") String group,
+                                @Value("${case.creator.identities.complaints.ukvi.team}") String team) {
         this.complaintService = complaintService;
         this.clientContext = clientContext;
         this.ukviTypeData = ukviTypeData;

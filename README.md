@@ -69,9 +69,9 @@ The following table contains the mandatory and optional properties that need to 
 | CASE_CREATOR_WORKFLOW_SERVICE | The URL of the workflow service  | http://localhost:8091   | Yes  |
 | CASE_CREATOR_CASE_SERVICE | The URL of the casework service  | http://localhost:8082   | Yes  |
 | CASE_CREATOR_BASICAUTH | The basic auth credentials  | [UNSET]   | Yes  |
-| CASE_CREATOR_UKVI_COMPLAINT_USER | The UKVI System User ID  | UUID   | Yes  |
-| CASE_CREATOR_UKVI_COMPLAINT_GROUP | The UKVI System Group ID  | /CMSMNIAZQXMZQ6IGEKTRWA   | Yes  |
-| CASE_CREATOR_UKVI_COMPLAINT_TEAM | The UKVI System Team ID  | /CMSMNIAZQXMZQ6IGEKTRWA   | Yes  |
+| CASE_CREATOR_IDENTITIES_COMPLAINTS_UKVI_USER | The UKVI System User ID  | UUID   | Yes  |
+| CASE_CREATOR_IDENTITIES_COMPLAINTS_UKVI_GROUP | The UKVI System Group ID  | /CMSMNIAZQXMZQ6IGEKTRWA   | Yes  |
+| CASE_CREATOR_IDENTITIES_COMPLAINTS_UKVI_TEAM | The UKVI System Team ID  | UUID   | Yes  |
 | INFO_NAMESPACE | The kubernetes namespace | local | Yes |
 | SERVER_PORT | The port the server listens on | 8092 | Yes
 

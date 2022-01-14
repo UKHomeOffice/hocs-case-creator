@@ -153,9 +153,6 @@ spec:
               drop:
                 - SETUID
                 - SETGID
-          envFrom:
-            - configMapRef:
-                name: hocs-complaint-identity
           env:
             - name: JAVA_OPTS
               value: '-Xms768m -Xmx768m -Djavax.net.ssl.trustStore=/etc/keystore/truststore.jks -Dhttps.proxyHost=hocs-outbound-proxy.{{.KUBE_NAMESPACE}}.svc.cluster.local -Dhttps.proxyPort=31290 -Dhttp.nonProxyHosts=*.{{.KUBE_NAMESPACE}}.svc.cluster.local'
@@ -213,6 +210,21 @@ spec:
                 secretKeyRef:
                   name: {{.KUBE_NAMESPACE}}-untrusted-s3
                   key: kms_key_id
+            - name: CASE_CREATOR_IDENTITIES_COMPLAINTS_UKVI_GROUP
+              valueFrom:
+                secretKeyRef:
+                  name: hocs-case-creator-identities
+                  key: complaint_ukvi_group
+            - name: CASE_CREATOR_IDENTITIES_COMPLAINTS_UKVI_USER
+              valueFrom:
+                secretKeyRef:
+                  name: hocs-case-creator-identities
+                  key: complaint_ukvi_user
+            - name: CASE_CREATOR_IDENTITIES_COMPLAINTS_UKVI_TEAM
+              valueFrom:
+                secretKeyRef:
+                  name: hocs-case-creator-identities
+                  key: complaint_ukvi_team
           resources:
             limits:
               cpu: 1600m
