@@ -14,7 +14,7 @@ public class UKVIComplaintMessageHandler extends BaseMessageHandler {
     private final UKVIComplaintValidator ukviComplaintValidator;
 
     public UKVIComplaintMessageHandler(
-            @Value("messages.ignored-types") List<String> ignoredMessageTypes,
+            @Value("${message.ignored-types}") List<String> ignoredMessageTypes,
             UKVIComplaintService ukviComplaintService,
             UKVIComplaintValidator ukviComplaintValidator
     ) {
