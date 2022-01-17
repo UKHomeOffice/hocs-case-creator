@@ -174,17 +174,17 @@ spec:
             - name: AWS_SQS_CASE_CREATOR_ACCOUNT_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-ukvi-complaint-sqs
+                  name: {{.SQS_SECRET_NAME}}
                   key: access_key_id
             - name: AWS_SQS_CASE_CREATOR_ACCOUNT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-ukvi-complaint-sqs
+                  name: {{.SQS_SECRET_NAME}}
                   key: secret_access_key
             - name: AWS_SQS_CASE_CREATOR_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{.KUBE_NAMESPACE}}-ukvi-complaint-sqs
+                  name: {{.SQS_SECRET_NAME}}
                   key: sqs_url
             - name: INFO_NAMESPACE
               valueFrom:

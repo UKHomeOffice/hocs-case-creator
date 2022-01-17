@@ -13,8 +13,10 @@ echo
 
 if [[ ${KUBE_NAMESPACE} == *prod ]]
 then
+    export SQS_SECRET_NAME="${ENVIRONMENT}-case-creator-sqs"
     export UPTIME_PERIOD="Mon-Sun 05:10-22:50 Europe/London"
 else
+    export SQS_SECRET_NAME="${ENVIRONMENT}-ukvi-complaint-sqs"
     export UPTIME_PERIOD="Mon-Fri 08:10-17:50 Europe/London"
 fi
 
