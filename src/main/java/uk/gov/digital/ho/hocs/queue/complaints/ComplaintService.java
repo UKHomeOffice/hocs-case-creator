@@ -49,8 +49,8 @@ public class ComplaintService {
 
         DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, untrustedS3ObjectName);
 
-        CreateCaseRequest request = new CreateCaseRequest(complaintTypeData.getCaseType(), complaintData.getDateReceived(), List.of(documentSummary));
-        CreateCaseResponse createCaseResponse = workflowClient.createCase(request);
+        var createRequest = composeCreateCaseRequest(complaintData, complaintTypeData, documentSummary);
+        CreateCaseResponse createCaseResponse = workflowClient.createCase(createRequest);
 
         UUID caseUUID = createCaseResponse.getUuid();
 
@@ -61,16 +61,10 @@ public class ComplaintService {
             point we have the document stored, and the case is created.
          */
         try {
-
             UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
-
             log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageForCaseUUID);
 
             caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
-
-            Map<String, String> data = new HashMap<>();
-            data.put(COMPLAINT_TYPE_LABEL, complaintData.getComplaintType());
-            data.put(CHANNEL_LABEL, complaintTypeData.getOrigin());
 
             List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
             if (!correspondentsList.isEmpty()) {
@@ -79,25 +73,30 @@ public class ComplaintService {
                 }
 
                 UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
-                data.put(CORRESPONDENTS_LABEL, primaryCorrespondent.toString());
                 log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUUID, primaryCorrespondent);
+
+                caseworkClient.updateCase(caseUUID, stageForCaseUUID, Map.of(CORRESPONDENTS_LABEL, primaryCorrespondent.toString()));
+                log.info("createComplaint, case data updated with primary correspondent: caseUUID : {}, primaryCorrespondent : {}", caseUUID, complaintData.getComplaintType());
             } else {
                 log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
             }
 
-            caseworkClient.updateCase(caseUUID, stageForCaseUUID, data);
-            log.info("createComplaint, case data updated : caseUUID : {}, complaintType : {}", caseUUID, complaintData.getComplaintType());
-
             caseworkClient.updateStageTeam(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getTeamId()));
-
             log.info("createComplaint, team updated for case : caseUUID : {}, teamUUID : {}", caseUUID, clientContext.getTeamId());
 
             log.info("createComplaint, completed : caseUUID : {}", caseUUID);
-
         } catch (Exception e) {
             log.warn("Partial case creation for messageId: {}, caseId:{}, untrusted s3 name :{}", clientContext.getCorrelationId(), caseUUID, untrustedS3ObjectName);
             log.warn(e.getMessage());
         }
+    }
+
+    private CreateCaseRequest composeCreateCaseRequest(ComplaintData complaintData, ComplaintTypeData complaintTypeData, DocumentSummary documentSummary) {
+        Map<String, String> initialData = Map.of(
+                COMPLAINT_TYPE_LABEL, complaintData.getComplaintType(),
+                CHANNEL_LABEL, complaintTypeData.getOrigin());
+
+        return new CreateCaseRequest(complaintTypeData.getCaseType(), complaintData.getDateReceived(), List.of(documentSummary), initialData);
     }
 
 }

@@ -43,7 +43,7 @@ public class WorkflowClientTest {
         String s3ObjectName = "8bdc5724-80e4-4fe3-a0a9-1f00262107b0";
         String caseType = "COMP";
         DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, s3ObjectName);
-        CreateCaseRequest request = new CreateCaseRequest(caseType, LocalDate.of(2021, 1, 1), List.of(documentSummary));
+        CreateCaseRequest request = new CreateCaseRequest(caseType, LocalDate.of(2021, 1, 1), List.of(documentSummary), Map.of());
 
         CreateCaseResponse expectedResponse = new CreateCaseResponse(responseUUID, caseRef);
         ResponseEntity<CreateCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);

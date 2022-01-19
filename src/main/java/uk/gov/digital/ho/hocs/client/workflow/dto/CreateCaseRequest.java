@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,5 +24,8 @@ public class CreateCaseRequest {
 
     @JsonProperty("documents")
     private List<DocumentSummary> documents;
+
+    @JsonProperty("data")
+    private Map<String, String> data;
 
 }
