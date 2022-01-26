@@ -69,7 +69,7 @@ public class ComplaintServiceTest {
         primaryCorrespondent = UUID.randomUUID();
         complaintTypeData = new UKVITypeData();
         DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, s3ObjectName);
-        createCaseRequest = new CreateCaseRequest(complaintTypeData.getCaseType(), receivedDate, List.of(documentSummary));
+        createCaseRequest = new CreateCaseRequest(complaintTypeData.getCaseType(), receivedDate, List.of(documentSummary), Map.of("ComplaintType", "POOR_STAFF_BEHAVIOUR", "Channel", "Webform"));
         createCaseResponse = new CreateCaseResponse(caseUUID, decsReference);
         user = UUID.randomUUID().toString();
         when(clientContext.getUserId()).thenReturn(user);
@@ -143,20 +143,5 @@ public class ComplaintServiceTest {
         goodSetup();
         when(caseworkClient.getPrimaryCorrespondent(caseUUID)).thenThrow(new NullPointerException());
         complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
-    }
-
-    @Test
-    public void createComplaintWithoutCorrespondentShouldSendTypeAndChannel() {
-        Map<String, String> caseData  = Map.of(
-                "ComplaintType", "EXISTING",
-                "Channel", "Webform");
-
-        goodSetup();
-        when(workflowClient.createCase(any(CreateCaseRequest.class))).thenReturn(createCaseResponse);
-
-        var noCorrespondentJsonString = getResourceFileAsString("existingNoCorrespondent.json");
-        complaintService.createComplaint(new UKVIComplaintData(noCorrespondentJsonString), complaintTypeData);
-
-        verify(caseworkClient).updateCase(any(), any(), eq(caseData));
     }
 }
