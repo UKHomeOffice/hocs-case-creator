@@ -23,6 +23,7 @@ public class ComplaintService {
     public static final String CHANNEL_LABEL = "Channel";
     public static final String ORIGINAL_FILENAME = "WebFormContent.txt";
     public static final String DOCUMENT_TYPE = "To document";
+    public static final String ORIGINATED_FROM_LABEL = "XOriginatedFrom";
     private final WorkflowClient workflowClient;
     private final CaseworkClient caseworkClient;
     private final ClientContext clientContext;
@@ -94,7 +95,8 @@ public class ComplaintService {
     private CreateCaseRequest composeCreateCaseRequest(ComplaintData complaintData, ComplaintTypeData complaintTypeData, DocumentSummary documentSummary) {
         Map<String, String> initialData = Map.of(
                 COMPLAINT_TYPE_LABEL, complaintData.getComplaintType(),
-                CHANNEL_LABEL, complaintTypeData.getOrigin());
+                CHANNEL_LABEL, complaintTypeData.getOrigin(),
+                ORIGINATED_FROM_LABEL, complaintTypeData.getOrigin());
 
         return new CreateCaseRequest(complaintTypeData.getCaseType(), complaintData.getDateReceived(), List.of(documentSummary), initialData);
     }
