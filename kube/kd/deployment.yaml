@@ -225,6 +225,8 @@ spec:
                 secretKeyRef:
                   name: hocs-case-creator-identities
                   key: complaint_ukvi_team
+            - name: MESSAGE_IGNORED_TYPES
+              value: {{.MESSAGE_IGNORED_TYPES}}
           resources:
             limits:
               cpu: 1600m
