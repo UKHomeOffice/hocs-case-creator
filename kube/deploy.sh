@@ -14,6 +14,7 @@ echo
 if [[ ${KUBE_NAMESPACE} == *prod ]]
 then
     export UPTIME_PERIOD="Mon-Sun 05:10-22:50 Europe/London"
+    export MESSAGE_IGNORED_TYPES=UKVI_COMPLAINTS
 else
     export UPTIME_PERIOD="Mon-Fri 08:10-17:50 Europe/London"
     export MESSAGE_IGNORED_TYPES=''
