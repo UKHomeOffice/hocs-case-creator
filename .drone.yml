@@ -25,7 +25,7 @@ steps:
   - name: build project
     image: quay.io/ukhomeofficedigital/hocs-base-image-build
     commands:
-      - ./gradlew assemble --no-daemon
+      - ./gradlew clean assemble --no-daemon
     environment:
       ARTIFACTORY_TOKEN:
         from_secret: ARTIFACTORY_TOKEN
