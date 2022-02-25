@@ -1,13 +1,11 @@
-package uk.gov.digital.ho.hocs.queue.ukvi;
+package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
 import org.junit.Test;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
-import uk.gov.digital.ho.hocs.queue.common.ComplaintData;
-import uk.gov.digital.ho.hocs.queue.common.CorrespondentType;
-import uk.gov.digital.ho.hocs.queue.ukvi.UKVIComplaintData;
+import uk.gov.digital.ho.hocs.queue.complaints.ComplaintData;
+import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

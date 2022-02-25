@@ -18,7 +18,7 @@ public class SQSSender {
 
     public static void main(String[] args) {
         AmazonSQS sqs = sqsClient();
-        String QUEUE_NAME = "ukvi-complaint-queue";
+        String QUEUE_NAME = "case-creator-queue";
         String queueUrl = sqs.getQueueUrl(QUEUE_NAME).getQueueUrl();
         System.out.println(queueUrl);
 

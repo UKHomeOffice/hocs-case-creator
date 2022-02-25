@@ -1,18 +1,16 @@
-package uk.gov.digital.ho.hocs.queue.ukvi;
+package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.queue.common.ComplaintService;
-
-import java.io.IOException;
+import uk.gov.digital.ho.hocs.queue.complaints.ComplaintService;
 
 @Slf4j
 @Service
 public class UKVIComplaintService {
-    public static final String CASE_TYPE = "COMP";
+
     private final ComplaintService complaintService;
     private final ClientContext clientContext;
     private final UKVITypeData ukviTypeData;
@@ -24,9 +22,9 @@ public class UKVIComplaintService {
     public UKVIComplaintService(ComplaintService complaintService,
                                 ClientContext clientContext,
                                 UKVITypeData ukviTypeData,
-                                @Value("${case.creator.ukvi-complaint.user}") String user,
-                                @Value("${case.creator.ukvi-complaint.group}") String group,
-                                @Value("${case.creator.ukvi-complaint.team}") String team) {
+                                @Value("${case.creator.identities.complaints.ukvi.user}") String user,
+                                @Value("${case.creator.identities.complaints.ukvi.group}") String group,
+                                @Value("${case.creator.identities.complaints.ukvi.team}") String team) {
         this.complaintService = complaintService;
         this.clientContext = clientContext;
         this.ukviTypeData = ukviTypeData;

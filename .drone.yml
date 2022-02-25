@@ -8,17 +8,17 @@ services:
   - name: localstack
     image: quay.io/ukhomeofficedigital/localstack
     environment:
-      SERVICES: sqs,sns,s3
+      SERVICES: sqs,s3
       DEFAULT_REGION: eu-west-2
 
 steps:
+
   - name: setup localstack
     image: quay.io/ukhomeofficedigital/localstack # need curl which is not in alpine
     commands:
       - cd config/localstack
       - ./1-setup-sqs.sh
-      - ./2-setup-sns.sh
-      - ./3-setup-s3.sh
+      - ./2-setup-s3.sh
     depends_on:
       - clone
 
@@ -60,7 +60,6 @@ steps:
       registry: quay.io
       repo: quay.io/ukhomeofficedigital/hocs-case-creator
       tags:
-        - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
     environment:
       DOCKER_PASSWORD:
@@ -125,9 +124,14 @@ environment:
   DOCKER_HOST: tcp://docker:2375
 
 steps:
+  - name: fetch and checkout
+    image: alpine/git
+    commands:
+      - git fetch --tags
+      - git checkout $${VERSION}
 
   - name: deploy to cs-dev
-    image: quay.io/ukhomeofficedigital/kd:v1.16.0
+    image: quay.io/ukhomeofficedigital/kd:v1.19.13
     commands:
       - cd kube
       - ./deploy.sh
@@ -136,8 +140,10 @@ steps:
       KUBE_TOKEN:
         from_secret: hocs_case_creator_cs_dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      VERSION: build_${DRONE_BUILD_NUMBER}
+      VERSION: "${DRONE_COMMIT_SHA}"
       CLUSTER_NAME: acp-notprod
+    depends_on:
+      - fetch and checkout
     when:
       branch:
         - main
@@ -179,6 +185,7 @@ steps:
         from_secret: GITHUB_TOKEN
     depends_on:
       - wait for docker
+      - fetch and checkout
     when:
       event:
         - promote
@@ -186,10 +193,8 @@ steps:
         - release
 
   - name: deploy to cs-qa
-    image: quay.io/ukhomeofficedigital/kd:v1.16.0
+    image: quay.io/ukhomeofficedigital/kd:v1.19.13
     commands:
-      - source version.txt
-      - echo $VERSION
       - cd kube
       - ./deploy.sh
     environment:
@@ -207,7 +212,7 @@ steps:
       - generate & tag build
 
   - name: deploy to not prod
-    image: quay.io/ukhomeofficedigital/kd:v1.16.0
+    image: quay.io/ukhomeofficedigital/kd:v1.19.13
     commands:
       - cd kube
       - ./deploy.sh
@@ -217,6 +222,8 @@ steps:
         from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       CLUSTER_NAME: acp-notprod
+    depends_on:
+      - fetch and checkout
     when:
       event:
         - promote
@@ -226,7 +233,7 @@ steps:
           - "*-prod"
 
   - name: deploy to prod
-    image: quay.io/ukhomeofficedigital/kd:v1.16.0
+    image: quay.io/ukhomeofficedigital/kd:v1.19.13
     commands:
       - cd kube
       - ./deploy.sh
@@ -236,6 +243,8 @@ steps:
         from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
       KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
       CLUSTER_NAME: acp-prod
+    depends_on:
+      - fetch and checkout
     when:
       event:
         - promote

@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue.ukvi.integration;
+package uk.gov.digital.ho.hocs.queue.common.integration;
 
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.model.PurgeQueueRequest;
@@ -11,14 +11,14 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 @ActiveProfiles("local")
-public class BaseAwsSqsIntegrationTest {
+public class AwsSqsIntegrationTestBase {
 
     private static final String APPROXIMATE_NUMBER_OF_MESSAGES_NOT_VISIBLE = "ApproximateNumberOfMessagesNotVisible";
 
     @Autowired
     public AmazonSQSAsync amazonSQSAsync;
 
-    @Value("${aws.sqs.ukvi-complaint.url}")
+    @Value("${aws.sqs.case-creator.url}")
     protected String queueUrl;
 
     @Before
