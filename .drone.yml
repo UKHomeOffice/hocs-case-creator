@@ -14,7 +14,7 @@ services:
 steps:
 
   - name: setup localstack
-    image: quay.io/ukhomeofficedigital/localstack # need curl which is not in alpine
+    image: quay.io/ukhomeofficedigital/localstack
     commands:
       - cd config/localstack
       - ./1-setup-sqs.sh
@@ -23,7 +23,7 @@ steps:
       - clone
 
   - name: build project
-    image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
+    image: quay.io/ukhomeofficedigital/hocs-base-image-build
     commands:
       - ./gradlew assemble --no-daemon
     environment:
@@ -35,9 +35,9 @@ steps:
       - setup localstack
 
   - name: test project
-    image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
+    image: quay.io/ukhomeofficedigital/hocs-base-image-build
     commands:
-      - ./gradlew check --no-daemon
+      - ./gradlew check
     environment:
       ARTIFACTORY_TOKEN:
         from_secret: ARTIFACTORY_TOKEN
