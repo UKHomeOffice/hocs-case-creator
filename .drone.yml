@@ -23,7 +23,7 @@ steps:
       - clone
 
   - name: build project
-    image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
+    image: quay.io/ukhomeofficedigital/hocs-base-image
     commands:
       - ./gradlew assemble --no-daemon
     environment:
@@ -35,7 +35,7 @@ steps:
       - setup localstack
 
   - name: test project
-    image: quay.io/ukhomeofficedigital/openjdk11:v11.0.5_10
+    image: quay.io/ukhomeofficedigital/hocs-base-image
     commands:
       - ./gradlew check --no-daemon
     environment:
@@ -62,7 +62,6 @@ steps:
       tags:
         - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
-        - branch-${DRONE_COMMIT_BRANCH/\//_}
     environment:
       DOCKER_PASSWORD:
         from_secret: QUAY_ROBOT_TOKEN
@@ -85,7 +84,6 @@ steps:
       registry: quay.io
       repo: quay.io/ukhomeofficedigital/hocs-case-creator
       tags:
-        - build_${DRONE_BUILD_NUMBER}
         - ${DRONE_COMMIT_SHA}
         - latest
     environment:

@@ -6,7 +6,6 @@ plugins {
 }
 
 group 'uk.gov.digital.ho.hocs'
-version '1.0-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
