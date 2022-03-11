@@ -83,3 +83,7 @@ the build as a dependency in the gradle file.
 
 For local development, build the schema locally and publish
 to a Maven local repository. View the README in `hocs-ukvi-complaint-schema` for more information.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
