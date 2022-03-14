@@ -5,6 +5,7 @@ export KUBE_NAMESPACE=${ENVIRONMENT}
 export KUBE_SERVER=${KUBE_SERVER}
 export KUBE_TOKEN=${KUBE_TOKEN}
 export VERSION=${VERSION}
+export CLUSTER_NAME=${CLUSTER_NAME}
 
 echo
 echo "Deploying hocs-case-creator to ${ENVIRONMENT}"
