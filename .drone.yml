@@ -232,6 +232,7 @@ steps:
       KUBE_TOKEN:
         from_secret: hocs_case_creator_cs_dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      CLUSTER_NAME: acp-notprod
       VERSION: "${DRONE_TAG}"
     depends_on:
       - clone
@@ -246,6 +247,7 @@ steps:
       KUBE_TOKEN:
         from_secret: hocs_case_creator_wcs_dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      CLUSTER_NAME: acp-notprod
       VERSION: "${DRONE_TAG}"
     depends_on:
       - clone
