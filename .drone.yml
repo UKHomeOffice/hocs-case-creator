@@ -92,23 +92,6 @@ steps:
     depends_on:
       - fetch and checkout
 
-  - name: deploy to wcs-qa
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: wcs-qa
-      KUBE_TOKEN:
-        from_secret: hocs_case_creator_wcs_qa
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      CLUSTER_NAME: acp-notprod
-    when:
-      target:
-        - release
-    depends_on:
-      - fetch and checkout
-
   - name: deploy to not prod
     image: quay.io/ukhomeofficedigital/kd
     commands:
@@ -246,21 +229,6 @@ steps:
       ENVIRONMENT: cs-dev
       KUBE_TOKEN:
         from_secret: hocs_case_creator_cs_dev
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      CLUSTER_NAME: acp-notprod
-      VERSION: "${DRONE_TAG}"
-    depends_on:
-      - clone
-
-  - name: deploy to wcs-dev
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: wcs-dev
-      KUBE_TOKEN:
-        from_secret: hocs_case_creator_wcs_dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       CLUSTER_NAME: acp-notprod
       VERSION: "${DRONE_TAG}"
