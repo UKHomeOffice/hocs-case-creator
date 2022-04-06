@@ -9,3 +9,6 @@
 *.iml
 *.ipr
 /out/
+
+### VS Code ###
+/bin/
