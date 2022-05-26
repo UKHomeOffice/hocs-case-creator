@@ -27,7 +27,7 @@ steps:
       - clone
 
   - name: build and test project
-    image: quay.io/ukhomeofficedigital/hocs-base-image-build:1.0.2
+    image: quay.io/ukhomeofficedigital/hocs-base-image-build:1.0.5
     commands:
       - ./gradlew clean build --no-daemon
     environment:
@@ -158,7 +158,7 @@ steps:
       - clone
 
   - name: build and test project
-    image: quay.io/ukhomeofficedigital/hocs-base-image-build:1.0.2
+    image: quay.io/ukhomeofficedigital/hocs-base-image-build:1.0.5
     commands:
       - ./gradlew clean build --no-daemon
     environment:
