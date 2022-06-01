@@ -31,10 +31,8 @@ steps:
     commands:
       - ./gradlew clean build --no-daemon
     environment:
-      ARTIFACTORY_TOKEN:
-        from_secret: ARTIFACTORY_TOKEN
-      ARTIFACTORY_USER:
-        from_secret: ARTIFACTORY_USER
+      PACKAGE_TOKEN:
+        from_secret: PACKAGE_TOKEN
       LOCALSTACK_CONFIG_HOST: "localstack"
     depends_on:
       - setup localstack
@@ -162,10 +160,8 @@ steps:
     commands:
       - ./gradlew clean build --no-daemon
     environment:
-      ARTIFACTORY_TOKEN:
-        from_secret: ARTIFACTORY_TOKEN
-      ARTIFACTORY_USER:
-        from_secret: ARTIFACTORY_USER
+      PACKAGE_TOKEN:
+        from_secret: PACKAGE_TOKEN
       LOCALSTACK_CONFIG_HOST: "localstack"
     depends_on:
       - setup localstack
