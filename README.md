@@ -10,16 +10,13 @@
 
 ### Prerequisites
 
-* ```Java 11```
+* ```Java 17```
 * ```Docker```
 * ```LocalStack```
 
 ### Local Development
 
 This service has a dependency on the workflow and casework services. 
-
-There is also a small java client `src/test/java/uk/gov/digital/ho/hocs/clientutil/SQSSender.java`. This can be used for
-sending messages to the local queue.
 
 In order to run the service locally, LocalStack is required. We have provided an [docker-compose.yml](docker-compose.yml) file to support this.
 
@@ -83,6 +80,14 @@ the build as a dependency in the gradle file.
 
 For local development, build the schema locally and publish
 to a Maven local repository. View the README in `hocs-ukvi-complaint-schema` for more information.
+
+## Versioning
+
+For versioning this project uses SemVer.
+
+## Authors
+
+This project is authored by the Home Office.
 
 ## License
 
