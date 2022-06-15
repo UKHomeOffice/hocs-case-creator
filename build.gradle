@@ -54,7 +54,7 @@ dependencies {
 
     implementation 'uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:1.0.1'
 
-    implementation 'com.networknt:json-schema-validator:1.0.70'
+    implementation 'com.networknt:json-schema-validator:1.0.71'
     implementation 'com.jayway.jsonpath:json-path:2.7.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.apache.commons:commons-text:1.9'
