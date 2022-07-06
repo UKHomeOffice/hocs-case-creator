@@ -45,5 +45,6 @@ then
   export PORT=10943
   kd --timeout 10m \
       -f deployment.yaml \
+      -f service.yaml \
       -f autoscale.yaml
 fi
