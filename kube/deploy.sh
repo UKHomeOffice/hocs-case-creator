@@ -38,6 +38,8 @@ kd --timeout 10m \
 
 if [[ ${KUBE_NAMESPACE} == *dev* ]]
 then
+  echo "Deploying hocs-case-migrator to ${ENVIRONMENT}"
+  echo "Service version: ${VERSION}"
   export DEPLOYMENT_TYPE="migrator"
   export SQS_SECRET_NAME="case-migrator-sqs"
   export PORT=10943
