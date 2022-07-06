@@ -136,7 +136,7 @@ spec:
               readOnly: true
           ports:
             - name: https
-              containerPort: 10443
+              containerPort: {{.PORT}}
           resources:
             limits:
               memory: 96Mi
