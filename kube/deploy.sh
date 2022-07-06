@@ -11,7 +11,7 @@ export SQS_SECRET_NAME=${SQS_SECRET_NAME:-case-creator-sqs}
 export PORT=${CASE_CREATOR_PORT:-10443}
 
 echo
-echo "Deploying hocs-case-creator to ${ENVIRONMENT}"
+echo "Deploying hocs-case-${DEPLOYMENT_TYPE} to ${ENVIRONMENT}"
 echo "Service version: ${VERSION}"
 echo
 
