@@ -6,9 +6,9 @@ export KUBE_SERVER=${KUBE_SERVER}
 export KUBE_TOKEN=${KUBE_TOKEN}
 export VERSION=${VERSION}
 export CLUSTER_NAME=${CLUSTER_NAME}
-export DEPLOYMENT_TYPE="creator"
-export SQS_SECRET_NAME="case-creator-sqs"
-export PORT=10443
+export DEPLOYMENT_TYPE=${DEPLOYMENT_TYPE:-creator}
+export SQS_SECRET_NAME=${SQS_SECRET_NAME:-case-creator-sqs}
+export PORT=${CASE_CREATOR_PORT:-10443}
 
 echo
 echo "Deploying hocs-case-creator to ${ENVIRONMENT}"
@@ -36,15 +36,3 @@ kd --timeout 10m \
     -f service.yaml \
     -f autoscale.yaml
 
-if [[ ${KUBE_NAMESPACE} == *dev* ]]
-then
-  echo "Deploying hocs-case-migrator to ${ENVIRONMENT}"
-  echo "Service version: ${VERSION}"
-  export DEPLOYMENT_TYPE="migrator"
-  export SQS_SECRET_NAME="case-migrator-sqs"
-  export PORT=10943
-  kd --timeout 10m \
-      -f deployment.yaml \
-      -f service.yaml \
-      -f autoscale.yaml
-fi
