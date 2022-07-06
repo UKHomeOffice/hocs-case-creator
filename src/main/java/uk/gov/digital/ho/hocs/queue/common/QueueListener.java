@@ -32,6 +32,13 @@ public class QueueListener {
                     log.warn("Message flagged to ignore: {}", messageId);
                 }
             }
+            if (messageHandler.getMessageType().equals(MessageTypes.MIGRATED_CASES)) {
+                if (!messageHandler.shouldIgnoreMessage()) {
+                    messageHandler.handleMessage(message, messageId);
+                } else {
+                    log.warn("Message flagged to ignore: {}", messageId);
+                }
+            }
         }
     }
 
