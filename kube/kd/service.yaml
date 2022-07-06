@@ -11,4 +11,4 @@ spec:
     port: 443
     targetPort: {{.PORT}}
   selector:
-    name: hocs-case-creator
+    name: hocs-case-{{.DEPLOYMENT_TYPE}}
