@@ -34,4 +34,3 @@ kd --timeout 10m \
     -f deployment.yaml \
     -f service.yaml \
     -f autoscale.yaml
-
