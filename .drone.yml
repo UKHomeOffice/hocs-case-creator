@@ -253,7 +253,6 @@ steps:
       ENVIRONMENT: cs-dev
       DEPLOYMENT_TYPE: migrator
       SQS_SECRET_NAME: case-migrator-sqs
-      CASE_CREATOR_PORT: 8080
       KUBE_TOKEN:
         from_secret: hocs_case_creator_cs_dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
