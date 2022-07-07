@@ -1,0 +1,128 @@
+{
+  "scehma": "http://json-schema.org/draft-04/schema#",
+  "title": "CMS DECS Migration",
+  "description": "The message format for extracted CMS cases to be created in DECS.",
+  "definitions": {
+    "caseDataItem": {
+      "description": "Key value pair for one item of CMS data.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "cmsCaseData": {
+      "description": "Array of CMS Data items",
+      "type": "array",
+      "items": {
+        "oneOf" : [
+          {
+        "$ref": "#/definitions/cmsCaseDataItem"
+          }]
+      }
+    },
+    "attachment": {
+      "description": "A single attachment",
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "Path to document in untrusted bucket",
+          "type": "string"
+        },
+        "label": {
+          "description": "Label",
+          "type": "string"
+        },
+        "documentType": {
+          "description": "The document type",
+          "type": "string"
+        }
+      }
+    },
+    "caseAttachments": {
+      "description": "Attachments for the CMS case",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/definitions/attachment"
+          }
+        ]
+      }
+    },
+    "cmsCase": {
+      "description": "All the data for a CMS case",
+      "type": "object",
+      "required": [
+        "caseType",
+        "sourceCaseId",
+        "correspondentName",
+        "correspondenceEmail",
+        "caseStatus",
+        "caseStatusDate",
+        "creationDate",
+        "caseData",
+        "caseAttachments"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "caseType": {
+          "type":"string"
+        },
+        "sourceCaseId": {
+          "type":"string"
+        },
+        "correspondentName": {
+          "type":"string"
+        },
+        "correspondenceEmail": {
+          "type":"string"
+        },
+        "caseStatus": {
+          "type":"string"
+        },
+        "caseStatusDate": {
+          "type":"string",
+          "format": "date"
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "caseData": {
+          "anyOf" : [
+            {
+            "$ref": "#/definitions/cmsCaseData"
+            }
+          ]
+        },
+        "caseAttachments": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/caseAttachments"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "type": "object",
+  "required": [
+    "messageType",
+    "scase"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "messageType": {
+      "type":"string"
+    },
+    "case": {
+      "anyOf" : [
+        {
+        "$ref": "#/definitions/cmsCase"
+        }
+      ]
+    }
+  }
+}
