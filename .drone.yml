@@ -231,19 +231,6 @@ steps:
     depends_on:
       - clone
 
----
-kind: pipeline
-type: kubernetes
-name: migration deploy tag
-trigger:
-  event:
-    - tag
-  branch:
-    - main
-depends_on:
-  - build tag
-
-steps:
   - name: deploy migrator to cs-dev
     image: quay.io/ukhomeofficedigital/kd
     commands:
@@ -260,3 +247,4 @@ steps:
       VERSION: "${DRONE_TAG}"
     depends_on:
       - clone
+---
