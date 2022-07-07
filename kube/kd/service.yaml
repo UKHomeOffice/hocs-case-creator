@@ -9,6 +9,6 @@ spec:
   ports:
   - name: https
     port: 443
-    targetPort: {{.PORT}}
+    targetPort: 10443
   selector:
     name: hocs-case-{{.DEPLOYMENT_TYPE}}

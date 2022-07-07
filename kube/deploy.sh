@@ -8,7 +8,6 @@ export VERSION=${VERSION}
 export CLUSTER_NAME=${CLUSTER_NAME}
 export DEPLOYMENT_TYPE=${DEPLOYMENT_TYPE:-creator}
 export SQS_SECRET_NAME=${SQS_SECRET_NAME:-case-creator-sqs}
-export PORT=${CASE_CREATOR_PORT:-10443}
 
 echo
 echo "Deploying hocs-case-${DEPLOYMENT_TYPE} to ${ENVIRONMENT}"
