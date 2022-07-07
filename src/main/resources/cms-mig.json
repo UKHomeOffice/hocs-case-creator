@@ -1,5 +1,5 @@
 {
-  "scehma": "h$schema": "https://json-schema.org/draft/2019-09/schema",
+  "scehma": "https://json-schema.org/draft/2019-09/schema",
   "title": "CMS DECS Migration",
   "description": "The message format for extracted CMS cases to be created in DECS.",
   "definitions": {
