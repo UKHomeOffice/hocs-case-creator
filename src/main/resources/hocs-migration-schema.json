@@ -6,11 +6,13 @@
     "caseDataItem": {
       "description": "Key value pair for one item of case data.",
       "type": "array",
-      "items": {
-        "type": "string"
-      },
       "minItems": 2,
-      "maxItems": 2
+      "maxItems": 2,
+      "prefixItems": [
+        { "type": "string" },
+        { "type": "string" }
+      ],
+      "items": false
     },
     "caseData": {
       "description": "Array of case Data items",
