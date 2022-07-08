@@ -6,9 +6,11 @@ export KUBE_SERVER=${KUBE_SERVER}
 export KUBE_TOKEN=${KUBE_TOKEN}
 export VERSION=${VERSION}
 export CLUSTER_NAME=${CLUSTER_NAME}
+export DEPLOYMENT_TYPE=${DEPLOYMENT_TYPE:-creator}
+export SQS_SECRET_NAME=${SQS_SECRET_NAME:-case-creator-sqs}
 
 echo
-echo "Deploying hocs-case-creator to ${ENVIRONMENT}"
+echo "Deploying hocs-case-${DEPLOYMENT_TYPE} to ${ENVIRONMENT}"
 echo "Service version: ${VERSION}"
 echo
 

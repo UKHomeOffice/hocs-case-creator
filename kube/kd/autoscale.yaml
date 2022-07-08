@@ -2,13 +2,13 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   labels:
-    app: hocs-case-creator
-  name: hocs-case-creator
+    app: hocs-case-{{.DEPLOYMENT_TYPE}}
+  name: hocs-case-{{.DEPLOYMENT_TYPE}}
 spec:
   maxReplicas: {{.MAX_REPLICAS}}
   minReplicas: {{.MIN_REPLICAS}}
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: hocs-case-creator
+    name: hocs-case-{{.DEPLOYMENT_TYPE}}
   targetCPUUtilizationPercentage: 70
