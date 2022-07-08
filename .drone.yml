@@ -247,4 +247,3 @@ steps:
       VERSION: "${DRONE_TAG}"
     depends_on:
       - clone
-
