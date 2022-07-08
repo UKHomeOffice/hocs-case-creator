@@ -1,10 +1,10 @@
 {
   "schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "CMS DECS Migration",
-  "description": "The message format for extracted CMS cases to be created in DECS.",
+  "title": "DECS Migration",
+  "description": "The message format for extracted cases to be created in DECS.",
   "definitions": {
     "caseDataItem": {
-      "description": "Key value pair for one item of CMS data.",
+      "description": "Key value pair for one item of case data.",
       "type": "array",
       "items": {
         "type": "string"
@@ -12,13 +12,13 @@
       "minItems": 2,
       "maxItems": 2
     },
-    "cmsCaseData": {
-      "description": "Array of CMS Data items",
+    "caseData": {
+      "description": "Array of case Data items",
       "type": "array",
       "items": {
         "oneOf" : [
           {
-        "$ref": "#/definitions/cmsCaseDataItem"
+        "$ref": "#/definitions/caseDataItem"
           }]
       }
     },
@@ -41,7 +41,7 @@
       }
     },
     "caseAttachments": {
-      "description": "Attachments for the CMS case",
+      "description": "Attachments for the case",
       "type": "array",
       "items": {
         "oneOf": [
@@ -51,8 +51,8 @@
         ]
       }
     },
-    "cmsCase": {
-      "description": "All the data for a CMS case",
+    "case": {
+      "description": "All the data for a case",
       "type": "object",
       "required": [
         "caseType",
@@ -93,7 +93,7 @@
         "caseData": {
           "anyOf" : [
             {
-            "$ref": "#/definitions/cmsCaseData"
+            "$ref": "#/definitions/caseData"
             }
           ]
         },
@@ -120,7 +120,7 @@
     "case": {
       "anyOf" : [
         {
-        "$ref": "#/definitions/cmsCase"
+        "$ref": "#/definitions/case"
         }
       ]
     }
