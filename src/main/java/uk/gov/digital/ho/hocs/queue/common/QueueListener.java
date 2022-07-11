@@ -32,6 +32,14 @@ public class QueueListener {
                     log.warn("Message flagged to ignore: {}", messageId);
                 }
             }
+        }
+    }
+
+    @SqsListener(value = "${aws.sqs.case-migrator.url}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+    public void onMigrationEvent(String message, @Header("MessageId") String messageId) throws Exception {
+        for (BaseMessageHandler messageHandler :
+                queueMessageHandlers) {
+
             if (messageHandler.getMessageType().equals(MessageTypes.MIGRATED_CASES)) {
                 if (!messageHandler.shouldIgnoreMessage()) {
                     messageHandler.handleMessage(message, messageId);
@@ -41,5 +49,6 @@ public class QueueListener {
             }
         }
     }
+
 
 }

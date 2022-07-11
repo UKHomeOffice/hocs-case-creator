@@ -1,7 +1,8 @@
 package uk.gov.digital.ho.hocs.queue.common;
 
 public enum MessageTypes {
-    UKVI_COMPLAINTS("UKVI_COMPLAINTS"), MIGRATED_CASES("MIGRATED_COMPLAINTS");
+    UKVI_COMPLAINTS("UKVI_COMPLAINTS"),
+    MIGRATED_CASES("MIGRATED_CASES");
 
     private final String messageType;
 
