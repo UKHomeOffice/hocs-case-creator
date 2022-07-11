@@ -9,7 +9,7 @@ localstack:
 aws:
   sqs:
     case-migrator:
-      url: ${localstack.base-url}/queue/ukvi-complaint-queue
+      url: ${localstack.base-url}/queue/hocs-migrator-queue
       account:
         access-key: 12345
         secret-key: 12345

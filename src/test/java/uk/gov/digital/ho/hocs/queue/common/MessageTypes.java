@@ -2,7 +2,8 @@ package uk.gov.digital.ho.hocs.queue.common;
 
 public enum MessageTypes {
     UKVI_COMPLAINTS("UKVI_COMPLAINTS"),
-    UNKNOWN("UNKNOWN");
+    UNKNOWN("UNKNOWN"),
+    MIGRATED_CASES("MIGRATED_COMPLAINTS");;
 
     private final String messageType;
 
