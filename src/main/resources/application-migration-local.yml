@@ -9,7 +9,7 @@ localstack:
 aws:
   sqs:
     case-migrator:
-      url: ${localstack.base-url}/queue/hocs-migrator-queue
+      url: ${localstack.base-url}/queue/migration-queue
       account:
         access-key: 12345
         secret-key: 12345
@@ -27,13 +27,3 @@ aws:
         bucket-kms-key:
       bucket-name: untrusted-bucket
 
-case:
-  creator:
-    basicauth: UNSET
-    case-service: http://localhost:8082
-    identities:
-      migration:
-        group: /COMP_CCH_zqxmzQ6iEkTRw
-        team: 08e30ffc-2087-ff3a-b19b-343a88491347
-        user: 22ca514d-c205-47a0-9e38-68daee4c1299
-    workflow-service: http://localhost:8091

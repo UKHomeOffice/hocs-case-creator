@@ -13,3 +13,6 @@ done
 
 aws sqs --endpoint-url=http://localstack:4566 create-queue --queue-name case-creator-queue-dlq
 aws sqs --endpoint-url=http://localstack:4566 create-queue --queue-name case-creator-queue --attributes '{"RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:eu-west-2:000000000000:case-creator-queue-dlq\",\"maxReceiveCount\":1}"}'
+
+aws sqs --endpoint-url=http://localstack:4566 create-queue --queue-name migration-queue-dlq
+aws sqs --endpoint-url=http://localstack:4566 create-queue --queue-name migration-queue --attributes '{"RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:eu-west-2:000000000000:case-creator-queue-dlq\",\"maxReceiveCount\":1}"}'

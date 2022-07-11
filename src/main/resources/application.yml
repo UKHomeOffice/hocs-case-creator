@@ -26,6 +26,13 @@ aws:
         secret-key:
       attributes:
         max-messages: 10
+    case-migrator:
+      url:
+      account:
+        access-key:
+        secret-key:
+      attributes:
+        max-messages: 10
   s3:
     config:
       region: eu-west-2
