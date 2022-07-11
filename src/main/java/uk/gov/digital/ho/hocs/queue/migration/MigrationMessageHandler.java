@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.queue.common.BaseMessageHandler;
@@ -7,6 +8,7 @@ import uk.gov.digital.ho.hocs.queue.common.MessageTypes;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class MigrationMessageHandler extends BaseMessageHandler {
 
@@ -25,8 +27,10 @@ public class MigrationMessageHandler extends BaseMessageHandler {
 
     @Override
     public void handleMessage(String message, String messageId) throws Exception {
+        log.info("Received new message MessageId : {}, {}", messageId, message);
         migrationCaseValidator.validate(message, messageId);
-        migrationCaseService.createComplaint(message, messageId);
+        //TBD
+        //MigrationService Create Migration Case for message
     }
 
     @Override
