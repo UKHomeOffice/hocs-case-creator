@@ -13,23 +13,21 @@ import java.util.List;
 public class MigrationMessageHandler extends BaseMessageHandler {
 
     private final MigrationCaseService migrationCaseService;
-    private final MigrationCaseValidator migrationCaseValidator;
 
     public MigrationMessageHandler(
             @Value("${message.ignored-types}") List<String> ignoredMessageTypes,
-            MigrationCaseService migrationCaseService,
-            MigrationCaseValidator migrationCaseValidator
+            MigrationCaseService migrationCaseService
     ) {
         super(ignoredMessageTypes);
         this.migrationCaseService = migrationCaseService;
-        this.migrationCaseValidator = migrationCaseValidator;
     }
 
     @Override
     public void handleMessage(String message, String messageId) throws Exception {
         log.info("Received new message MessageId : {}, {}", messageId, message);
-        migrationCaseValidator.validate(message, messageId);
+
         //TBD
+        // Case Validator to validate the message
         //MigrationService Create Migration Case for message
     }
 
