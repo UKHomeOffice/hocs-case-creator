@@ -24,7 +24,7 @@ public class MigrationCaseValidator {
     @Autowired
     public MigrationCaseValidator(ObjectMapper objectMapper,
                                   MigrationCaseTypeData migrationCaseTypeData) {
-        InputStream in = getClass().getResourceAsStream("/cmsSchema.json");
+        InputStream in = getClass().getResourceAsStream("/hocs-migration-schema.json");
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
         schema = schemaFactory.getSchema(in);
         this.objectMapper = objectMapper;
