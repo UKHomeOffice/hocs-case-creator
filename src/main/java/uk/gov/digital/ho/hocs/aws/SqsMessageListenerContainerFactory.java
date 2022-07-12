@@ -21,23 +21,6 @@ public class SqsMessageListenerContainerFactory {
 
     @Primary
     @Bean
-    @Profile("migration-sqs")
-    public SimpleMessageListenerContainerFactory awsMigrationMessageListenerContainerFactory(AmazonSQSAsync amazonSqs,
-                                                                                    @Value("${aws.sqs.case-migrator.attributes.max-messages}") Integer maxMessages) {
-        return createMessageFactory(amazonSqs, maxMessages, null);
-    }
-
-    @Primary
-    @Bean
-    @Profile("migration-local")
-    public SimpleMessageListenerContainerFactory migrationLocalstackMessageListenerContainerFactory(AmazonSQSAsync amazonSqs,
-                                                                                           @Value("${aws.sqs.case-migrator.attributes.max-messages}") Integer maxMessages,
-                                                                                           @Value("${aws.sqs.case-migrator.attributes.wait-time}") Integer waitTime) {
-        return createMessageFactory(amazonSqs, maxMessages, waitTime);
-    }
-
-    @Primary
-    @Bean
     @Profile("local")
     public SimpleMessageListenerContainerFactory localstackMessageListenerContainerFactory(AmazonSQSAsync amazonSqs,
                                                                                            @Value("${aws.sqs.case-creator.attributes.max-messages}") Integer maxMessages,

@@ -1,7 +1,6 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
@@ -17,7 +16,6 @@ public class MigrationCaseService {
     private final String group;
     private final String team;
 
-    @Autowired
     public MigrationCaseService(MigrationService migrationService,
                                 ClientContext clientContext,
                                 MigrationCaseTypeData migrationCaseTypeData,
@@ -34,6 +32,6 @@ public class MigrationCaseService {
 
     public void createMigrationCase(String jsonBody, String messageId) {
         clientContext.setContext(user, group, team, messageId);
-        migrationService.createMigrationCase(new MigrationCaseData(jsonBody), migrationCaseTypeData);
+        migrationService.createMigrationCase(new MigrationData(jsonBody), migrationCaseTypeData);
     }
 }

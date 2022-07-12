@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue.migration;
+package uk.gov.digital.ho.hocs.queue.data;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
@@ -16,23 +16,23 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class MigrationCaseData implements ComplaintData {
+public abstract class CaseData implements ComplaintData {
 
-    public static final String CREATION_DATE = "$.creationDate";
-    public static final String COMPLAINT_TYPE = "$.complaint.complaintType";
-    public static final String APPLICANT_TYPE = "$.complaint.reporterDetails.applicantType";
-    public static final String APPLICANT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantName";
-    public static final String APPLICANT_APPLICANT_EMAIL = "$.complaint.reporterDetails.applicantEmail";
-    public static final String APPLICANT_APPLICANT_PHONE = "$.complaint.reporterDetails.applicantPhone";
-    public static final String AGENT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantDetails.applicantName";
-    public static final String AGENT_AGENT_NAME = "$.complaint.reporterDetails.agentDetails.agentName";
-    public static final String AGENT_AGENT_EMAIL = "$.complaint.reporterDetails.agentDetails.agentEmail";
-    public static final String AGENT_AGENT_PHONE = "$.complaint.reporterDetails.agentDetails.agentPhone";
+    static final String CREATION_DATE = "$.creationDate";
+    static final String COMPLAINT_TYPE = "$.complaint.complaintType";
+    static final String APPLICANT_TYPE = "$.complaint.reporterDetails.applicantType";
+    static final String APPLICANT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantName";
+    static final String APPLICANT_APPLICANT_EMAIL = "$.complaint.reporterDetails.applicantEmail";
+    static final String APPLICANT_APPLICANT_PHONE = "$.complaint.reporterDetails.applicantPhone";
+    static final String AGENT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantDetails.applicantName";
+    static final String AGENT_AGENT_NAME = "$.complaint.reporterDetails.agentDetails.agentName";
+    static final String AGENT_AGENT_EMAIL = "$.complaint.reporterDetails.agentDetails.agentEmail";
+    static final String AGENT_AGENT_PHONE = "$.complaint.reporterDetails.agentDetails.agentPhone";
 
     private final ReadContext ctx;
     private final String jsonBody;
 
-    public MigrationCaseData(String jsonBody) {
+    public CaseData(String jsonBody) {
         this.jsonBody = jsonBody;
         ctx = JsonPath.parse(jsonBody);
     }
@@ -70,7 +70,7 @@ public class MigrationCaseData implements ComplaintData {
             } else {
                 throw new IllegalStateException("APPLICANT_TYPE Unknown : " + applicantType);
             }
-        } catch(PathNotFoundException e){
+        } catch (PathNotFoundException e) {
             log.info("getComplaintCorrespondent, no correspondents found for case.");
         }
 
@@ -102,5 +102,4 @@ public class MigrationCaseData implements ComplaintData {
             return Optional.empty();
         }
     }
-
 }

@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.aws;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.AnonymousAWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
@@ -17,7 +18,7 @@ import org.springframework.context.annotation.Profile;
 
 @EnableSqs
 @Configuration
-@Profile({"migration-local"})
+@Profile({"migration"})
 public class MigrationLocalStackConfiguration {
 
     private final AWSCredentialsProvider awsCredentialsProvider;
@@ -25,28 +26,8 @@ public class MigrationLocalStackConfiguration {
 
     public MigrationLocalStackConfiguration(@Value("${localstack.base-url}") String baseUrl,
                                             @Value("${localstack.config.region}") String region) {
-        this.awsCredentialsProvider = new AWSStaticCredentialsProvider(new BasicAWSCredentials("test", "test"));
-        this.endpoint = new AwsClientBuilder.EndpointConfiguration(baseUrl, region);
+        awsCredentialsProvider = new AWSStaticCredentialsProvider(new AnonymousAWSCredentials());
+        endpoint = new AwsClientBuilder.EndpointConfiguration(baseUrl, region);
     }
 
-    @Primary
-    @Bean
-    public AmazonSQSAsync sqsClient() {
-        return AmazonSQSAsyncClientBuilder
-                .standard()
-                .withCredentials(awsCredentialsProvider)
-                .withEndpointConfiguration(endpoint)
-                .build();
-    }
-
-    @Primary
-    @Bean
-    public AmazonS3 s3Client() {
-       return AmazonS3ClientBuilder.standard()
-                .withCredentials(awsCredentialsProvider)
-                .withPathStyleAccessEnabled(true)
-                .withEndpointConfiguration(endpoint)
-                .disableChunkedEncoding()
-                .build();
-    }
 }
