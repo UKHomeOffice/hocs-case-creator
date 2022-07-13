@@ -8,11 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.queue.complaints.ukvi.UKVIComplaintMessageHandler;
-import uk.gov.digital.ho.hocs.queue.migration.MigrationMessageHandler;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -32,7 +29,7 @@ public class QueueListenerTest {
 
         queueListener.onComplaintEvent("test", "test");
 
-        verify(ukviComplaintMessageHandler).getMessageType();
+        verify(ukviComplaintMessageHandler, times(2)).getMessageType();
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }
 
@@ -43,7 +40,7 @@ public class QueueListenerTest {
 
         queueListener.onComplaintEvent("test", "test");
 
-        verify(ukviComplaintMessageHandler).getMessageType();
+        verify(ukviComplaintMessageHandler, times(2)).getMessageType();
         verify(ukviComplaintMessageHandler).shouldIgnoreMessage();
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }
