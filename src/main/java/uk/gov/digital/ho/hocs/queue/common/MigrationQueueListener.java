@@ -14,7 +14,6 @@ import java.util.List;
 @ConditionalOnProperty( name = "case-creator.mode", havingValue = "migration", matchIfMissing = false)
 public class MigrationQueueListener {
 
-    // Contains a single queue message handler for now
     private final List<BaseMessageHandler> queueMessageHandlers;
 
     public MigrationQueueListener(List<BaseMessageHandler> queueMessageHandlers) {
