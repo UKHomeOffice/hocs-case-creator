@@ -15,7 +15,6 @@ import java.util.List;
 @ConditionalOnProperty( name = "case-creator.mode", havingValue = "creation", matchIfMissing = true)
 public class QueueListener {
 
-    // Contains a single queue message handler for now
     private final List<BaseMessageHandler> queueMessageHandlers;
 
     public QueueListener(List<BaseMessageHandler> queueMessageHandlers) {
