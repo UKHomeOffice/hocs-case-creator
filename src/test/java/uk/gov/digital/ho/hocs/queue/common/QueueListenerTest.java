@@ -29,7 +29,7 @@ public class QueueListenerTest {
 
         queueListener.onComplaintEvent("test", "test");
 
-        verify(ukviComplaintMessageHandler, times(2)).getMessageType();
+        verify(ukviComplaintMessageHandler).getMessageType();
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }
 
@@ -40,7 +40,7 @@ public class QueueListenerTest {
 
         queueListener.onComplaintEvent("test", "test");
 
-        verify(ukviComplaintMessageHandler, times(2)).getMessageType();
+        verify(ukviComplaintMessageHandler).getMessageType();
         verify(ukviComplaintMessageHandler).shouldIgnoreMessage();
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }
