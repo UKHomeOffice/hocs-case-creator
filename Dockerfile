@@ -1,15 +1,20 @@
-FROM quay.io/ukhomeofficedigital/hocs-base-image as builder
+FROM quay.io/ukhomeofficedigital/hocs-base-image-build as builder
 
-COPY build/libs/hocs-case-creator.jar ./
-COPY scripts/run.sh ./
+ARG PACKAGE_TOKEN='INVALID'
 
-RUN java -Djarmode=layertools -jar hocs-case-creator.jar extract
+COPY . .
 
-FROM quay.io/ukhomeofficedigital/hocs-base-image
+RUN PACKAGE_TOKEN=$PACKAGE_TOKEN ./gradlew clean assemble --no-daemon && java -Djarmode=layertools -jar ./build/libs/hocs-case-creator.jar extract
 
-COPY --from=builder --chown=user_hocs:group_hocs /app/run.sh ./
-COPY --from=builder --chown=user_hocs:group_hocs /app/spring-boot-loader/ ./
-COPY --from=builder --chown=user_hocs:group_hocs /app/dependencies/ ./
-COPY --from=builder --chown=user_hocs:group_hocs /app/application/ ./
+FROM quay.io/ukhomeofficedigital/hocs-base-image as production
+
+WORKDIR /app
+
+COPY --from=builder --chown=user_hocs:group_hocs ./scripts/run.sh ./
+COPY --from=builder --chown=user_hocs:group_hocs ./spring-boot-loader/ ./
+COPY --from=builder --chown=user_hocs:group_hocs ./dependencies/ ./
+COPY --from=builder --chown=user_hocs:group_hocs ./application/ ./
+
+USER 10000
 
 CMD ["sh", "/app/run.sh"]

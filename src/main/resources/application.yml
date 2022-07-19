@@ -2,7 +2,6 @@ info:
   app:
     name: ${name:hocs-case-creator}
     fullname: HOCS Case Creator
-    version: ${version:0.0.1}
   namespace: local
 
 server:
