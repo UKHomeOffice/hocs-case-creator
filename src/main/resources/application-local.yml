@@ -8,7 +8,7 @@ localstack:
 aws:
   sqs:
     case-creator:
-      url: ${localstack.base-url}/queue/case-creator-queue
+      url: ${localstack.base-url}/queue/ukvi-complaint-queue
       account:
         access-key: 12345
         secret-key: 12345
