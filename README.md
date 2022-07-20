@@ -18,26 +18,28 @@
 
 This service has a dependency on the workflow and casework services. 
 
-In order to run the service locally, LocalStack is required. We have provided an [docker-compose.yml](docker-compose.yml) file to support this.
+In order to run the service locally, LocalStack is required. We have provided a docker-compose.yml file to support this.
 
 To start LocalStack through Docker, run the following command from the root of the project:
 
 ```shell
-docker-compose up
+docker-compose -f ./ci/docker-compose.yml up
 ```
 
-This brings up the LocalStack docker image and creates the necessary AWS resources to run the project. This is done through mounting the [localstack configuration folder](config/localstack) into the docker image.
-
-This configuration folder contains 3 shell scripts that each handle a separate part of the AWS creation.
-
-1. [1-setup-sqs.sh](config/localstack/1-setup-sqs.sh)  
-2. [2-setup-sns.sh](config/localstack/2-setup-sns.sh)  
-3. [3-setup-s3.sh](config/localstack/3-setup-s3.sh)  
+This brings up the LocalStack docker image and creates the necessary AWS resources to run the project.
 
 To stop the running containers, run the following:
 
 ```shell
 docker-compose down
+```
+
+#### Dockerfile
+
+To build the dockerfile locally it needs access to github packages, this is done through your Personal Access Token 
+run:
+```
+docker build . -t whatever --build-arg=PACKAGE_TOKEN=$MY_PAT
 ```
 
 ### Configuration
