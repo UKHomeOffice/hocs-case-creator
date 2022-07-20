@@ -1,50 +1,29 @@
 package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
-import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-import com.jayway.jsonpath.ReadContext;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
-import uk.gov.digital.ho.hocs.document.JSONToSimpleTextConverter;
-import uk.gov.digital.ho.hocs.queue.complaints.ComplaintData;
 import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
+import uk.gov.digital.ho.hocs.queue.data.CaseData;
 
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
-public class UKVIComplaintData implements ComplaintData {
+public class UKVIComplaintData extends CaseData {
 
-    public static final String CREATION_DATE = "$.creationDate";
-    public static final String COMPLAINT_TYPE = "$.complaint.complaintType";
-    public static final String APPLICANT_TYPE = "$.complaint.reporterDetails.applicantType";
-    public static final String APPLICANT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantName";
-    public static final String APPLICANT_APPLICANT_EMAIL = "$.complaint.reporterDetails.applicantEmail";
-    public static final String APPLICANT_APPLICANT_PHONE = "$.complaint.reporterDetails.applicantPhone";
-    public static final String AGENT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantDetails.applicantName";
-    public static final String AGENT_AGENT_NAME = "$.complaint.reporterDetails.agentDetails.agentName";
-    public static final String AGENT_AGENT_EMAIL = "$.complaint.reporterDetails.agentDetails.agentEmail";
-    public static final String AGENT_AGENT_PHONE = "$.complaint.reporterDetails.agentDetails.agentPhone";
-
-    private final ReadContext ctx;
-    private final String jsonBody;
+    static final String COMPLAINT_TYPE = "$.complaint.complaintType";
+    static final String APPLICANT_TYPE = "$.complaint.reporterDetails.applicantType";
+    static final String APPLICANT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantName";
+    static final String APPLICANT_APPLICANT_EMAIL = "$.complaint.reporterDetails.applicantEmail";
+    static final String APPLICANT_APPLICANT_PHONE = "$.complaint.reporterDetails.applicantPhone";
+    static final String AGENT_APPLICANT_NAME = "$.complaint.reporterDetails.applicantDetails.applicantName";
+    static final String AGENT_AGENT_NAME = "$.complaint.reporterDetails.agentDetails.agentName";
+    static final String AGENT_AGENT_EMAIL = "$.complaint.reporterDetails.agentDetails.agentEmail";
+    static final String AGENT_AGENT_PHONE = "$.complaint.reporterDetails.agentDetails.agentPhone";
 
     public UKVIComplaintData(String jsonBody) {
-        this.jsonBody = jsonBody;
-        ctx = JsonPath.parse(jsonBody);
-    }
-
-    @Override
-    public LocalDate getDateReceived() {
-        return LocalDate.parse(ctx.read(CREATION_DATE));
-    }
-
-    @Override
-    public String getComplaintType() {
-        return ctx.read(COMPLAINT_TYPE);
+        super(jsonBody);
     }
 
     @Override
@@ -70,7 +49,7 @@ public class UKVIComplaintData implements ComplaintData {
             } else {
                 throw new IllegalStateException("APPLICANT_TYPE Unknown : " + applicantType);
             }
-        } catch(PathNotFoundException e){
+        } catch (PathNotFoundException e) {
             log.info("getComplaintCorrespondent, no correspondents found for case.");
         }
 
@@ -78,29 +57,8 @@ public class UKVIComplaintData implements ComplaintData {
     }
 
     @Override
-    public String getFormattedDocument() {
-        String formattedText = jsonBody; // Fall back if conversion fails
-        try {
-            JSONToSimpleTextConverter jsonToSimpleTextConverter = new JSONToSimpleTextConverter(jsonBody);
-            formattedText = jsonToSimpleTextConverter.getConvertedOutput();
-        } catch (IOException e) {
-            log.warn("Document formatting failed due to : {}", e.getMessage());
-        }
-        return formattedText;
-    }
-
-    @Override
-    public String getRawPayload() {
-        return jsonBody;
-    }
-
-    private Optional<String> optionalString(ReadContext ctx, String path) {
-        try {
-            String value = ctx.read(path);
-            return Optional.of(value);
-        } catch (PathNotFoundException e) {
-            return Optional.empty();
-        }
+    public String getComplaintType() {
+        return ctx.read(COMPLAINT_TYPE);
     }
 
 }
