@@ -5,7 +5,7 @@ on:
 
 jobs:
   test:
-    uses: UKHomeOffice/hocs-ci-infrastructure/.github/workflows/test-jvm.yml@v1
+    uses: UKHomeOffice/hocs-ci-infrastructure/.github/workflows/test-jvm.yml@a1f3cf129d7d809b0726b50cda3dbf6508e7be7a
     with:
       components: 'localstack'
     secrets: inherit
