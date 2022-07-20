@@ -45,6 +45,10 @@ case:
           group:
           team:
           user:
+      migration:
+        group:
+        team:
+        user:
     workflow-service: http://localhost:8091
 
 management:
