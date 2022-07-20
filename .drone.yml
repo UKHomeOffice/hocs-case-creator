@@ -1,30 +1,6 @@
 ---
 kind: pipeline
 type: kubernetes
-name: build
-trigger:
-  event:
-    - push
-  branch:
-    exclude:
-      - main
-
-steps:
-
-  - name: build and test project
-    image: quay.io/ukhomeofficedigital/hocs-base-image-build:1.0.5
-    commands:
-      - ./gradlew clean build --no-daemon
-    environment:
-      PACKAGE_TOKEN:
-        from_secret: PACKAGE_TOKEN
-      LOCALSTACK_CONFIG_HOST: "localstack"
-    depends_on:
-      - setup localstack
-
----
-kind: pipeline
-type: kubernetes
 name: deploy
 trigger:
   event:
@@ -99,8 +75,6 @@ trigger:
     - tag
   branch:
     - main
-depends_on:
-  - build tag
 
 steps:
   - name: deploy to cs-dev
