@@ -1,6 +1,8 @@
 # hocs-case-creator
 
-## Behaviour
+[![CodeQL](https://github.com/UKHomeOffice/hocs-case-creator/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/UKHomeOffice/hocs-case-creator/actions/workflows/codeql-analysis.yml)
+
+This is the Home Office Correspondence Service (HOCS) case creator service.
 
 - Reads a message containing a JSON payload from an AWS SQS Queue
 - Validates the payload against a pre-described schema
@@ -14,27 +16,36 @@
 * ```Docker```
 * ```LocalStack```
 
-### Local Development
+### Submodules
 
-This service has a dependency on the workflow and casework services. 
+This project contains a 'ci' submodule with a docker-compose and infrastructure scripts in it.
+Most modern IDEs will handle pulling this automatically for you, but if not
 
-In order to run the service locally, LocalStack is required. We have provided a docker-compose.yml file to support this.
-
-To start LocalStack through Docker, run the following command from the root of the project:
-
-```shell
-docker-compose -f ./ci/docker-compose.yml up
+```console
+$ git submodule update --init --recursive
 ```
 
-This brings up the LocalStack docker image and creates the necessary AWS resources to run the project.
+## Docker Compose
 
-To stop the running containers, run the following:
+This repository contains a [Docker Compose](https://docs.docker.com/compose/)
+file.
 
-```shell
-docker-compose down
+### Start localstack (sqs, sns, s3)
+From the project root run:
+```console
+$ docker-compose -f ./ci/docker-compose.yml up -d localstack
 ```
 
-#### Dockerfile
+> With Docker using 4 GB of memory, this takes approximately 2 minutes to startup.
+
+### Stop the services
+From the project root run:
+```console
+$ docker-compose -f ./ci/docker-compose.yml stop
+```
+> This will retain data in the local database and other volumes.
+
+## Dockerfile
 
 To build the dockerfile locally it needs access to github packages, this is done through your Personal Access Token 
 run:
@@ -42,7 +53,16 @@ run:
 docker build . -t whatever --build-arg=PACKAGE_TOKEN=$MY_PAT
 ```
 
-### Configuration
+## Running in an IDE
+
+If you are using an IDE, such as IntelliJ, this service can be started by running the ```CaseCreatorApplication``` main class.
+The service can then be accessed at ```http://localhost:8092```.
+
+You need to specify appropriate Spring profiles.
+Paste `development,local` into the "Active profiles" box of your run configuration.
+
+
+## Configuration
 
 The following table contains the mandatory and optional properties that need to be set for deployment.
 
@@ -85,7 +105,7 @@ to a Maven local repository. View the README in `hocs-ukvi-complaint-schema` for
 
 ## Versioning
 
-For versioning this project uses SemVer.
+For versioning this project uses [SemVer](https://semver.org/).
 
 ## Authors
 
@@ -93,4 +113,4 @@ This project is authored by the Home Office.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT license. For details please see [License](LICENSE) 
