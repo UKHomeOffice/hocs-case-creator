@@ -12,20 +12,21 @@ import uk.gov.digital.ho.hocs.testutil.TestFileReader;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties="case-creator.mode=migration")
 @RunWith(SpringRunner.class)
 @ActiveProfiles("local")
-public class QueueListenerIntegrationTest extends AwsSqsIntegrationTestBase {
+public class MigrationQueueListenerIntegrationTest extends AwsSqsIntegrationTestBase {
 
     @Autowired
     public ObjectMapper objectMapper;
 
     @Test
-    public void consumeMessageFromQueue() {
-        String validMessage = TestFileReader.getResourceFileAsString("agentCorrespondent.json");
+    public void consumeMessageFromMigrationQueue() {
+       String validMessage = TestFileReader.getResourceFileAsString("validMigration.json");
 
-        amazonSQSAsync.sendMessage(queueUrl, validMessage);
+       amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
 
         await().until(() -> getNumberOfMessagesNotVisibleOnQueue() == 1);
     }
+
 }

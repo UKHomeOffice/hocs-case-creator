@@ -14,16 +14,20 @@ public class MigrationMessageHandler extends BaseMessageHandler {
 
     private final MigrationCaseService migrationCaseService;
 
+    private final MigrationValidator migrationValidator;
     public MigrationMessageHandler(
             @Value("${message.ignored-types}") List<String> ignoredMessageTypes,
-            MigrationCaseService migrationCaseService
+            MigrationCaseService migrationCaseService,
+            MigrationValidator migrationValidator
     ) {
         super(ignoredMessageTypes);
         this.migrationCaseService = migrationCaseService;
+        this.migrationValidator = migrationValidator;
     }
 
     @Override
     public void handleMessage(String message, String messageId) throws Exception {
+        migrationValidator.validate(message, messageId);
         log.info("Received new message MessageId : {}, {}", messageId, message);
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-@ConditionalOnProperty( name = "case-creator.mode", havingValue = "creation", matchIfMissing = true)
+@ConditionalOnProperty(name = "case-creator.mode", havingValue = "creation", matchIfMissing = true)
 public class QueueListener {
 
     // Contains a single queue message handler for now

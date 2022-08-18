@@ -21,6 +21,8 @@ public class AwsSqsIntegrationTestBase {
     @Value("${aws.sqs.case-creator.url}")
     protected String queueUrl;
 
+    @Value("${aws.sqs.case-migrator.url}")
+    protected String migrationQueueUrl;
     @Before
     public void setup() {
         amazonSQSAsync.purgeQueue(new PurgeQueueRequest(queueUrl));
