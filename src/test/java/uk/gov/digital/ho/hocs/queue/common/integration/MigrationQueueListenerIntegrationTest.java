@@ -28,7 +28,7 @@ public class MigrationQueueListenerIntegrationTest extends AwsSqsIntegrationTest
        String validMessage = TestFileReader.getResourceFileAsString("validMigration.json");
 
        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
-       await().until(() -> getNumberOfMessagesNotVisibleOnQueue() == 0);
+       await().until(() -> getNumberOfMessagesNotVisibleOnQueue() == 1);
     }
 
 }

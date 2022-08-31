@@ -54,7 +54,7 @@ public class MigrationServiceTest {
         migrationCaseTypeData = new MigrationCaseTypeData();
         Map<String, String> initialData = Map.of("Channel", migrationCaseTypeData.getOrigin());
         documentSummary = new DocumentSummary("migration","","");
-        createMigrationCaseRequest = new CreateMigrationCaseRequest(migrationData.getComplaintType(), migrationData.getDateReceived(), List.of(documentSummary), initialData);
+        createMigrationCaseRequest = new CreateMigrationCaseRequest(migrationData.getComplaintType(), migrationData.getDateReceived(), List.of(documentSummary), initialData, "MIGRATION");
         caseworkCaseResponse = new CreateCaseworkCaseResponse();
         migrationService = new MigrationService(workflowClient, caseworkClient, clientContext, documentS3Client);
         when(caseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
