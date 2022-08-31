@@ -28,7 +28,7 @@ public class MigrationMessageHandler extends BaseMessageHandler {
     @Override
     public void handleMessage(String message, String messageId) throws Exception {
         migrationValidator.validate(message, messageId);
-        log.info("Received new message MessageId : {}, {}", messageId, message);
+        migrationCaseService.createMigrationCase(message, messageId);
     }
 
     @Override

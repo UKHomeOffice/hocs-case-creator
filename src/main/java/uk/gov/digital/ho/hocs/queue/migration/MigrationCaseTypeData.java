@@ -7,12 +7,12 @@ import uk.gov.digital.ho.hocs.queue.complaints.ComplaintTypeData;
 public class MigrationCaseTypeData implements ComplaintTypeData {
     @Override
     public String getCaseType() {
-        return "MIGRATION";
+        return "COMP";
     }
 
     @Override
     public String getOrigin() {
-        return "MIG";
+        return "CMS";
     }
 
 }

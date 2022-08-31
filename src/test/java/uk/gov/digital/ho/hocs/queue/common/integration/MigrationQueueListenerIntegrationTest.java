@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.testutil.TestFileReader;
+
+import java.util.List;
 
 import static org.awaitility.Awaitility.await;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -25,8 +28,7 @@ public class MigrationQueueListenerIntegrationTest extends AwsSqsIntegrationTest
        String validMessage = TestFileReader.getResourceFileAsString("validMigration.json");
 
        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
-
-        await().until(() -> getNumberOfMessagesNotVisibleOnQueue() == 1);
+       await().until(() -> getNumberOfMessagesNotVisibleOnQueue() == 0);
     }
 
 }

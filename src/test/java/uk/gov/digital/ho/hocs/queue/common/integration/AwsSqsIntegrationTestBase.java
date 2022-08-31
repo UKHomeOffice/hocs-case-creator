@@ -43,5 +43,4 @@ public class AwsSqsIntegrationTestBase {
         return messageCount == null ? 0 : Integer.parseInt(messageCount);
     }
 
-
 }

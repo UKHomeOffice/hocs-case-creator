@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 public class MigrationData extends CaseData {
 
-    private static final String COMPLAINT_TYPE = "$.migration.caseType";
+    private static final String COMPLAINT_TYPE = "$.caseType";
 
     public MigrationData(String jsonBody) {
         super(jsonBody);
