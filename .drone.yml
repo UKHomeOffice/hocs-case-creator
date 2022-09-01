@@ -108,3 +108,22 @@ steps:
       VERSION: "${DRONE_TAG}"
     depends_on:
       - clone
+
+  - name: deploy migrator to production
+    image: quay.io/ukhomeofficedigital/kd
+    commands:
+      - cd kube
+      - ./deploy.sh
+    environment:
+      ENVIRONMENT: ${DRONE_DEPLOY_TO}
+      DEPLOYMENT_TYPE: migrator
+      SQS_SECRET_NAME: case-migrator-sqs
+      KUBE_TOKEN:
+        from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
+      KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
+      CLUSTER_NAME: acp-prod
+      VERSION: "${DRONE_TAG}"
+    when:
+      target:
+        include:
+          - "*-prod"
