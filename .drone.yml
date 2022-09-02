@@ -109,7 +109,7 @@ steps:
     depends_on:
       - clone
 
-  - name: deploy migrator to cs-prod
+  - name: deploy migrator to production
     image: quay.io/ukhomeofficedigital/kd
     commands:
       - cd kube
@@ -123,8 +123,6 @@ steps:
       KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
       CLUSTER_NAME: acp-prod
       VERSION: "${DRONE_TAG}"
-    depends_on:
-      - fetch and checkout
     when:
       target:
         include:
