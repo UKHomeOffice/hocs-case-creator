@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
-import uk.gov.digital.ho.hocs.client.casework.dto.*;
+import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
+import uk.gov.digital.ho.hocs.client.casework.dto.CreateMigrationCaseRequest;
+import uk.gov.digital.ho.hocs.client.casework.dto.UpdateCaseworkCaseDataRequest;
+import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageTeamRequest;
+import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
 
 import java.util.Map;
 import java.util.UUID;
