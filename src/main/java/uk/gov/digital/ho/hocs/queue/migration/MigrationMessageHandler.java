@@ -15,7 +15,7 @@ public class MigrationMessageHandler extends BaseMessageHandler {
     private final MigrationCaseService migrationCaseService;
 
     private final MigrationValidator migrationValidator;
-    
+
     public MigrationMessageHandler(
             @Value("${message.ignored-types}") List<String> ignoredMessageTypes,
             MigrationCaseService migrationCaseService,
@@ -28,6 +28,7 @@ public class MigrationMessageHandler extends BaseMessageHandler {
 
     @Override
     public void handleMessage(String message, String messageId) throws Exception {
+        log.info("Received new message MessageId : {}", messageId);
         migrationValidator.validate(message, messageId);
         migrationCaseService.createMigrationCase(message, messageId);
     }
