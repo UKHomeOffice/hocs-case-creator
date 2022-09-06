@@ -20,11 +20,11 @@ public class MigrationService {
 
     public static final String CHANNEL_LABEL = "Channel";
 
-     private final WorkflowClient workflowClient;
+    private final WorkflowClient workflowClient;
     private final CaseworkClient caseworkClient;
     private final ClientContext clientContext;
     private final DocumentS3Client documentS3Client;
-    @Autowired
+
     public MigrationService(WorkflowClient workflowClient,
                             CaseworkClient caseworkClient,
                             ClientContext clientContext,
