@@ -15,6 +15,7 @@ public class MigrationMessageHandler extends BaseMessageHandler {
     private final MigrationCaseService migrationCaseService;
 
     private final MigrationValidator migrationValidator;
+    
     public MigrationMessageHandler(
             @Value("${message.ignored-types}") List<String> ignoredMessageTypes,
             MigrationCaseService migrationCaseService,
