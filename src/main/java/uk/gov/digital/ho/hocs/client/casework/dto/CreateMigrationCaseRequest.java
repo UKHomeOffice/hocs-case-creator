@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @EqualsAndHashCode
 public class CreateMigrationCaseRequest {
