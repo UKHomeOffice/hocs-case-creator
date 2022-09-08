@@ -30,7 +30,6 @@ public class CreateMigrationCaseRequest {
     @JsonProperty("data")
     private Map<String, String> data;
 
-    @NotNull
     @JsonProperty("stageType")
     private String stageType;
 }
