@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
-import uk.gov.digital.ho.hocs.client.casework.dto.CreateMigrationCaseRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateCaseworkCaseDataRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageTeamRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;

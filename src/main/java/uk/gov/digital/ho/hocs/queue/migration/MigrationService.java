@@ -1,12 +1,12 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
-import uk.gov.digital.ho.hocs.client.casework.dto.CreateMigrationCaseRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
@@ -21,16 +21,16 @@ public class MigrationService {
     public static final String CHANNEL_LABEL = "Channel";
 
     private final WorkflowClient workflowClient;
-    private final CaseworkClient caseworkClient;
+    private final MigrationCaseworkClient migrationCaseworkClient;
     private final ClientContext clientContext;
     private final DocumentS3Client documentS3Client;
 
     public MigrationService(WorkflowClient workflowClient,
-                            CaseworkClient caseworkClient,
+                            MigrationCaseworkClient migrationCaseworkClient,
                             ClientContext clientContext,
                             DocumentS3Client documentS3Client) {
         this.workflowClient = workflowClient;
-        this.caseworkClient = caseworkClient;
+        this.migrationCaseworkClient = migrationCaseworkClient;
         this.clientContext = clientContext;
         this.documentS3Client = documentS3Client;
     }
@@ -40,7 +40,7 @@ public class MigrationService {
         // dummy documents list
         DocumentSummary documentSummary = new DocumentSummary("migration","","");
         var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData, documentSummary);
-        CreateCaseworkCaseResponse caseResponse = caseworkClient.migrateCase(migrationRequest);
+        CreateCaseworkCaseResponse caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
         log.info("Created migration case {}", caseResponse.getUuid());
     }
 

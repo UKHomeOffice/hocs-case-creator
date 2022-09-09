@@ -8,7 +8,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
-import uk.gov.digital.ho.hocs.client.casework.dto.CreateMigrationCaseRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
@@ -27,7 +28,7 @@ public class MigrationServiceTest {
     @Mock
     private WorkflowClient workflowClient;
     @Mock
-    private CaseworkClient caseworkClient;
+    private MigrationCaseworkClient migrationCaseworkClient;
     @Mock
     private ClientContext clientContext;
     @Mock
@@ -57,13 +58,13 @@ public class MigrationServiceTest {
         documentSummary = new DocumentSummary("migration","","");
         createMigrationCaseRequest = new CreateMigrationCaseRequest(migrationData.getComplaintType(), migrationData.getDateReceived(), List.of(documentSummary), initialData, "MIGRATION");
         caseworkCaseResponse = new CreateCaseworkCaseResponse();
-        migrationService = new MigrationService(workflowClient, caseworkClient, clientContext, documentS3Client);
-        when(caseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
+        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client);
+        when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
     }
 
     @Test
     public void migrateCase() {
         migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
-        verify(caseworkClient, times(1)).migrateCase(createMigrationCaseRequest);
+        verify(migrationCaseworkClient, times(1)).migrateCase(createMigrationCaseRequest);
     }
 }
