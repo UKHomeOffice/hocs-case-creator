@@ -22,7 +22,6 @@ public class MigrationValidator {
     private final ObjectMapper objectMapper;
     private final JsonSchema schema;
 
-    @Autowired
     public MigrationValidator(ObjectMapper objectMapper) {
         InputStream in = getClass().getResourceAsStream("/hocs-migration-schema.json");
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
