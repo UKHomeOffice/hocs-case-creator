@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateCaseworkCaseDataRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageTeamRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
@@ -61,6 +63,11 @@ public class CaseworkClient {
         UpdateCaseworkCaseDataRequest request = new UpdateCaseworkCaseDataRequest(data);
         restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/data", caseUUID, stageUUID), request, Void.class);
         log.info("Set Case Data for Case {}", caseUUID);
+    }
+
+    public CreateCaseworkCaseResponse migrateCase(CreateMigrationCaseRequest request) {
+        ResponseEntity<CreateCaseworkCaseResponse> responseEntity = restClient.post(serviceBaseURL, "/migrate", request, CreateCaseworkCaseResponse.class);
+        return responseEntity.getBody();
     }
 
 }

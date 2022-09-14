@@ -21,6 +21,9 @@ public class AwsSqsIntegrationTestBase {
     @Value("${aws.sqs.case-creator.url}")
     protected String queueUrl;
 
+    @Value("${aws.sqs.case-migrator.url}")
+    protected String migrationQueueUrl;
+    
     @Before
     public void setup() {
         amazonSQSAsync.purgeQueue(new PurgeQueueRequest(queueUrl));
@@ -40,6 +43,5 @@ public class AwsSqsIntegrationTestBase {
         var messageCount = queueAttributes.getAttributes().get(attribute);
         return messageCount == null ? 0 : Integer.parseInt(messageCount);
     }
-
 
 }

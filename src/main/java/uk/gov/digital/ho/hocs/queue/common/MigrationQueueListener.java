@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-@ConditionalOnProperty( name = "case-creator.mode", havingValue = "migration", matchIfMissing = false)
+@ConditionalOnProperty(name = "case-creator.mode", havingValue = "migration", matchIfMissing = false)
 public class MigrationQueueListener {
 
     private final List<BaseMessageHandler> queueMessageHandlers;
@@ -20,7 +20,7 @@ public class MigrationQueueListener {
         this.queueMessageHandlers = queueMessageHandlers;
     }
 
-    @SqsListener(value = "${aws.sqs.case-creator.url}", deletionPolicy = SqsMessageDeletionPolicy.NO_REDRIVE)
+    @SqsListener(value = "${aws.sqs.case-migrator.url}", deletionPolicy = SqsMessageDeletionPolicy.NO_REDRIVE)
     public void onMigrationEvent(String message, @Header("MessageId") String messageId) throws Exception {
         for (BaseMessageHandler messageHandler :
                 queueMessageHandlers) {
