@@ -1,4 +1,4 @@
-package uk.gov.digital.ho.hocs.queue.migration;
+package uk.gov.digital.ho.hocs.queue.common;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,22 +8,17 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.queue.complaints.ukvi.UKVITypeData;
 
 import java.io.InputStream;
 import java.util.Set;
-
 @Slf4j
-@Service
-public class MigrationValidator {
+public abstract class MessageValidator {
 
-    private final ObjectMapper objectMapper;
-    private final JsonSchema schema;
+    protected final ObjectMapper objectMapper;
+    protected final JsonSchema schema;
 
-    public MigrationValidator(ObjectMapper objectMapper) {
-        InputStream in = getClass().getResourceAsStream("/hocs-migration-schema.json");
+    public MessageValidator(ObjectMapper objectMapper, String schemaName) {
+        InputStream in = getClass().getResourceAsStream(schemaName);
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
         schema = schemaFactory.getSchema(in);
         this.objectMapper = objectMapper;

@@ -14,12 +14,12 @@ public class MigrationMessageHandler extends BaseMessageHandler {
 
     private final MigrationCaseService migrationCaseService;
 
-    private final MigrationValidator migrationValidator;
+    private final MigrationMessageValidator migrationValidator;
 
     public MigrationMessageHandler(
             @Value("${message.ignored-types}") List<String> ignoredMessageTypes,
             MigrationCaseService migrationCaseService,
-            MigrationValidator migrationValidator
+            MigrationMessageValidator migrationValidator
     ) {
         super(ignoredMessageTypes);
         this.migrationCaseService = migrationCaseService;
