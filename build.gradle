@@ -32,7 +32,7 @@ dependencies {
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
 
-    implementation 'uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:1.1.1'
+    implementation 'uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:35740b89f8a46e6a152f951e4384619a1ff0d40c'
     implementation 'uk.gov.digital.ho.hocs:hocs-migration-schema:0.4.0'
 
     implementation 'com.networknt:json-schema-validator:1.0.72'
