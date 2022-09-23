@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.3'
-    id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
 }
 
 def lombokVersion = '1.18.24'
@@ -35,7 +35,7 @@ dependencies {
     implementation 'uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:186f0b005b206df2cc7c9b8003949fd5a76a5bd8'
     implementation 'uk.gov.digital.ho.hocs:hocs-migration-schema:0.4.0'
 
-    implementation 'com.networknt:json-schema-validator:1.0.72'
+    implementation 'com.networknt:json-schema-validator:1.0.73'
     implementation 'com.jayway.jsonpath:json-path:2.7.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.apache.commons:commons-text:1.9'
