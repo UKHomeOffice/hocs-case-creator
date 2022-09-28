@@ -1,9 +1,9 @@
 {
     "caseType": "COMP",
     "sourceCaseId": "in",
-    "correspondentName": "Ut incididunt",
-    "correspondenceEmail": "mollit",
-    "caseStatus": "tempor veniam ut laboris nulla",
+    "correspondentName": "correspondentFullName",
+    "correspondenceEmail": "correspondentEmail",
+    "caseStatus": "caseStatus",
     "caseStatusDate": "1947-02-14",
     "creationDate": "1965-06-22",
     "caseData": [
@@ -12,9 +12,9 @@
     ],
     "caseAttachments": [
       {
-        "path": "laborum nisi",
-        "label": "sunt",
-        "documentType": "deserunt laboris anim nisi"
+        "path": "path",
+        "label": "label",
+        "documentType": "documentType"
       }
     ]
 }
