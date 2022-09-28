@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
 import javax.validation.constraints.NotNull;
@@ -31,4 +32,7 @@ public class CreateMigrationCaseRequest {
 
     @JsonProperty("stageType")
     private String stageType;
+
+    @JsonProperty("complaintCorrespondents")
+    private List<ComplaintCorrespondent> complaintCorrespondents;
 }
