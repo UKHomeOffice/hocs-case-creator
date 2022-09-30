@@ -55,12 +55,14 @@ docker build . -t whatever --build-arg=PACKAGE_TOKEN=$MY_PAT
 
 ## Running in an IDE
 
+> To be able to run the service in the environment you will need to ensure that both the [`hocs-ukvi-complaint-schema`](https://github.com/UKHomeOffice/hocs-ukvi-complaint-schema#publishing)
+> and [`hocs-migration-schema`](https://github.com/UKHomeOffice/hocs-migration-schema#publishing) have been published to Maven Local with the versions specified within the [build.gradle](./build.gradle).
+
 If you are using an IDE, such as IntelliJ, this service can be started by running the ```CaseCreatorApplication``` main class.
 The service can then be accessed at ```http://localhost:8092```.
 
 You need to specify appropriate Spring profiles.
 Paste `development,local` into the "Active profiles" box of your run configuration.
-
 
 ## Configuration
 
