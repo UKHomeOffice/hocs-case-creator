@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
+import uk.gov.digital.ho.hocs.queue.migration.CaseAttachment;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -23,8 +24,8 @@ public class CreateMigrationCaseRequest {
     @JsonProperty("dateReceived")
     private LocalDate dateReceived;
 
-    @JsonProperty("documents")
-    private List<DocumentSummary> documents;
+    @JsonProperty("caseAttachments")
+    private List<CaseAttachment> attachments;
 
     @JsonProperty("data")
     private Map<String, String> data;
