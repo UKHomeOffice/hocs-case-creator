@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
@@ -53,6 +55,9 @@ public class MigrationServiceTest {
 
     private DocumentSummary documentSummary;
 
+    @Mock
+    private ObjectMapper objectMapper;
+
     @Before
     public void setUp() {
         json = getResourceFileAsString("validMigration.json");
@@ -60,11 +65,11 @@ public class MigrationServiceTest {
         LocalDate receivedDate = LocalDate.parse("2020-10-03");
         migrationCaseTypeData = new MigrationCaseTypeData();
         Map<String, String> initialData = Map.of("Channel", migrationCaseTypeData.getOrigin());
-        List<ComplaintCorrespondent> correspondents = migrationData.getComplaintCorrespondent();
+        //MigrationComplaintCorrespondent primaryCorrespondent = migrationService.
         documentSummary = new DocumentSummary("migration","","");
-        createMigrationCaseRequest = new CreateMigrationCaseRequest(migrationData.getComplaintType(), migrationData.getDateReceived(), List.of(documentSummary), initialData, "MIGRATION", correspondents);
+        createMigrationCaseRequest = new CreateMigrationCaseRequest(migrationData.getComplaintType(), migrationData.getDateReceived(), List.of(documentSummary), initialData, "MIGRATION", null);
         caseworkCaseResponse = new CreateCaseworkCaseResponse();
-        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client);
+        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
         when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
     }
     @Test
@@ -74,10 +79,24 @@ public class MigrationServiceTest {
     }
 
     @Test
-    public void GivenAValidMigrationMessageWhenCreatingAMigrationRequestThenMigrationResponseContainsCorrectCorrespondentDetails() {
-        List<ComplaintCorrespondent> correspondents = createMigrationCaseRequest.getComplaintCorrespondents();
-        ComplaintCorrespondent firstCorrespondent = correspondents.get(0);
-        assertEquals("correspondentFullName", firstCorrespondent.getFullname());
-        assertEquals(CorrespondentType.COMPLAINANT, firstCorrespondent.getType());
+    public void GivenAValidMigrationMessageWhenCreatingAMigrationRequestThenMigrationResponseContainsAPrimaryCorrespondent() {
+        MigrationComplaintCorrespondent primaryCorrespondents = createMigrationCaseRequest.getPrimaryCorrespondent();
+
+        MigrationComplaintCorrespondent expectedPrimaryCorrespondent =
+                new MigrationComplaintCorrespondent(
+                        "fullName",
+                        CorrespondentType.COMPLAINANT,
+                        "telephone",
+                        "email",
+                        "organisation",
+                        "address1",
+                        "address2",
+                        "address3",
+                        "postcode",
+                        "country",
+                        "reference"
+                        );
+        assertEquals(expectedPrimaryCorrespondent, primaryCorrespondents);
+
     }
 }
