@@ -33,6 +33,7 @@ public class CreateMigrationCaseRequest {
     @JsonProperty("stageType")
     private String stageType;
 
-    @JsonProperty("complaintCorrespondents")
-    private List<ComplaintCorrespondent> complaintCorrespondents;
+    @JsonProperty("primaryCorrespondent")
+    private MigrationComplaintCorrespondent primaryCorrespondent;
+
 }
