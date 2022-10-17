@@ -1,0 +1,36 @@
+---
+hocs-generic-service:
+  nameOverride: hocs-case-migrator
+
+  autoscale:
+    enabled: false
+
+  service:
+    enabled: false
+
+  deployment:
+    replicas: 1
+    annotations:
+      downscaler/downtime: "Mon-Sun 00:00-05:10 Europe/London,Mon-Sun 22:50-24:00 Europe/London"
+
+  proxy:
+    enabled: false
+
+  app:
+    image:
+      repository: quay.io/ukhomeofficedigital/hocs-case-creator
+    resources:
+      limits:
+        cpu: 200m
+    env:
+      javaOpts: >-
+        -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=70
+        -Djava.security.egd=file:/dev/./urandom
+        -Djavax.net.ssl.trustStore=/etc/keystore/truststore.jks
+        -Dhttps.proxyHost=hocs-outbound-proxy.{{ .Release.Namespace }}.svc.cluster.local
+        -Dhttps.proxyPort=31290
+        -Dhttp.nonProxyHosts=*.{{ .Release.Namespace }}.svc.cluster.local
+      springProfiles: 'sqs, s3'
+      caseworkService: https://hocs-casework.{{ .Release.Namespace }}.svc.cluster.local
+      workflowService: https://hocs-workflow.{{ .Release.Namespace }}.svc.cluster.local
+      ignoredTypes: 'UKVI_COMPLAINTS'
