@@ -1,74 +1,6 @@
 ---
 kind: pipeline
 type: kubernetes
-name: deploy
-trigger:
-  event:
-    - promote
-
-steps:
-  - name: fetch and checkout
-    image: alpine/git
-    commands:
-      - git fetch --tags
-      - git checkout $${VERSION}
-
-  - name: deploy to cs-qa
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: cs-qa
-      KUBE_TOKEN:
-        from_secret: hocs_case_creator_cs_qa
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      CLUSTER_NAME: acp-notprod
-    when:
-      target:
-        - release
-    depends_on:
-      - fetch and checkout
-
-  - name: deploy to not prod
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: ${DRONE_DEPLOY_TO}
-      KUBE_TOKEN:
-        from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      CLUSTER_NAME: acp-notprod
-    depends_on:
-      - fetch and checkout
-    when:
-      target:
-        exclude:
-          - release
-          - "*-prod"
-
-  - name: deploy to prod
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: ${DRONE_DEPLOY_TO}
-      KUBE_TOKEN:
-        from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
-      KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
-      CLUSTER_NAME: acp-prod
-    depends_on:
-      - fetch and checkout
-    when:
-      target:
-        include:
-          - "*-prod"
----
-kind: pipeline
-type: kubernetes
 name: deploy tag
 trigger:
   event:
@@ -77,53 +9,156 @@ trigger:
     - main
 
 steps:
-  - name: deploy to cs-dev
-    image: quay.io/ukhomeofficedigital/kd
+  - name: checkout
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
     commands:
-      - cd kube
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: cs-dev
-      KUBE_TOKEN:
-        from_secret: hocs_case_creator_cs_dev
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      CLUSTER_NAME: acp-notprod
-      VERSION: "${DRONE_TAG}"
-    depends_on:
-      - clone
+      - git fetch --tags
+      - git checkout ${DRONE_TAG}
+      - git submodule update --init --recursive
 
-  - name: deploy migrator to cs-dev
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./deploy.sh
+  - &deploy
+    name: creator-cs-dev
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
     environment:
-      ENVIRONMENT: cs-dev
-      DEPLOYMENT_TYPE: migrator
-      SQS_SECRET_NAME: case-migrator-sqs
-      KUBE_TOKEN:
-        from_secret: hocs_case_creator_cs_dev
+      CHART_NAME: hocs-case-creator
+      KUBE_CLUSTER: acp-notprod
+      KUBE_NAMESPACE: cs-dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      CLUSTER_NAME: acp-notprod
-      VERSION: "${DRONE_TAG}"
-    depends_on:
-      - clone
-
-  - name: deploy migrator to production
-    image: quay.io/ukhomeofficedigital/kd
-    commands:
-      - cd kube
-      - ./deploy.sh
-    environment:
-      ENVIRONMENT: ${DRONE_DEPLOY_TO}
-      DEPLOYMENT_TYPE: migrator
-      SQS_SECRET_NAME: case-migrator-sqs
       KUBE_TOKEN:
-        from_secret: hocs_case_creator_${DRONE_DEPLOY_TO/-/_}
+        from_secret: cs_notprod
+      VERSION: ${DRONE_TAG}
+    commands:
+      - ./ci/helm/helm-deploy.sh --values ./helm/values-notprod.yaml --values ./helm/values-dev.yaml
+    depends_on:
+      - checkout
+
+  - <<: *deploy
+    name: migrator-cs-dev
+    environment:
+      CHART_NAME: hocs-case-migrator
+    depends_on:
+      - creator-cs-dev
+
+  - name: migrator-cs-prod
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+    environment:
+      CHART_NAME: hocs-case-migrator
+      KUBE_CLUSTER: acp-prod
+      KUBE_NAMESPACE: cs-prod
       KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
-      CLUSTER_NAME: acp-prod
-      VERSION: "${DRONE_TAG}"
+      KUBE_TOKEN:
+        from_secret: cs_prod
+      VERSION: ${DRONE_TAG}
+    commands:
+      - ./ci/helm/helm-deploy.sh
+    depends_on:
+      - migrator-cs-dev
+---
+kind: pipeline
+type: kubernetes
+name: promote
+trigger:
+  event:
+    - promote
+
+environment:
+  CHART_NAME: hocs-case-creator
+  KUBE_CLUSTER: acp-notprod
+  KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+
+steps:
+  - name: checkout
+    image: alpine/git
+    commands:
+      - git fetch --tags
+      - git checkout ${VERSION}
+      - git submodule update --init --recursive
+
+  - name: dev
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+    environment:
+      KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
+      KUBE_TOKEN:
+        from_secret: cs_notprod
+    commands:
+      - ./ci/helm/helm-deploy.sh --values ./helm/values-notprod.yaml --values ./helm/values-dev.yaml
+    depends_on:
+      - checkout
     when:
       target:
-        include:
-          - "*-prod"
+        - "*-dev"
+
+  - name: cs-qa
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+    environment:
+      KUBE_NAMESPACE: cs-qa
+      KUBE_TOKEN:
+        from_secret: cs_notprod
+    commands:
+      - ./ci/helm/helm-deploy.sh --values ./helm/values-notprod.yaml --values ./helm/values-qa.yaml
+    depends_on:
+      - checkout
+    when:
+      target:
+        - cs-qa
+        - release
+
+  - name: demo
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+    environment:
+      KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
+      KUBE_TOKEN:
+        from_secret: cs_notprod
+    commands:
+      - ./ci/helm/helm-deploy.sh --values ./helm/values-notprod.yaml --values ./helm/values-demo.yaml
+    depends_on:
+      - checkout
+    when:
+      target:
+        - "*-demo"
+
+  - name: qax
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+    environment:
+      KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
+      KUBE_TOKEN:
+        from_secret: cs_notprod
+    commands:
+      - ./ci/helm/helm-deploy.sh --values ./helm/values-notprod.yaml --values ./helm/values-qax.yaml
+    depends_on:
+      - checkout
+    when:
+      target:
+        - hocs-qax
+
+  - name: preprod
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+    environment:
+      KUBE_CLUSTER: acp-prod
+      KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
+      KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
+      KUBE_TOKEN:
+        from_secret: cs_prod
+    commands:
+      - ./ci/helm/helm-deploy.sh --values ./helm/values-preprod.yaml
+    depends_on:
+      - checkout
+    when:
+      target:
+        - "*-preprod"
+
+  - name: prod
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+    environment:
+      KUBE_CLUSTER: acp-prod
+      KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
+      KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
+      KUBE_TOKEN:
+        from_secret: cs_prod
+    commands:
+      - ./ci/helm/helm-deploy.sh
+    depends_on:
+      - checkout
+    when:
+      target:
+        - "*-prod"
