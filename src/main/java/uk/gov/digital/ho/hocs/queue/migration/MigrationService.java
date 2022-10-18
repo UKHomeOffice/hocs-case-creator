@@ -13,10 +13,8 @@ import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCo
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -54,7 +52,7 @@ public class MigrationService {
     private CreateMigrationCaseRequest composeMigrateCaseRequest(MigrationData migrationData, MigrationCaseTypeData migrationCaseTypeData, DocumentSummary documentSummary) {
         Map<String, String> initialData = Map.of(CHANNEL_LABEL, migrationCaseTypeData.getOrigin());
 
-        MigrationComplaintCorrespondent primaryCorrespondent = getPrimaryCorrespondent(migrationData.getPrimaryCorrespondent());
+        MigrationComplaintCorrespondent primaryCorrespondent = migrationData.getPrimaryCorrespondent();
 
         return new CreateMigrationCaseRequest(migrationData.getComplaintType(),
                 migrationData.getDateReceived(),
@@ -63,18 +61,4 @@ public class MigrationService {
                 "MIGRATION",
                 primaryCorrespondent);
     }
-
-    private MigrationComplaintCorrespondent getPrimaryCorrespondent(String json) {
-        MigrationComplaintCorrespondent[] correspondents;
-        try {
-            correspondents = objectMapper.readValue(json, MigrationComplaintCorrespondent[].class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        if (correspondents.length > 1) {
-            // TODO: Create Exception
-        }
-        return correspondents[0];
-    }
-
 }
