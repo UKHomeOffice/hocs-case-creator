@@ -1,10 +1,7 @@
 package uk.gov.digital.ho.hocs.client.migration.casework.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.lang.NonNull;
 import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 
@@ -14,27 +11,19 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 public class MigrationComplaintCorrespondent {
 
     @NonNull
     @NotEmpty
     @JsonProperty(value = "fullName", required = true)
-    String fullname;
+    String fullName;
 
     @NonNull
     @NotEmpty
     @JsonProperty(value = "correspondentType", required = true)
-    CorrespondentType type;
-
-    @JsonProperty("telephone")
-    String telephone;
-
-    @JsonProperty("email")
-    String email;
-
-    @JsonProperty("organisation")
-    String organisation;
+    CorrespondentType correspondentType;
 
     @JsonProperty("address1")
     String address1;
@@ -51,11 +40,20 @@ public class MigrationComplaintCorrespondent {
     @JsonProperty("country")
     String country;
 
+    @JsonProperty("organisation")
+    String organisation;
+
+    @JsonProperty("telephone")
+    String telephone;
+
+    @JsonProperty("email")
+    String email;
+
     @JsonProperty("reference")
     String reference;
 
-    public MigrationComplaintCorrespondent(@NonNull @NotEmpty  String fullname, @NonNull @NotEmpty CorrespondentType type) {
-        this.type = type;
-        this.fullname = fullname;
+    public MigrationComplaintCorrespondent(@NonNull @NotEmpty  String fullName, @NonNull @NotEmpty CorrespondentType type) {
+        this.correspondentType = type;
+        this.fullName = fullName;
     }
 }
