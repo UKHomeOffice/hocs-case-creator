@@ -1,12 +1,11 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.queue.data.CaseData;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Slf4j
@@ -29,13 +28,5 @@ public class MigrationData extends CaseData {
         return null;
     }
 
-    public MigrationComplaintCorrespondent getPrimaryCorrespondent() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        MigrationComplaintCorrespondent correspondent = objectMapper.convertValue(
-                ctx.read(PRIMARY_CORRESPONDENT),
-                new TypeReference<>() {
-        });
-        return correspondent;
-    }
-
+    public LinkedHashMap getPrimaryCorrespondent() { return ctx.read(PRIMARY_CORRESPONDENT); }
 }
