@@ -4,11 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -35,5 +32,4 @@ public class CreateMigrationCaseRequest {
 
     @JsonProperty("primaryCorrespondent")
     private MigrationComplaintCorrespondent primaryCorrespondent;
-
 }

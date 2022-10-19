@@ -64,7 +64,8 @@ public class MigrationServiceTest {
         objectMapper = new ObjectMapper();
         migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
 
-        MigrationComplaintCorrespondent primaryCorrespondent = migrationData.getPrimaryCorrespondent();
+        MigrationComplaintCorrespondent primaryCorrespondent = migrationService.getPrimaryCorrespondent(
+                migrationData.getPrimaryCorrespondent());
 
         documentSummary = new DocumentSummary("migration","","");
         createMigrationCaseRequest = new CreateMigrationCaseRequest(migrationData.getComplaintType(),

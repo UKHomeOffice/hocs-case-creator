@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCo
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +54,8 @@ public class MigrationService {
     private CreateMigrationCaseRequest composeMigrateCaseRequest(MigrationData migrationData, MigrationCaseTypeData migrationCaseTypeData, DocumentSummary documentSummary) {
         Map<String, String> initialData = Map.of(CHANNEL_LABEL, migrationCaseTypeData.getOrigin());
 
-        MigrationComplaintCorrespondent primaryCorrespondent = migrationData.getPrimaryCorrespondent();
+
+        MigrationComplaintCorrespondent primaryCorrespondent = getPrimaryCorrespondent(migrationData.getPrimaryCorrespondent());
 
         return new CreateMigrationCaseRequest(migrationData.getComplaintType(),
                 migrationData.getDateReceived(),
@@ -61,4 +64,13 @@ public class MigrationService {
                 "MIGRATION",
                 primaryCorrespondent);
     }
+
+    public MigrationComplaintCorrespondent getPrimaryCorrespondent(LinkedHashMap correspondentJson) {
+        MigrationComplaintCorrespondent primaryCorrespondent = objectMapper.convertValue(
+                correspondentJson,
+                new TypeReference<>() {
+                });
+        return primaryCorrespondent;
+    }
+
 }
