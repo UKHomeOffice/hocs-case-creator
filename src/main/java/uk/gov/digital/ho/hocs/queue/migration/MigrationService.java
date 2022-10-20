@@ -60,5 +60,4 @@ public class MigrationService {
         Map<String, String> initialData = Map.of(CHANNEL_LABEL, migrationCaseTypeData.getOrigin());
         return new CreateMigrationCaseRequest(migrationData.getComplaintType(), migrationData.getDateReceived(), caseAttachments, initialData, "MIGRATION");
     }
-
 }

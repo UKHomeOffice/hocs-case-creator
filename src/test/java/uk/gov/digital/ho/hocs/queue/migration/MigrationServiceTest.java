@@ -1,25 +1,26 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
-import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
+import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
-import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
-import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,12 +28,17 @@ public class MigrationServiceTest {
 
     @Mock
     private WorkflowClient workflowClient;
+
     @Mock
     private MigrationCaseworkClient migrationCaseworkClient;
+
     @Mock
     private ClientContext clientContext;
+
     @Mock
     private DocumentS3Client documentS3Client;
+
+    private ObjectMapper objectMapper;
 
     private MigrationService migrationService;
 
@@ -46,19 +52,21 @@ public class MigrationServiceTest {
 
     private MigrationCaseTypeData migrationCaseTypeData;
 
-    private DocumentSummary documentSummary;
+    private List<CaseAttachment> caseAttachment;
 
     @Before
     public void setUp() {
         json = getResourceFileAsString("validMigration.json");
         migrationData = new MigrationData(json);
-        LocalDate receivedDate = LocalDate.parse("2020-10-03");
+        objectMapper = new ObjectMapper();
         migrationCaseTypeData = new MigrationCaseTypeData();
         Map<String, String> initialData = Map.of("Channel", migrationCaseTypeData.getOrigin());
-        documentSummary = new DocumentSummary("migration","","");
-        createMigrationCaseRequest = new CreateMigrationCaseRequest(migrationData.getComplaintType(), migrationData.getDateReceived(), List.of(documentSummary), initialData, "MIGRATION");
+        caseAttachment = new ArrayList<>();
+        caseAttachment.add(new CaseAttachment("document1.pdf","To document","e7f5d229-3f23-450c-8f11-8ef647943ae3"));
+        caseAttachment.add(new CaseAttachment("document2.pdf","pdf","9bf2665f-6b21-47af-8789-34a25b136670"));
+        createMigrationCaseRequest = new CreateMigrationCaseRequest(migrationData.getComplaintType(), migrationData.getDateReceived(), caseAttachment, initialData, "MIGRATION");
         caseworkCaseResponse = new CreateCaseworkCaseResponse();
-        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client);
+        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
         when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
     }
 

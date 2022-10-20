@@ -2,10 +2,8 @@ package uk.gov.digital.ho.hocs.queue.migration;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
-import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 import uk.gov.digital.ho.hocs.queue.data.CaseData;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
