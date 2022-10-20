@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.PathNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +18,6 @@ import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +58,6 @@ public class MigrationServiceTest {
     public void setUp() {
         json = getResourceFileAsString("validMigration.json");
         migrationData = new MigrationData(json);
-        LocalDate receivedDate = LocalDate.parse("2020-10-03");
         migrationCaseTypeData = new MigrationCaseTypeData();
         Map<String, String> initialData = Map.of("Channel", migrationCaseTypeData.getOrigin());
         objectMapper = new ObjectMapper();
@@ -76,6 +75,7 @@ public class MigrationServiceTest {
         caseworkCaseResponse = new CreateCaseworkCaseResponse();
         when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
     }
+
     @Test
     public void migrateCase() {
         migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
@@ -101,5 +101,15 @@ public class MigrationServiceTest {
                         "reference"
                         );
         assertEquals(expectedPrimaryCorrespondent, primaryCorrespondents);
+    }
+
+    @Test(expected= PathNotFoundException.class)
+    public void GivenAnInvalidMigrationMessageWhenCreatingAMigrationRequestThenReturnAnException(){
+        json = getResourceFileAsString("invalidMigrationMissingPrimaryCorrespondent.json");
+        migrationData = new MigrationData(json);
+        migrationCaseTypeData = new MigrationCaseTypeData();
+        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
+
+        migrationData.getPrimaryCorrespondent();
     }
 }
