@@ -83,7 +83,7 @@ public class MigrationServiceTest {
     }
 
     @Test
-    public void GivenAValidMigrationMessageWhenCreatingAMigrationRequestThenMigrationResponseContainsAPrimaryCorrespondent() {
+    public void shouldContainAPrimaryCorrespondent() {
         MigrationComplaintCorrespondent primaryCorrespondents = createMigrationCaseRequest.getPrimaryCorrespondent();
 
         MigrationComplaintCorrespondent expectedPrimaryCorrespondent =
@@ -104,7 +104,7 @@ public class MigrationServiceTest {
     }
 
     @Test(expected= PathNotFoundException.class)
-    public void GivenAnInvalidMigrationMessageWhenCreatingAMigrationRequestThenReturnAnException(){
+    public void shouldFailWithMissingPrimaryCorrespondent(){
         json = getResourceFileAsString("invalidMigrationMissingPrimaryCorrespondent.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
