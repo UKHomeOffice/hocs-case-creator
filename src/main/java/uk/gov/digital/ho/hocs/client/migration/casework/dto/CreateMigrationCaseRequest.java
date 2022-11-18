@@ -32,4 +32,7 @@ public class CreateMigrationCaseRequest {
 
     @JsonProperty("primaryCorrespondent")
     private MigrationComplaintCorrespondent primaryCorrespondent;
+
+    @JsonProperty("additionalCorrespondents")
+    private List<MigrationComplaintCorrespondent> additionalCorrespondents;
 }
