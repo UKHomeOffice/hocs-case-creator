@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
-import com.jayway.jsonpath.*;
+import com.jayway.jsonpath.PathNotFoundException;
+import com.jayway.jsonpath.ReadContext;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
