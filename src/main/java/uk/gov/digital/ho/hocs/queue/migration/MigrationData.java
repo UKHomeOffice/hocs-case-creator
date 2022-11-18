@@ -1,7 +1,7 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONArray;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.queue.data.CaseData;
 
@@ -13,6 +13,7 @@ public class MigrationData extends CaseData {
 
     private static final String COMPLAINT_TYPE = "$.caseType";
     private static final String PRIMARY_CORRESPONDENT = "$.primaryCorrespondent";
+    private static final String ADDITIONAL_CORRESPONDENTS = "$.additionalCorrespondents";
 
     public MigrationData(String jsonBody) {
         super(jsonBody);
@@ -29,4 +30,6 @@ public class MigrationData extends CaseData {
     }
 
     public LinkedHashMap getPrimaryCorrespondent() { return ctx.read(PRIMARY_CORRESPONDENT); }
+
+    public JSONArray getAdditionalCorrespondents() { return ctx.read(ADDITIONAL_CORRESPONDENTS); }
 }
