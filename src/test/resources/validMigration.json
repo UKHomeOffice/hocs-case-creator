@@ -27,6 +27,19 @@
       "telephone": "telephone",
       "email": "email",
       "reference": "reference"
+    },
+    {
+      "fullName": "fullName",
+      "correspondentType": "COMPLAINANT",
+      "address1": "address1",
+      "address2": "address2",
+      "address3": "address3",
+      "postcode": "postcode",
+      "country": "country",
+      "organisation": "organisation",
+      "telephone": "telephone",
+      "email": "email",
+      "reference": "reference"
     }
   ],
   "caseStatus": "caseStatus",

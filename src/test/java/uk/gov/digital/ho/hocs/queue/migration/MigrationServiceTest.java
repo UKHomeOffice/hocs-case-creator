@@ -120,10 +120,11 @@ public class MigrationServiceTest {
     }
 
     @Test
-    public void shouldContainAdditionalCorrespondent() {
+    public void shouldContainAdditionalCorrespondents() {
         List<MigrationComplaintCorrespondent> additionalCorrespondents = createMigrationCaseRequest.getAdditionalCorrespondents();
 
         List<MigrationComplaintCorrespondent> expectedAdditionalCorrespondents = new ArrayList<>();
+        expectedAdditionalCorrespondents.add(createCorrespondent());
         expectedAdditionalCorrespondents.add(createCorrespondent());
 
         assertEquals(expectedAdditionalCorrespondents, additionalCorrespondents);
