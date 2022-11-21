@@ -121,7 +121,6 @@ public class MigrationServiceTest {
     }
 
     @Test
-
     public void shouldContainAdditionalCorrespondents() {
         List<MigrationComplaintCorrespondent> additionalCorrespondents = createMigrationCaseRequest.getAdditionalCorrespondents();
 
