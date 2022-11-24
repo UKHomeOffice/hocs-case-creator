@@ -54,7 +54,6 @@ public class MigrationService {
     private CreateMigrationCaseRequest composeMigrateCaseRequest(MigrationData migrationData, MigrationCaseTypeData migrationCaseTypeData, DocumentSummary documentSummary) {
         Map<String, String> initialData = Map.of(CHANNEL_LABEL, migrationCaseTypeData.getOrigin());
 
-
         MigrationComplaintCorrespondent primaryCorrespondent = getPrimaryCorrespondent(migrationData.getPrimaryCorrespondent());
         List<MigrationComplaintCorrespondent> additionalCorrespondents = getAdditionalCorrespondents(migrationData.getAdditionalCorrespondents());
 
@@ -80,7 +79,6 @@ public class MigrationService {
                 correspondentJson,
                 new TypeReference<>() {
                 });
-
         return additionalCorrespondents;
     }
 }
