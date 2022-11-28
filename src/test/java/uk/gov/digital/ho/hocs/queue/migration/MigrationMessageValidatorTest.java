@@ -32,13 +32,13 @@ public class MigrationMessageValidatorTest {
     }
 
     @Test(expected = Exception.class)
-    public void shouldValidateWithInvalidMigrationMessageWithMissingPrimaryCorrespondent() throws Exception {
+    public void shouldNotValidateWithInvalidMigrationMessageWithMissingPrimaryCorrespondent() throws Exception {
         var validMessage = getResourceFileAsString("invalidMigrationMissingPrimaryCorrespondent.json");
         migrationMessageValidator.validate(validMessage, messageId);
     }
 
     @Test(expected = Exception.class)
-    public void shouldValidateWithInvalidMigrationMessageWithMissingRequiredFieldsForPrimaryCorrespondent() throws Exception {
+    public void shouldNotValidateWithInvalidMigrationMessageWithMissingRequiredFieldsForPrimaryCorrespondent() throws Exception {
         var validMessage = getResourceFileAsString("invalidMigrationMissingRequiredFieldsPrimaryCorrespondent.json");
         migrationMessageValidator.validate(validMessage, messageId);
     }
@@ -46,6 +46,12 @@ public class MigrationMessageValidatorTest {
     @Test(expected = Exception.class)
     public void shouldNotValidateWithInvalidMigrationMessageWithMissingRequiredFieldsForAdditionalCorrespondent() throws Exception {
         var validMessage = getResourceFileAsString("invalidMigrationMissingRequiredFieldsAdditionalCorrespondent.json");
+        migrationMessageValidator.validate(validMessage, messageId);
+    }
+
+    @Test
+    public void shouldValidateWithNoAdditionalCorrespondents() throws Exception {
+        var validMessage = getResourceFileAsString("validMigrationNoAdditionalCorrespondents.json");
         migrationMessageValidator.validate(validMessage, messageId);
     }
 }

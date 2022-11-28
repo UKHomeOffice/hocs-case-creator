@@ -26,4 +26,9 @@ public class MigrationQueueListenerIntegrationTest extends AwsSqsIntegrationTest
        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
     }
 
+    @Test
+    public void consumeMessageFromMigrationQueueWithNoAdditionalCorrespondents() {
+        String validMessage = TestFileReader.getResourceFileAsString("validMigrationNoAdditionalCorrespondents.json");
+        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+    }
 }

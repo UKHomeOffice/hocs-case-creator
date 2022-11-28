@@ -1,9 +1,12 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
@@ -14,9 +17,7 @@ import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCo
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -74,11 +75,15 @@ public class MigrationService {
         return primaryCorrespondent;
     }
 
-    public List<MigrationComplaintCorrespondent> getAdditionalCorrespondents(JSONArray correspondentJson) {
-        List<MigrationComplaintCorrespondent> additionalCorrespondents = objectMapper.convertValue(
-                correspondentJson,
-                new TypeReference<>() {
-                });
-        return additionalCorrespondents;
+    public List<MigrationComplaintCorrespondent> getAdditionalCorrespondents(Optional<String> correspondentJson)  {
+        try {
+            List<MigrationComplaintCorrespondent> additionalCorrespondents = objectMapper.convertValue(
+                    objectMapper.readValue(correspondentJson.get(), JSONArray.class),
+                    new TypeReference<>() {
+                    });
+            return additionalCorrespondents;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 }

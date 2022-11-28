@@ -1,7 +1,9 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.PathNotFoundException;
+import net.minidev.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +23,9 @@ import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
@@ -128,6 +131,19 @@ public class MigrationServiceTest {
         expectedAdditionalCorrespondents.add(createCorrespondent());
 
         assertEquals(expectedAdditionalCorrespondents, additionalCorrespondents);
+    }
+
+    @Test
+    public void shouldContainNoAdditionalCorrespondents() {
+        json = getResourceFileAsString("validMigrationNoAdditionalCorrespondents.json");
+        migrationData = new MigrationData(json);
+        migrationCaseTypeData = new MigrationCaseTypeData();
+        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
+
+        Optional<String> additionalCorrespondentsJson =
+               migrationData.getAdditionalCorrespondents();
+
+        assertTrue(additionalCorrespondentsJson.isEmpty());
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {
