@@ -58,6 +58,9 @@ public class JSONToSimpleTextConverter {
                 textValue = textValue.replaceAll("[\\n]", NEW_LINE_STR);
                 textValue = WordUtils.wrap(NEW_LINE_STR + textValue, WRAP_LENGTH, NEW_LINE_STR, WRAP_LONG_WORDS);
             }
+            if (textValue.equals(textValue.toUpperCase())) {
+                textValue = convertEnumTextToReadable(textValue);
+            }
             convertedOutput.append(String.format("%" + (level * 4 - 3) + "s %s : %s%n", "", fromJavaIdentifierToDisplayableString(keyName), textValue));
         }
     }
@@ -77,6 +80,13 @@ public class JSONToSimpleTextConverter {
             displayable = Character.toUpperCase(displayable.charAt(0)) + displayable.substring(1);
         }
         return displayable;
+    }
+
+    private String convertEnumTextToReadable(String string) {
+        String firstLetter = string.substring(0, 1);
+        String remainder = string.substring(1);
+        String restoredString = firstLetter.toUpperCase() + remainder.toLowerCase().replace("_", " ");
+        return restoredString;
     }
 
 }
