@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.WordUtils;
+import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 
 import java.io.IOException;
 
@@ -17,8 +18,14 @@ public class JSONToSimpleTextConverter {
     private final String inputJson;
     private final StringBuilder convertedOutput = new StringBuilder();
 
-    public JSONToSimpleTextConverter(String inputJson) throws IOException {
+    private final ObjectMapper objectMapper;
+
+    private final EnumMappingsRepository complaintDetailsRepository;
+
+    public JSONToSimpleTextConverter(String inputJson, ObjectMapper objectMapper, EnumMappingsRepository complaintDetailsRepository) throws IOException {
         this.inputJson = inputJson;
+        this.objectMapper = objectMapper;
+        this.complaintDetailsRepository = complaintDetailsRepository;
         convertedOutput.append("\n\n");
         convert();
     }
@@ -54,12 +61,12 @@ public class JSONToSimpleTextConverter {
             convertedOutput.append(String.format("%n%" + (level * 4 - 3) + "s %s%n", "", fromJavaIdentifierToDisplayableString(keyName)));
         } else {
             String textValue = node.textValue();
+            if (textValue.equals(textValue.toUpperCase()) && !complaintDetailsRepository.getLabelByTypeAndName(keyName, textValue).isEmpty()) {
+                textValue = complaintDetailsRepository.getLabelByTypeAndName(keyName, textValue);
+            }
             if (keyName.equals("complaintText")) {
                 textValue = textValue.replaceAll("[\\n]", NEW_LINE_STR);
                 textValue = WordUtils.wrap(NEW_LINE_STR + textValue, WRAP_LENGTH, NEW_LINE_STR, WRAP_LONG_WORDS);
-            }
-            if (textValue.equals(textValue.toUpperCase())) {
-                textValue = convertEnumTextToReadable(textValue);
             }
             convertedOutput.append(String.format("%" + (level * 4 - 3) + "s %s : %s%n", "", fromJavaIdentifierToDisplayableString(keyName), textValue));
         }
@@ -80,13 +87,6 @@ public class JSONToSimpleTextConverter {
             displayable = Character.toUpperCase(displayable.charAt(0)) + displayable.substring(1);
         }
         return displayable;
-    }
-
-    private String convertEnumTextToReadable(String string) {
-        String firstLetter = string.substring(0, 1);
-        String remainder = string.substring(1);
-        String restoredString = firstLetter.toUpperCase() + remainder.toLowerCase().replace("_", " ");
-        return restoredString;
     }
 
 }

@@ -1,8 +1,10 @@
 package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.PathNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 import uk.gov.digital.ho.hocs.queue.data.CaseData;
 
@@ -22,8 +24,8 @@ public class UKVIComplaintData extends CaseData {
     static final String AGENT_AGENT_EMAIL = "$.complaint.reporterDetails.agentDetails.agentEmail";
     static final String AGENT_AGENT_PHONE = "$.complaint.reporterDetails.agentDetails.agentPhone";
 
-    public UKVIComplaintData(String jsonBody) {
-        super(jsonBody);
+    public UKVIComplaintData(String jsonBody, ObjectMapper objectMapper, EnumMappingsRepository complaintDetailsRepository) {
+        super(jsonBody, objectMapper, complaintDetailsRepository);
     }
 
     @Override

@@ -1,0 +1,67 @@
+{
+  "fields": [
+    {
+      "type": "complaintType",
+      "choices": [
+        {
+          "label": "Submitting application",
+          "name": "SUBMITTING_APPLICATION"
+        },
+        {
+          "label": "Making appointment",
+          "name": "MAKING_APPOINTMENT"
+        },
+        {
+          "label": "Existing",
+          "name": "EXISTING"
+        },
+        {
+          "label": "Decision or document delays",
+          "name": "DELAYS"
+        },
+        {
+          "label": "Immigration decision",
+          "name": "IMMIGRATION_DECISION"
+        },
+        {
+          "label": "Biometric residence permit",
+          "name": "BIOMETRIC_RESIDENCE_PERMIT"
+        },
+        {
+          "label": "Refund",
+          "name": "REFUND"
+        },
+        {
+          "label": "Staff behaviour",
+          "name": "POOR_INFORMATION_OR_STAFF_BEHAVIOUR"
+        },
+        {
+          "label": "Something else",
+          "name": "SOMETHING_ELSE"
+        }
+      ]
+    },
+    {
+      "type": "delayedWaitingFor",
+      "choices": [
+        {
+          "label": "Application delay",
+          "name": "APPLICATION_DELAY"
+        },
+        {
+          "label": "Return of documents",
+          "name": "RETURN_OF_DOCUMENTS"
+        }
+      ]
+    },
+    {
+      "type": "applicantType",
+      "choices": [
+        {
+          "label": "Applicant",
+          "name": "APPLICANT"
+        }
+      ]
+    }
+  ]
+}
