@@ -18,6 +18,7 @@ public class MigrationData extends CaseData {
     private static final String COMPLAINT_TYPE = "$.caseType";
     private static final String PRIMARY_CORRESPONDENT = "$.primaryCorrespondent";
     private static final String ADDITIONAL_CORRESPONDENTS = "$.additionalCorrespondents";
+    private static final String CASE_ATTACHMENTS = "$.caseAttachments";
 
     public MigrationData(String jsonBody) {
         super(jsonBody);
@@ -26,6 +27,10 @@ public class MigrationData extends CaseData {
     @Override
     public String getComplaintType() {
         return ctx.read(COMPLAINT_TYPE);
+    }
+
+    public String getCaseAttachments() {
+        return ctx.read(CASE_ATTACHMENTS).toString();
     }
 
     @Override
