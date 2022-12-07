@@ -20,12 +20,12 @@ public class JSONToSimpleTextConverter {
 
     private final ObjectMapper objectMapper;
 
-    private final EnumMappingsRepository complaintDetailsRepository;
+    private final EnumMappingsRepository enumMappingsRepository;
 
-    public JSONToSimpleTextConverter(String inputJson, ObjectMapper objectMapper, EnumMappingsRepository complaintDetailsRepository) throws IOException {
+    public JSONToSimpleTextConverter(String inputJson, ObjectMapper objectMapper, EnumMappingsRepository enumMappingsRepository) throws IOException {
         this.inputJson = inputJson;
         this.objectMapper = objectMapper;
-        this.complaintDetailsRepository = complaintDetailsRepository;
+        this.enumMappingsRepository = enumMappingsRepository;
         convertedOutput.append("\n\n");
         convert();
     }
@@ -61,8 +61,11 @@ public class JSONToSimpleTextConverter {
             convertedOutput.append(String.format("%n%" + (level * 4 - 3) + "s %s%n", "", fromJavaIdentifierToDisplayableString(keyName)));
         } else {
             String textValue = node.textValue();
-            if (textValue.equals(textValue.toUpperCase()) && !complaintDetailsRepository.getLabelByTypeAndName(keyName, textValue).isEmpty()) {
-                textValue = complaintDetailsRepository.getLabelByTypeAndName(keyName, textValue);
+            if (textValue.equals(textValue.toUpperCase())) {
+                String label = enumMappingsRepository.getLabelByTypeAndName(keyName, textValue);
+                if (label != null && !label.isEmpty()) {
+                    textValue = label;
+                }
             }
             if (keyName.equals("complaintText")) {
                 textValue = textValue.replaceAll("[\\n]", NEW_LINE_STR);

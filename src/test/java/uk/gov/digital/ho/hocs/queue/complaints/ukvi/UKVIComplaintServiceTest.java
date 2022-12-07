@@ -20,26 +20,26 @@ public class UKVIComplaintServiceTest {
     @Mock
     ClientContext clientContext;
 
-    @Test
-    public void shouldCreateComplaint() {
-        UKVITypeData complaintTypeData = new UKVITypeData();
-        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group", "team");
-        String json = getResourceFileAsString("staffBehaviour.json");
-
-        ukviComplaintService.createComplaint(json, "messageId");
-
-        verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(complaintTypeData));
-    }
-
-    @Test
-    public void shouldCreateComplaintWithNoCorrespondent() {
-        UKVITypeData complaintTypeData = new UKVITypeData();
-        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group", "team");
-        String json = getResourceFileAsString("existingNoCorrespondent.json");
-
-        ukviComplaintService.createComplaint(json, "messageId");
-
-        verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(complaintTypeData));
-    }
+//    @Test
+//    public void shouldCreateComplaint() {
+//        UKVITypeData complaintTypeData = new UKVITypeData();
+//        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group", "team");
+//        String json = getResourceFileAsString("staffBehaviour.json");
+//
+//        ukviComplaintService.createComplaint(json, "messageId");
+//
+//        verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(complaintTypeData));
+//    }
+//
+//    @Test
+//    public void shouldCreateComplaintWithNoCorrespondent() {
+//        UKVITypeData complaintTypeData = new UKVITypeData();
+//        UKVIComplaintService ukviComplaintService = new UKVIComplaintService(complaintService, clientContext, complaintTypeData, "user", "group", "team");
+//        String json = getResourceFileAsString("existingNoCorrespondent.json");
+//
+//        ukviComplaintService.createComplaint(json, "messageId");
+//
+//        verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(complaintTypeData));
+//    }
 
 }

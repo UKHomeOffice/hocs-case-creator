@@ -1,65 +1,65 @@
 {
   "fields": [
     {
-      "type": "complaintType",
+      "label": "complaintType",
       "choices": [
         {
-          "label": "Submitting application",
-          "name": "SUBMITTING_APPLICATION"
+          "name": "SUBMITTING_APPLICATION",
+          "value": "Submitting application"
         },
         {
-          "label": "Making appointment",
-          "name": "MAKING_APPOINTMENT"
+          "name": "MAKING_APPOINTMENT",
+          "value": "Making appointment"
         },
         {
-          "label": "Existing",
-          "name": "EXISTING"
+          "name": "EXISTING",
+          "value": "Existing"
         },
         {
-          "label": "Decision or document delays",
-          "name": "DELAYS"
+          "name": "DELAYS",
+          "value": "Decision or document delays"
         },
         {
-          "label": "Immigration decision",
-          "name": "IMMIGRATION_DECISION"
+          "name": "IMMIGRATION_DECISION",
+          "value": "Immigration decision"
         },
         {
-          "label": "Biometric residence permit",
-          "name": "BIOMETRIC_RESIDENCE_PERMIT"
+          "name": "BIOMETRIC_RESIDENCE_PERMIT",
+          "value": "Biometric residence permit"
         },
         {
-          "label": "Refund",
-          "name": "REFUND"
+          "name": "REFUND",
+          "value": "Refund"
         },
         {
-          "label": "Staff behaviour",
-          "name": "POOR_INFORMATION_OR_STAFF_BEHAVIOUR"
+          "name": "POOR_INFORMATION_OR_STAFF_BEHAVIOUR",
+          "value": "Staff behaviour"
         },
         {
-          "label": "Something else",
-          "name": "SOMETHING_ELSE"
+          "name": "SOMETHING_ELSE",
+          "value": "Something else"
         }
       ]
     },
     {
-      "type": "delayedWaitingFor",
+      "label": "delayedWaitingFor",
       "choices": [
         {
-          "label": "Application delay",
-          "name": "APPLICATION_DELAY"
+          "name": "APPLICATION_DELAY",
+          "value": "Application delay"
         },
         {
-          "label": "Return of documents",
-          "name": "RETURN_OF_DOCUMENTS"
+          "name": "RETURN_OF_DOCUMENTS",
+          "value": "Return of documents"
         }
       ]
     },
     {
-      "type": "applicantType",
+      "label": "applicantType",
       "choices": [
         {
-          "label": "Applicant",
-          "name": "APPLICANT"
+          "name": "APPLICANT",
+          "value": "Applicant"
         }
       ]
     }

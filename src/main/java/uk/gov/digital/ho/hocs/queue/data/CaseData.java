@@ -21,12 +21,12 @@ public abstract class CaseData implements ComplaintData {
     protected final ReadContext ctx;
     protected final String jsonBody;
     protected final ObjectMapper objectMapper;
-    protected final EnumMappingsRepository complaintDetailsRepository;
+    protected final EnumMappingsRepository enumMappingsRepository;
 
-    public CaseData(String jsonBody, ObjectMapper objectMapper, EnumMappingsRepository complaintDetailsRepository) {
+    public CaseData(String jsonBody, ObjectMapper objectMapper, EnumMappingsRepository enumMappingsRepository) {
         this.jsonBody = jsonBody;
         this.objectMapper = objectMapper;
-        this.complaintDetailsRepository = complaintDetailsRepository;
+        this.enumMappingsRepository = enumMappingsRepository;
         ctx = JsonPath.parse(jsonBody);
     }
 
@@ -34,7 +34,7 @@ public abstract class CaseData implements ComplaintData {
         this.jsonBody = jsonBody;
         ctx = JsonPath.parse(jsonBody);
         objectMapper = null;
-        complaintDetailsRepository = null;
+        enumMappingsRepository = null;
     }
 
     @Override
@@ -46,7 +46,7 @@ public abstract class CaseData implements ComplaintData {
     public String getFormattedDocument() {
         String formattedText = jsonBody; // Fall back if conversion fails
         try {
-            JSONToSimpleTextConverter jsonToSimpleTextConverter = new JSONToSimpleTextConverter(jsonBody, objectMapper, complaintDetailsRepository);
+            JSONToSimpleTextConverter jsonToSimpleTextConverter = new JSONToSimpleTextConverter(jsonBody, objectMapper, enumMappingsRepository);
             formattedText = jsonToSimpleTextConverter.getConvertedOutput();
         } catch (IOException e) {
             log.warn("Document formatting failed due to : {}", e.getMessage());

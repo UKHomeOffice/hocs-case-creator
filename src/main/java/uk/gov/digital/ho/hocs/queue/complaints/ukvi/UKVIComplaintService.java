@@ -14,7 +14,7 @@ import uk.gov.digital.ho.hocs.queue.complaints.ComplaintService;
 public class UKVIComplaintService {
 
     private final ObjectMapper objectMapper;
-    private final EnumMappingsRepository complaintDetailsRepository;
+    private final EnumMappingsRepository enumMappingsRepository;
     private final ComplaintService complaintService;
     private final ClientContext clientContext;
     private final UKVITypeData ukviTypeData;
@@ -24,7 +24,7 @@ public class UKVIComplaintService {
 
     @Autowired
     public UKVIComplaintService(ObjectMapper objectMapper,
-                                EnumMappingsRepository complaintDetailsRepository,
+                                EnumMappingsRepository enumMappingsRepository,
                                 ComplaintService complaintService,
                                 ClientContext clientContext,
                                 UKVITypeData ukviTypeData,
@@ -32,7 +32,7 @@ public class UKVIComplaintService {
                                 @Value("${case.creator.identities.complaints.ukvi.group}") String group,
                                 @Value("${case.creator.identities.complaints.ukvi.team}") String team) {
         this.objectMapper = objectMapper;
-        this.complaintDetailsRepository = complaintDetailsRepository;
+        this.enumMappingsRepository = enumMappingsRepository;
         this.complaintService = complaintService;
         this.clientContext = clientContext;
         this.ukviTypeData = ukviTypeData;
@@ -43,6 +43,6 @@ public class UKVIComplaintService {
 
     public void createComplaint(String jsonBody, String messageId) {
         clientContext.setContext(user, group, team, messageId);
-        complaintService.createComplaint(new UKVIComplaintData(jsonBody, objectMapper, complaintDetailsRepository), ukviTypeData);
+        complaintService.createComplaint(new UKVIComplaintData(jsonBody, objectMapper, enumMappingsRepository), ukviTypeData);
     }
 }

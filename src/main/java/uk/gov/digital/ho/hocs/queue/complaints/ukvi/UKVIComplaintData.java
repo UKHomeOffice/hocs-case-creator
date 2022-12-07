@@ -24,8 +24,8 @@ public class UKVIComplaintData extends CaseData {
     static final String AGENT_AGENT_EMAIL = "$.complaint.reporterDetails.agentDetails.agentEmail";
     static final String AGENT_AGENT_PHONE = "$.complaint.reporterDetails.agentDetails.agentPhone";
 
-    public UKVIComplaintData(String jsonBody, ObjectMapper objectMapper, EnumMappingsRepository complaintDetailsRepository) {
-        super(jsonBody, objectMapper, complaintDetailsRepository);
+    public UKVIComplaintData(String jsonBody, ObjectMapper objectMapper, EnumMappingsRepository enumMappingsRepository) {
+        super(jsonBody, objectMapper, enumMappingsRepository);
     }
 
     @Override

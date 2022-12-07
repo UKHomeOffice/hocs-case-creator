@@ -8,33 +8,22 @@ import java.util.List;
 
 public class EnumMappings {
 
-    private static List<EnumMapping> fields;
+    private final List<EnumMapping> fields;
 
     @JsonCreator
     public EnumMappings(@JsonProperty("fields") List<EnumMapping> fields) {
         this.fields = fields;
     }
-    
-    public List<EnumMapping> getMappingsByType(String type) {
-        List<EnumMapping> typeMappings = null;
-        
-        for (EnumMapping mapping : fields) {
-            if (mapping.type.equals(type)) {
-                typeMappings.add(mapping);
-            }
-        }
-        return typeMappings;
-    }
 
     @Getter
     public static class EnumMapping {
-        private final String type;
+        private final String label;
         private final List<Choice> choices;
 
         @JsonCreator
-        public EnumMapping(@JsonProperty("type") String type,
+        public EnumMapping(@JsonProperty("label") String label,
                            @JsonProperty("choices") List<Choice> choices) {
-            this.type = type;
+            this.label = label;
             this.choices = choices;
         }
     }
@@ -43,13 +32,13 @@ public class EnumMappings {
     public static class Choice {
 
         private final String name;
-        private final String label;
+        private final String value;
 
         @JsonCreator
         public Choice(@JsonProperty("name") String name,
-                      @JsonProperty("label") String label) {
+                      @JsonProperty("value") String value) {
             this.name = name;
-            this.label = label;
+            this.value = value;
         }
     }
 }
