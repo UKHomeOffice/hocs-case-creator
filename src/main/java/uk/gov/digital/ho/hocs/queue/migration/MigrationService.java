@@ -83,7 +83,7 @@ public class MigrationService {
         }
     }
 
-    private List<CaseAttachment> getCaseAttachments(String attachments) {
+    public List<CaseAttachment> getCaseAttachments(String attachments) {
         CaseAttachment[] caseAttachments;
         try {
             caseAttachments = objectMapper.readValue(attachments, CaseAttachment[].class);

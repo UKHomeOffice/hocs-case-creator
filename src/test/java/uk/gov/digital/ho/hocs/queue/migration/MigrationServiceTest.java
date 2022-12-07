@@ -138,10 +138,11 @@ public class MigrationServiceTest {
         migrationCaseTypeData = new MigrationCaseTypeData();
         migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
 
-        Optional<String> additionalCorrespondentsJson =
-               migrationData.getAdditionalCorrespondents();
+        List<MigrationComplaintCorrespondent> migrationComplaintCorrespondents =
+                migrationService.getAdditionalCorrespondents(
+                        migrationData.getAdditionalCorrespondents());
 
-        assertTrue(additionalCorrespondentsJson.isEmpty());
+        assertTrue(migrationComplaintCorrespondents.isEmpty());
     }
 
     @Test
@@ -161,6 +162,19 @@ public class MigrationServiceTest {
                 ));
 
         assertEquals(expectedAttachments, caseAttachments);
+    }
+
+    @Test
+    public void shouldNotContainAttachments() {
+        json = getResourceFileAsString("validMigrationNoCaseAttachments.json");
+        migrationData = new MigrationData(json);
+        migrationCaseTypeData = new MigrationCaseTypeData();
+        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
+
+        List<CaseAttachment> caseAttachments =
+                migrationService.getCaseAttachments(
+                        migrationData.getCaseAttachments());
+        assertTrue(caseAttachments.isEmpty());
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {
