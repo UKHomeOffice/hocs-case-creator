@@ -12,7 +12,6 @@ import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -40,7 +39,15 @@ public class MigrationCaseworkClientTest {
         Map<String, String> data = new HashMap<>();
         LocalDate date = LocalDate.now();
 
-        CreateMigrationCaseRequest request = new CreateMigrationCaseRequest("Migration", date, null, data, "COMP_MIGRATION_END", null, null);
+        CreateMigrationCaseRequest request = new CreateMigrationCaseRequest(
+                "Migration",
+                date,
+                data,
+                "COMP_MIGRATION_END",
+                null,
+                null,
+                null);
+
         CreateCaseworkCaseResponse expectedResponse = new CreateCaseworkCaseResponse(responseUUID, caseRef, data);
         ResponseEntity<CreateCaseworkCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
 
