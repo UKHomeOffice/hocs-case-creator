@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -83,13 +82,15 @@ public class MigrationService {
         }
     }
 
-    public List<CaseAttachment> getCaseAttachments(String attachments) {
-        CaseAttachment[] caseAttachments;
+    public List<CaseAttachment> getCaseAttachments(String attachmentsJson) {
         try {
-            caseAttachments = objectMapper.readValue(attachments, CaseAttachment[].class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            List<CaseAttachment> caseAttachments = objectMapper.convertValue(
+                    objectMapper.readValue(attachmentsJson, JSONArray.class),
+                    new TypeReference<>() {
+                    });
+            return caseAttachments;
+        } catch (Exception e) {
+            return Collections.emptyList();
         }
-        return Arrays.asList(caseAttachments);
     }
 }
