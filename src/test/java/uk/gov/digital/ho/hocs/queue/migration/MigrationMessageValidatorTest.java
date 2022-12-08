@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.digital.ho.hocs.application.SpringConfiguration;
-import uk.gov.digital.ho.hocs.queue.complaints.ukvi.UKVIComplaintValidator;
 
 import java.util.UUID;
 
@@ -33,14 +32,26 @@ public class MigrationMessageValidatorTest {
     }
 
     @Test(expected = Exception.class)
-    public void shouldValidateWithInvalidMigrationMessageWithMissingPrimaryCorrespondent() throws Exception {
+    public void shouldNotValidateWithInvalidMigrationMessageWithMissingPrimaryCorrespondent() throws Exception {
         var validMessage = getResourceFileAsString("invalidMigrationMissingPrimaryCorrespondent.json");
         migrationMessageValidator.validate(validMessage, messageId);
     }
 
     @Test(expected = Exception.class)
-    public void shouldValidateWithInvalidMigrationMessageWithMissingRequiredFieldsForPrimaryCorrespondent() throws Exception {
-        var validMessage = getResourceFileAsString("invalidMigrationMissingRequiredFields.json");
+    public void shouldNotValidateWithInvalidMigrationMessageWithMissingRequiredFieldsForPrimaryCorrespondent() throws Exception {
+        var validMessage = getResourceFileAsString("invalidMigrationMissingRequiredFieldsPrimaryCorrespondent.json");
+        migrationMessageValidator.validate(validMessage, messageId);
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotValidateWithInvalidMigrationMessageWithMissingRequiredFieldsForAdditionalCorrespondent() throws Exception {
+        var validMessage = getResourceFileAsString("invalidMigrationMissingRequiredFieldsAdditionalCorrespondent.json");
+        migrationMessageValidator.validate(validMessage, messageId);
+    }
+
+    @Test
+    public void shouldValidateWithNoAdditionalCorrespondents() throws Exception {
+        var validMessage = getResourceFileAsString("validMigrationNoAdditionalCorrespondents.json");
         migrationMessageValidator.validate(validMessage, messageId);
     }
 }
