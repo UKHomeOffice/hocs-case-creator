@@ -60,6 +60,186 @@
         {
           "name": "APPLICANT",
           "value": "Applicant"
+        },
+        {
+          "name": "AGENT",
+          "value": "Agent"
+        }
+      ]
+    },
+    {
+      "label": "agentType",
+      "choices": [
+        {
+          "name": "LEGAL_REP",
+          "value": "Legal representative"
+        },
+        {
+          "name": "RELATIVE",
+          "value": "Relative"
+        },
+        {
+          "name": "SPONSOR",
+          "value": "Sponsor"
+        },
+        {
+          "name": "SUPPORT_ORG",
+          "value": "Support organisation"
+        }
+      ]
+    },
+    {
+      "label": "experienceType",
+      "choices": [
+        {
+          "name": "PHONE",
+          "value": "Phone"
+        },
+        {
+          "name": "LETTER_OR_EMAIL",
+          "value": "Letter or email"
+        },
+        {
+          "name": "FACE_TO_FACE",
+          "value": "Face to face"
+        }
+      ]
+    },
+    {
+      "label": "problemExperienced",
+      "choices": [
+        {
+          "name": "TECHNICAL_ISSUES",
+          "value": "Technical issues"
+        },
+        {
+          "name": "GUIDANCE",
+          "value": "Guidance"
+        },
+        {
+          "name": "SOMETHING_ELSE",
+          "value": "Something else"
+        },
+        {
+          "name": "LACK_AVAILABILITY",
+          "value": "Lack of availability"
+        },
+        {
+          "name": "CHANGE_APPOINTMENT",
+          "value": "Change of appointment"
+        },
+        {
+          "name": "TECHNICAL_APPOINTMENTS",
+          "value": "Technical appointments"
+        },
+        {
+          "name": "QUESTIONS_APPOINTMENTS",
+          "value": "Questions appointments"
+        },
+        {
+          "name": "COMPLAIN_APPOINTMENTS",
+          "value": "Complain appointments"
+        },
+        {
+          "name": "CARD_NOT_ARRIVED",
+          "value": "Card not arrived"
+        },
+        {
+          "name": "CARD_INCORRECT",
+          "value": "Card incorrect"
+        },
+        {
+          "name": "COMPLAIN_BRP",
+          "value": "Complain BRP"
+        }
+      ]
+    },
+    {
+      "label": "documentReturnRequest",
+      "choices": [
+        {
+          "name": "YES_DOCS_SERVICE",
+          "value": "Documents service"
+        },
+        {
+          "name": "YES_OTHER",
+          "value": "Other"
+        },
+        {
+          "name": "NO",
+          "value": "No"
+        }
+      ]
+    },
+    {
+      "label": "decisionOutcome",
+      "choices": [
+        {
+          "name": "POSITIVE",
+          "value": "Positive"
+        },
+        {
+          "name": "NEGATIVE",
+          "value": "Negative"
+        }
+      ]
+    },
+    {
+      "label": "requestedRefund",
+      "choices": [
+        {
+          "name": "YES",
+          "value": "Yes"
+        },
+        {
+          "name": "NO",
+          "value": "No"
+        },
+        {
+          "name": "NOT_YET",
+          "value": "Not yet"
+        }
+      ]
+    },
+    {
+      "label": "refundType",
+      "choices": [
+        {
+          "name": "STANDARD",
+          "value": "Standard"
+        },
+        {
+          "name": "PRIORITY",
+          "value": "Priority"
+        },
+        {
+          "name": "SUPER_PRIORITY",
+          "value": "Super priority"
+        },
+        {
+          "name": "PREMIUM",
+          "value": "Premium"
+        },
+        {
+          "name": "IHS",
+          "value": "IHS"
+        },
+        {
+          "name": "EU_SETTLEMENT",
+          "value": "EU settlement"
+        }
+      ]
+    },
+    {
+      "label": "refundWhen",
+      "choices": [
+        {
+          "name": "MORE_THAN_SIX_WEEKS",
+          "value": "More than six weeks ago"
+        },
+        {
+          "name": "LESS_THAN_SIX_WEEKS",
+          "value": "Less than six weeks ago"
         }
       ]
     }

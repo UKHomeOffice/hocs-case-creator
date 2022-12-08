@@ -23,7 +23,7 @@
               Agent Email : peterJ@gmailcom
 
       Complaint Details
-          Complaint Text : 
+          Complaint Text :
             Lorem ipsum dolor
             sit amet,
             "consectetur adipiscing elit, sed do eiusmod tempor
