@@ -8,13 +8,6 @@ import java.util.List;
 
 public class EnumMappings {
 
-    private final List<EnumMapping> fields;
-
-    @JsonCreator
-    public EnumMappings(@JsonProperty("fields") List<EnumMapping> fields) {
-        this.fields = fields;
-    }
-
     @Getter
     public static class EnumMapping {
         private final String label;

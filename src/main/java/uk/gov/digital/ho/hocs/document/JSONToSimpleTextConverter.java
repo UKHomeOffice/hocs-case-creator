@@ -62,7 +62,7 @@ public class JSONToSimpleTextConverter {
         } else {
             String textValue = node.textValue();
             if (textValue.equals(textValue.toUpperCase())) {
-                String label = enumMappingsRepository.getLabelByTypeAndName(keyName, textValue);
+                String label = enumMappingsRepository.getTextValueByNameAndLabel(keyName, textValue);
                 if (label != null && !label.isEmpty()) {
                     textValue = label;
                 }
