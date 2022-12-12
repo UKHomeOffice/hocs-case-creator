@@ -109,7 +109,7 @@
     "choices": [
       {
         "name": "TECHNICAL_ISSUES",
-        "value": "Technical issues"
+        "value": "Technical issues with website or payments"
       },
       {
         "name": "GUIDANCE",
@@ -129,11 +129,11 @@
       },
       {
         "name": "TECHNICAL_APPOINTMENTS",
-        "value": "Technical appointments"
+        "value": "Technical issues with booking appointment"
       },
       {
         "name": "QUESTIONS_APPOINTMENTS",
-        "value": "Questions appointments"
+        "value": "Question about appointment"
       },
       {
         "name": "COMPLAIN_APPOINTMENTS",
@@ -141,11 +141,11 @@
       },
       {
         "name": "CARD_NOT_ARRIVED",
-        "value": "Card not arrived"
+        "value": "BRP card not arrived"
       },
       {
         "name": "CARD_INCORRECT",
-        "value": "Card incorrect"
+        "value": "BRP card incorrect"
       },
       {
         "name": "COMPLAIN_BRP",
@@ -239,6 +239,57 @@
       {
         "name": "LESS_THAN_SIX_WEEKS",
         "value": "Less than six weeks ago"
+      }
+    ]
+  },
+  {
+    "label": "applicationLocation",
+    "choices": [
+      {
+        "name": "INSIDE_UK",
+        "value": "Inside UK"
+      },
+      {
+        "name": "OUTSIDE_UK",
+        "value": "Outside UK"
+      }
+    ]
+  },
+  {
+    "label": "centreType",
+    "choices": [
+      {
+        "name": "VAC",
+        "value": "VAC (visa application centre)"
+      },
+      {
+        "name": "SSC",
+        "value": "SSC (service support centre)"
+      },
+      {
+        "name": "UKVCAS",
+        "value": "UKVCAS"
+      }
+    ]
+  },
+  {
+    "label": "referenceType",
+    "choices": [
+      {
+        "name": "GWF_REF",
+        "value": "GWF reference"
+      },
+      {
+        "name": "HO_REF",
+        "value": "HO reference"
+      },
+      {
+        "name": "IHS_REF",
+        "value": "IHS reference"
+      },
+      {
+        "name": "UAN_REF",
+        "value": "UAN reference"
       }
     ]
   }
