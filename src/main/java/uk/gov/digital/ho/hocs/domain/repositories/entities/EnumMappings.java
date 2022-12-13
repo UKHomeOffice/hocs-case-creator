@@ -10,13 +10,13 @@ public class EnumMappings {
 
     @Getter
     public static class EnumMapping {
-        private final String label;
+        private final String fieldName;
         private final List<Choice> choices;
 
         @JsonCreator
-        public EnumMapping(@JsonProperty("label") String label,
+        public EnumMapping(@JsonProperty("fieldName") String fieldName,
                            @JsonProperty("choices") List<Choice> choices) {
-            this.label = label;
+            this.fieldName = fieldName;
             this.choices = choices;
         }
     }
