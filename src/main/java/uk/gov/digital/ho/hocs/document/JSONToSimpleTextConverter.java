@@ -35,7 +35,6 @@ public class JSONToSimpleTextConverter {
     }
 
     private void convert() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(inputJson);
         traverse(rootNode, 1);
     }

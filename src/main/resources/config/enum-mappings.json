@@ -1,6 +1,6 @@
 [
   {
-    "label": "complaintType",
+    "fieldName": "complaintType",
     "choices": [
       {
         "name": "SUBMITTING_APPLICATION",
@@ -41,7 +41,7 @@
     ]
   },
   {
-    "label": "delayedWaitingFor",
+    "fieldName": "delayedWaitingFor",
     "choices": [
       {
         "name": "APPLICATION_DELAY",
@@ -54,7 +54,7 @@
     ]
   },
   {
-    "label": "applicantType",
+    "fieldName": "applicantType",
     "choices": [
       {
         "name": "APPLICANT",
@@ -67,7 +67,7 @@
     ]
   },
   {
-    "label": "agentType",
+    "fieldName": "agentType",
     "choices": [
       {
         "name": "LEGAL_REP",
@@ -88,7 +88,7 @@
     ]
   },
   {
-    "label": "experienceType",
+    "fieldName": "experienceType",
     "choices": [
       {
         "name": "PHONE",
@@ -105,7 +105,7 @@
     ]
   },
   {
-    "label": "problemExperienced",
+    "fieldName": "problemExperienced",
     "choices": [
       {
         "name": "TECHNICAL_ISSUES",
@@ -154,7 +154,7 @@
     ]
   },
   {
-    "label": "documentReturnRequest",
+    "fieldName": "documentReturnRequest",
     "choices": [
       {
         "name": "YES_DOCS_SERVICE",
@@ -171,7 +171,7 @@
     ]
   },
   {
-    "label": "decisionOutcome",
+    "fieldName": "decisionOutcome",
     "choices": [
       {
         "name": "POSITIVE",
@@ -184,7 +184,7 @@
     ]
   },
   {
-    "label": "requestedRefund",
+    "fieldName": "requestedRefund",
     "choices": [
       {
         "name": "YES",
@@ -201,7 +201,7 @@
     ]
   },
   {
-    "label": "refundType",
+    "fieldName": "refundType",
     "choices": [
       {
         "name": "STANDARD",
@@ -230,7 +230,7 @@
     ]
   },
   {
-    "label": "refundWhen",
+    "fieldName": "refundWhen",
     "choices": [
       {
         "name": "MORE_THAN_SIX_WEEKS",
@@ -243,7 +243,7 @@
     ]
   },
   {
-    "label": "applicationLocation",
+    "fieldName": "applicationLocation",
     "choices": [
       {
         "name": "INSIDE_UK",
@@ -256,7 +256,7 @@
     ]
   },
   {
-    "label": "centreType",
+    "fieldName": "centreType",
     "choices": [
       {
         "name": "VAC",
@@ -273,7 +273,7 @@
     ]
   },
   {
-    "label": "referenceType",
+    "fieldName": "referenceType",
     "choices": [
       {
         "name": "GWF_REF",
