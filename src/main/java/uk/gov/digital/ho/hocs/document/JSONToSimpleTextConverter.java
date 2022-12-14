@@ -17,9 +17,7 @@ public class JSONToSimpleTextConverter {
     public static final boolean WRAP_LONG_WORDS = false;
     private final String inputJson;
     private final StringBuilder convertedOutput = new StringBuilder();
-
     private final ObjectMapper objectMapper;
-
     private final EnumMappingsRepository enumMappingsRepository;
 
     public JSONToSimpleTextConverter(String inputJson, ObjectMapper objectMapper, EnumMappingsRepository enumMappingsRepository) throws IOException {
@@ -61,7 +59,7 @@ public class JSONToSimpleTextConverter {
         } else {
             String textValue = node.textValue();
             if (textValue.equals(textValue.toUpperCase())) {
-                String label = enumMappingsRepository.getTextValueByNameAndLabel(keyName, textValue);
+                String label = enumMappingsRepository.getTextValueByNameAndFieldName(keyName, textValue);
                 if (label != null && !label.isEmpty()) {
                     textValue = label;
                 }

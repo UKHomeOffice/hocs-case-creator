@@ -18,10 +18,10 @@ public class EnumMappingsRepository extends JsonConfigFileReader {
         enumMappings = readValueFromFile(new TypeReference<>() {});
     }
 
-    public String getTextValueByNameAndLabel(String label, String name) {
+    public String getTextValueByNameAndFieldName(String fieldName, String name) {
         if (!enumMappings.isEmpty()) {
             for (EnumMappings.EnumMapping mapping : enumMappings) {
-                if (mapping.getFieldName().equals(label)) {
+                if (mapping.getFieldName().equals(fieldName)) {
                     for (EnumMappings.Choice choice : mapping.getChoices()) {
                         if (choice.getName().equals(name)) {
                             return choice.getValue();

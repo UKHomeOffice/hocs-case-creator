@@ -6,7 +6,7 @@
       Complaint Type : Staff behaviour
 
       Reference
-          Reference Type : IHS_REF
+          Reference Type : IHS reference
           Reference : ABC12345
 
       Reporter Details
@@ -46,5 +46,5 @@
               Location
                   Country : United Kingdom
                   City : Dover
-                  Centre Type : VAC
+                  Centre Type : VAC (visa application centre)
 
