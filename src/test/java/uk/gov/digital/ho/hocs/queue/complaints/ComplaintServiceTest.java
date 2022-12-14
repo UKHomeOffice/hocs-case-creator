@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
@@ -20,7 +21,6 @@ import uk.gov.digital.ho.hocs.queue.complaints.ukvi.UKVITypeData;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -43,10 +43,8 @@ public class ComplaintServiceTest {
     private ClientContext clientContext;
     @Mock
     private DocumentS3Client documentS3Client;
-
-    @Mock
-    private ObjectMapper objectMapper;
-
+    @SpyBean
+    private ObjectMapper objectMapper = new ObjectMapper();
     @Mock
     private EnumMappingsRepository enumMappingsRepository;
 
