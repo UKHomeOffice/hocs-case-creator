@@ -1,0 +1,46 @@
+{
+  "caseType": "COMP",
+  "sourceCaseId": "in",
+  "primaryCorrespondent": {
+    "fullName": "fullName",
+    "correspondentType": "COMPLAINANT",
+    "address1": null,
+    "address2": null,
+    "address3": null,
+    "postcode": null,
+    "country": null,
+    "organisation": null,
+    "telephone": null,
+    "email": null,
+    "reference": null
+  },
+  "additionalCorrespondents": [
+    {
+      "fullName": "fullName",
+      "correspondentType": "COMPLAINANT",
+      "address1": null,
+      "address2": null,
+      "address3": null,
+      "postcode": null,
+      "country": null,
+      "organisation": null,
+      "telephone": null,
+      "email": null,
+      "reference": null
+    }
+  ],
+  "caseStatus": "caseStatus",
+  "caseStatusDate": "1947-02-14",
+  "creationDate": "1965-06-22",
+  "caseData": [
+    {"name": "type", "value": "cms"},
+    {"name": "creationDate", "value": "01/07/2022"}
+  ],
+  "caseAttachments": [
+    {
+      "documentPath": "e7f5d229-3f23-450c-8f11-8ef647943ae3",
+      "displayName": "document1.pdf",
+      "documentType": "To document"
+    }
+  ]
+}

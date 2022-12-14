@@ -23,8 +23,8 @@
   ],
   "caseAttachments": [
     {
-      "path": "path",
-      "label": "label",
+      "documentPath": "path",
+      "displayName": "label",
       "documentType": "documentType"
     }
   ]
