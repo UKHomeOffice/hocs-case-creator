@@ -66,4 +66,10 @@ public class MigrationMessageValidatorTest {
         var validMessage = getResourceFileAsString("validMigrationNoCaseAttachments.json");
         migrationMessageValidator.validate(validMessage, messageId);
     }
+
+    @Test
+    public void shouldValidateWithOptionalFieldsNull() throws Exception {
+        var validMessage = getResourceFileAsString("validMigrationWithOptionalFieldsNull.json");
+        migrationMessageValidator.validate(validMessage, messageId);
+    }
 }
