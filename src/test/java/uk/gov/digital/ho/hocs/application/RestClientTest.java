@@ -27,9 +27,8 @@ public class RestClientTest {
 
     @Before
     public void setUp() {
-        String basicAuth = "password";
         ClientContext clientContext = new ClientContext();
-        restClient = new RestClient(restTemplate, basicAuth, clientContext);
+        restClient = new RestClient(restTemplate, clientContext);
         baseUrl = "http://service";
         url = "/url";
         expectedUrl = String.format("%s%s", baseUrl, url);

@@ -89,7 +89,6 @@ The following table contains the mandatory and optional properties that need to 
 | AWS_S3_UNTRUSTED_BUCKET_NAME | The S3 bucket name to send to | untrusted-bucket | Yes
 | CASE_CREATOR_WORKFLOW_SERVICE | The URL of the workflow service  | http://localhost:8091   | Yes  |
 | CASE_CREATOR_CASE_SERVICE | The URL of the casework service  | http://localhost:8082   | Yes  |
-| CASE_CREATOR_BASICAUTH | The basic auth credentials  | [UNSET]   | Yes  |
 | CASE_CREATOR_IDENTITIES_COMPLAINTS_UKVI_USER | The UKVI System User ID  | UUID   | Yes  |
 | CASE_CREATOR_IDENTITIES_COMPLAINTS_UKVI_GROUP | The UKVI System Group ID  | /CMSMNIAZQXMZQ6IGEKTRWA   | Yes  |
 | CASE_CREATOR_IDENTITIES_COMPLAINTS_UKVI_TEAM | The UKVI System Team ID  | UUID   | Yes  |
