@@ -1,12 +1,9 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
@@ -15,7 +12,6 @@ import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseR
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
-import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
 import java.util.*;
 
@@ -45,26 +41,25 @@ public class MigrationService {
     }
 
     public void createMigrationCase(MigrationData migrationCaseData, MigrationCaseTypeData migrationCaseTypeData) {
-        // dummy documents list
-        DocumentSummary documentSummary = new DocumentSummary("migration","","");
-        var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData, documentSummary);
+        var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData);
         CreateCaseworkCaseResponse caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
         log.info("Created migration case {}", caseResponse.getUuid());
     }
 
-    private CreateMigrationCaseRequest composeMigrateCaseRequest(MigrationData migrationData, MigrationCaseTypeData migrationCaseTypeData, DocumentSummary documentSummary) {
+    private CreateMigrationCaseRequest composeMigrateCaseRequest(MigrationData migrationData, MigrationCaseTypeData migrationCaseTypeData) {
         Map<String, String> initialData = Map.of(CHANNEL_LABEL, migrationCaseTypeData.getOrigin());
 
         MigrationComplaintCorrespondent primaryCorrespondent = getPrimaryCorrespondent(migrationData.getPrimaryCorrespondent());
         List<MigrationComplaintCorrespondent> additionalCorrespondents = getAdditionalCorrespondents(migrationData.getAdditionalCorrespondents());
+        List<CaseAttachment> caseAttachments = getCaseAttachments(migrationData.getCaseAttachments());
 
         return new CreateMigrationCaseRequest(migrationData.getComplaintType(),
                 migrationData.getDateReceived(),
-                List.of(documentSummary),
                 initialData,
                 "MIGRATION",
                 primaryCorrespondent,
-                additionalCorrespondents);
+                additionalCorrespondents,
+                caseAttachments);
     }
 
     public MigrationComplaintCorrespondent getPrimaryCorrespondent(LinkedHashMap correspondentJson) {
@@ -82,6 +77,18 @@ public class MigrationService {
                     new TypeReference<>() {
                     });
             return additionalCorrespondents;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
+    public List<CaseAttachment> getCaseAttachments(String attachmentsJson) {
+        try {
+            List<CaseAttachment> caseAttachments = objectMapper.convertValue(
+                    objectMapper.readValue(attachmentsJson, JSONArray.class),
+                    new TypeReference<>() {
+                    });
+            return caseAttachments;
         } catch (Exception e) {
             return Collections.emptyList();
         }
