@@ -37,7 +37,6 @@ aws:
 
 case:
   creator:
-    basicauth: UNSET
     case-service: http://localhost:8082
     identities:
       complaints:

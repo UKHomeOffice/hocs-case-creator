@@ -1,9 +1,7 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.PathNotFoundException;
-import net.minidev.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,13 +15,9 @@ import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseR
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
-import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,7 +48,7 @@ public class MigrationServiceTest {
 
     private MigrationCaseTypeData migrationCaseTypeData;
 
-    private DocumentSummary documentSummary;
+    private List<CaseAttachment> caseAttachment;
 
     private ObjectMapper objectMapper;
 
@@ -73,14 +67,18 @@ public class MigrationServiceTest {
         List<MigrationComplaintCorrespondent> additionalCorrespondents = migrationService.getAdditionalCorrespondents(
                 migrationData.getAdditionalCorrespondents());
 
+        caseAttachment = new ArrayList<>();
+        caseAttachment.add(new CaseAttachment("document1.pdf","To document","e7f5d229-3f23-450c-8f11-8ef647943ae3"));
+        caseAttachment.add(new CaseAttachment("document2.pdf","pdf","9bf2665f-6b21-47af-8789-34a25b136670"));
 
-        documentSummary = new DocumentSummary("migration","","");
-        createMigrationCaseRequest = new CreateMigrationCaseRequest(migrationData.getComplaintType(),
-                migrationData.getDateReceived(), List.of(documentSummary),
+        createMigrationCaseRequest = new CreateMigrationCaseRequest(
+                migrationData.getComplaintType(),
+                migrationData.getDateReceived(),
                 initialData,
                 "MIGRATION",
                 primaryCorrespondent,
-                additionalCorrespondents);
+                additionalCorrespondents,
+                caseAttachment);
         caseworkCaseResponse = new CreateCaseworkCaseResponse();
         when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
     }
@@ -140,10 +138,43 @@ public class MigrationServiceTest {
         migrationCaseTypeData = new MigrationCaseTypeData();
         migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
 
-        Optional<String> additionalCorrespondentsJson =
-               migrationData.getAdditionalCorrespondents();
+        List<MigrationComplaintCorrespondent> migrationComplaintCorrespondents =
+                migrationService.getAdditionalCorrespondents(
+                        migrationData.getAdditionalCorrespondents());
 
-        assertTrue(additionalCorrespondentsJson.isEmpty());
+        assertTrue(migrationComplaintCorrespondents.isEmpty());
+    }
+
+    @Test
+    public void shouldContainCaseAttachments() {
+        List<CaseAttachment> caseAttachments = createMigrationCaseRequest.getAttachments();
+
+        List<CaseAttachment> expectedAttachments = Arrays.asList(
+                new CaseAttachment(
+                        "document1.pdf",
+                        "To document",
+                        "e7f5d229-3f23-450c-8f11-8ef647943ae3"
+                ),
+                new CaseAttachment(
+                        "document2.pdf",
+                        "pdf",
+                        "9bf2665f-6b21-47af-8789-34a25b136670"
+                ));
+
+        assertEquals(expectedAttachments, caseAttachments);
+    }
+
+    @Test
+    public void shouldNotContainAttachments() {
+        json = getResourceFileAsString("validMigrationNoCaseAttachments.json");
+        migrationData = new MigrationData(json);
+        migrationCaseTypeData = new MigrationCaseTypeData();
+        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
+
+        List<CaseAttachment> caseAttachments =
+                migrationService.getCaseAttachments(
+                        migrationData.getCaseAttachments());
+        assertTrue(caseAttachments.isEmpty());
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {
@@ -161,4 +192,6 @@ public class MigrationServiceTest {
                 "reference"
         );
     }
+
+
 }

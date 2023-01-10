@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
+import uk.gov.digital.ho.hocs.queue.migration.CaseAttachment;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,9 +21,6 @@ public class CreateMigrationCaseRequest {
     @JsonProperty("dateReceived")
     private LocalDate dateReceived;
 
-    @JsonProperty("documents")
-    private List<DocumentSummary> documents;
-
     @JsonProperty("data")
     private Map<String, String> data;
 
@@ -35,4 +32,7 @@ public class CreateMigrationCaseRequest {
 
     @JsonProperty("additionalCorrespondents")
     private List<MigrationComplaintCorrespondent> additionalCorrespondents;
+
+    @JsonProperty("caseAttachments")
+    private List<CaseAttachment> attachments;
 }
