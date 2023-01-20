@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS migration_state cascade;
 
 CREATE TABLE IF NOT EXISTS migration_state
 (
+    id                         BIGSERIAL PRIMARY KEY,
     case_uuid                  UUID,
     stage_uuid                 UUID,
     cms_id                     NUMERIC,
