@@ -38,6 +38,8 @@ public class MigrationServiceTest {
 
     private MigrationService migrationService;
 
+    private MigrationStateService migrationStateService;
+
     private CreateMigrationCaseRequest createMigrationCaseRequest;
 
     private CreateCaseworkCaseResponse caseworkCaseResponse;
@@ -59,7 +61,14 @@ public class MigrationServiceTest {
         migrationCaseTypeData = new MigrationCaseTypeData();
         Map<String, String> initialData = Map.of("Channel", migrationCaseTypeData.getOrigin());
         objectMapper = new ObjectMapper();
-        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
+
+        migrationService = new MigrationService(
+                workflowClient,
+                migrationCaseworkClient,
+                clientContext,
+                documentS3Client,
+                objectMapper,
+                migrationStateService);
 
         MigrationComplaintCorrespondent primaryCorrespondent = migrationService.getPrimaryCorrespondent(
                 migrationData.getPrimaryCorrespondent());
@@ -115,7 +124,13 @@ public class MigrationServiceTest {
         json = getResourceFileAsString("invalidMigrationMissingPrimaryCorrespondent.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
-        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
+        migrationService = new MigrationService(
+                workflowClient,
+                migrationCaseworkClient,
+                clientContext,
+                documentS3Client,
+                objectMapper,
+                migrationStateService);
 
         migrationData.getPrimaryCorrespondent();
     }
@@ -136,7 +151,13 @@ public class MigrationServiceTest {
         json = getResourceFileAsString("validMigrationNoAdditionalCorrespondents.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
-        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
+        migrationService = new MigrationService(
+                workflowClient,
+                migrationCaseworkClient,
+                clientContext,
+                documentS3Client,
+                objectMapper,
+                migrationStateService);
 
         List<MigrationComplaintCorrespondent> migrationComplaintCorrespondents =
                 migrationService.getAdditionalCorrespondents(
@@ -177,6 +198,11 @@ public class MigrationServiceTest {
         assertTrue(caseAttachments.isEmpty());
     }
 
+    @Test
+    public void testStateWrite() {
+        migrationService.createState();
+    }
+
     private MigrationComplaintCorrespondent createCorrespondent() {
         return new MigrationComplaintCorrespondent(
                 "fullName",
@@ -192,6 +218,4 @@ public class MigrationServiceTest {
                 "reference"
         );
     }
-
-
 }

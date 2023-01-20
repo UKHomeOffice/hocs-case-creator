@@ -28,21 +28,26 @@ public class MigrationService {
 
     private final ObjectMapper objectMapper;
 
+    private final MigrationStateService migrationStateService;
+
     public MigrationService(WorkflowClient workflowClient,
                             MigrationCaseworkClient migrationCaseworkClient,
                             ClientContext clientContext,
                             DocumentS3Client documentS3Client,
-                            ObjectMapper objectMapper) {
+                            ObjectMapper objectMapper,
+                            MigrationStateService migrationStateService) {
         this.workflowClient = workflowClient;
         this.migrationCaseworkClient = migrationCaseworkClient;
         this.clientContext = clientContext;
         this.documentS3Client = documentS3Client;
         this.objectMapper = objectMapper;
+        this.migrationStateService = migrationStateService;
     }
 
     public void createMigrationCase(MigrationData migrationCaseData, MigrationCaseTypeData migrationCaseTypeData) {
         var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData);
         CreateCaseworkCaseResponse caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
+        migrationStateService.createTestCase();
         log.info("Created migration case {}", caseResponse.getUuid());
     }
 
@@ -92,5 +97,10 @@ public class MigrationService {
         } catch (Exception e) {
             return Collections.emptyList();
         }
+
+    }
+
+    public void createState() {
+        migrationStateService.createTestCase();
     }
 }
