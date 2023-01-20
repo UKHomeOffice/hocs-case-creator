@@ -190,7 +190,13 @@ public class MigrationServiceTest {
         json = getResourceFileAsString("validMigrationNoCaseAttachments.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
-        migrationService = new MigrationService(workflowClient, migrationCaseworkClient, clientContext, documentS3Client, objectMapper);
+        migrationService = new MigrationService(
+                workflowClient,
+                migrationCaseworkClient,
+                clientContext,
+                documentS3Client,
+                objectMapper,
+                migrationStateService);
 
         List<CaseAttachment> caseAttachments =
                 migrationService.getCaseAttachments(
