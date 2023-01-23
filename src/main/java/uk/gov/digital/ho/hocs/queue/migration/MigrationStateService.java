@@ -2,32 +2,33 @@ package uk.gov.digital.ho.hocs.queue.migration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.domain.migration.MigrationStateRepository;
-import uk.gov.digital.ho.hocs.domain.migration.model.MigrationState;
+import uk.gov.digital.ho.hocs.domain.MessageLogRepository;
+import uk.gov.digital.ho.hocs.domain.model.MessageLog;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
 @Slf4j
 public class MigrationStateService {
 
-    private final MigrationStateRepository migrationStateRepository;
+    private final MessageLogRepository messageLogRepository;
 
-    public MigrationStateService(MigrationStateRepository migrationStateRepository) {
-        this.migrationStateRepository = migrationStateRepository;
+    public MigrationStateService(MessageLogRepository messageLogRepository) {
+        this.messageLogRepository = messageLogRepository;
     }
 
     public void createTestCase() {
-        MigrationState state = new MigrationState(
-                0L,
+        MessageLog state = new MessageLog(
                 UUID.randomUUID(),
+                "message_id",
                 UUID.randomUUID(),
-                0L,
-                "message_body: {}",
-                "New",
-                true);
+                "message: {}",
+                "new",
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
 
-
-        migrationStateRepository.save(state);
+        messageLogRepository.save(state);
     }
 }

@@ -36,9 +36,10 @@ public class MigrationServiceTest {
     @Mock
     private DocumentS3Client documentS3Client;
 
-    private MigrationService migrationService;
-
+    @Mock
     private MigrationStateService migrationStateService;
+
+    private MigrationService migrationService;
 
     private CreateMigrationCaseRequest createMigrationCaseRequest;
 

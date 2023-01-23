@@ -46,8 +46,9 @@ public class MigrationService {
 
     public void createMigrationCase(MigrationData migrationCaseData, MigrationCaseTypeData migrationCaseTypeData) {
         var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData);
-        CreateCaseworkCaseResponse caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
         migrationStateService.createTestCase();
+
+        CreateCaseworkCaseResponse caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
         log.info("Created migration case {}", caseResponse.getUuid());
     }
 
