@@ -22,11 +22,7 @@ public class EnumMappingsRepository extends JsonConfigFileReader {
         if (!enumMappings.isEmpty()) {
             for (EnumMappings.EnumMapping mapping : enumMappings) {
                 if (mapping.getFieldName().equals(fieldName)) {
-                    for (EnumMappings.Choice choice : mapping.getChoices()) {
-                        if (choice.getName().equals(name)) {
-                            return choice.getValue();
-                        }
-                    }
+                    return mapping.getChoices().get(name);
                 }
             }
         }

@@ -1,296 +1,128 @@
 [
   {
     "fieldName": "complaintType",
-    "choices": [
-      {
-        "name": "SUBMITTING_APPLICATION",
-        "value": "Submitting application"
-      },
-      {
-        "name": "MAKING_APPOINTMENT",
-        "value": "Making appointment"
-      },
-      {
-        "name": "EXISTING",
-        "value": "Existing"
-      },
-      {
-        "name": "DELAYS",
-        "value": "Decision or document delays"
-      },
-      {
-        "name": "IMMIGRATION_DECISION",
-        "value": "Immigration decision"
-      },
-      {
-        "name": "BIOMETRIC_RESIDENCE_PERMIT",
-        "value": "Biometric residence permit"
-      },
-      {
-        "name": "REFUND",
-        "value": "Refund"
-      },
-      {
-        "name": "POOR_INFORMATION_OR_STAFF_BEHAVIOUR",
-        "value": "Staff behaviour"
-      },
-      {
-        "name": "SOMETHING_ELSE",
-        "value": "Something else"
-      }
-    ]
+    "choices": {
+      "SUBMITTING_APPLICATION": "Submitting application",
+      "MAKING_APPOINTMENT": "Making appointment",
+      "EXISTING": "Existing",
+      "DELAYS": "Decision or document delays",
+      "IMMIGRATION_DECISION": "Immigration decision",
+      "BIOMETRIC_RESIDENCE_PERMIT": "Biometric residence permit",
+      "REFUND": "Refund",
+      "POOR_INFORMATION_OR_STAFF_BEHAVIOUR": "Staff behaviour",
+      "SOMETHING_ELSE": "Something else"
+    }
   },
   {
     "fieldName": "delayedWaitingFor",
-    "choices": [
-      {
-        "name": "APPLICATION_DELAY",
-        "value": "Application delay"
-      },
-      {
-        "name": "RETURN_OF_DOCUMENTS",
-        "value": "Return of documents"
-      }
-    ]
+    "choices": {
+      "APPLICATION_DELAY": "Application delay",
+      "RETURN_OF_DOCUMENTS": "Return of documents"
+    }
   },
   {
     "fieldName": "applicantType",
-    "choices": [
-      {
-        "name": "APPLICANT",
-        "value": "Applicant"
-      },
-      {
-        "name": "AGENT",
-        "value": "Agent"
-      }
-    ]
+    "choices": {
+      "APPLICANT": "Applicant",
+      "AGENT": "Agent"
+    }
   },
   {
     "fieldName": "agentType",
-    "choices": [
-      {
-        "name": "LEGAL_REP",
-        "value": "Legal representative"
-      },
-      {
-        "name": "RELATIVE",
-        "value": "Relative"
-      },
-      {
-        "name": "SPONSOR",
-        "value": "Sponsor"
-      },
-      {
-        "name": "SUPPORT_ORG",
-        "value": "Support organisation"
-      }
-    ]
+    "choices": {
+      "LEGAL_REP": "Legal representative",
+      "RELATIVE": "Relative",
+      "SPONSOR": "Sponsor",
+      "SUPPORT_ORG": "Support organisation"
+    }
   },
   {
     "fieldName": "experienceType",
-    "choices": [
-      {
-        "name": "PHONE",
-        "value": "Phone"
-      },
-      {
-        "name": "LETTER_OR_EMAIL",
-        "value": "Letter or email"
-      },
-      {
-        "name": "FACE_TO_FACE",
-        "value": "Face to face"
-      }
-    ]
+    "choices": {
+      "PHONE": "Phone",
+      "LETTER_OR_EMAIL": "Letter or email",
+      "FACE_TO_FACE": "Face to face"
+    }
   },
   {
     "fieldName": "problemExperienced",
-    "choices": [
-      {
-        "name": "TECHNICAL_ISSUES",
-        "value": "Technical issues with website or payments"
-      },
-      {
-        "name": "GUIDANCE",
-        "value": "Guidance"
-      },
-      {
-        "name": "SOMETHING_ELSE",
-        "value": "Something else"
-      },
-      {
-        "name": "LACK_AVAILABILITY",
-        "value": "Lack of availability"
-      },
-      {
-        "name": "CHANGE_APPOINTMENT",
-        "value": "Change of appointment"
-      },
-      {
-        "name": "TECHNICAL_APPOINTMENTS",
-        "value": "Technical issues with booking appointment"
-      },
-      {
-        "name": "QUESTIONS_APPOINTMENTS",
-        "value": "Question about appointment"
-      },
-      {
-        "name": "COMPLAIN_APPOINTMENTS",
-        "value": "Complain appointments"
-      },
-      {
-        "name": "CARD_NOT_ARRIVED",
-        "value": "BRP card not arrived"
-      },
-      {
-        "name": "CARD_INCORRECT",
-        "value": "BRP card incorrect"
-      },
-      {
-        "name": "COMPLAIN_BRP",
-        "value": "Complain BRP"
-      }
-    ]
+    "choices": {
+      "TECHNICAL_ISSUES": "Technical issues with website or payments",
+      "GUIDANCE": "Guidance",
+      "SOMETHING_ELSE": "Something else",
+      "LACK_AVAILABILITY": "Lack of availability",
+      "CHANGE_APPOINTMENT": "Change of appointment",
+      "TECHNICAL_APPOINTMENTS": "Technical issues with booking appointment",
+      "QUESTIONS_APPOINTMENTS": "Question about appointment",
+      "COMPLAIN_APPOINTMENTS": "Complain appointments",
+      "CARD_NOT_ARRIVED": "BRP card not arrived",
+      "CARD_INCORRECT": "BRP card incorrect",
+      "COMPLAIN_BRP": "Complain BRP"
+    }
   },
   {
     "fieldName": "documentReturnRequest",
-    "choices": [
-      {
-        "name": "YES_DOCS_SERVICE",
-        "value": "Documents service"
-      },
-      {
-        "name": "YES_OTHER",
-        "value": "Other"
-      },
-      {
-        "name": "NO",
-        "value": "No"
-      }
-    ]
+    "choices": {
+      "YES_DOCS_SERVICE": "Documents service",
+      "YES_OTHER": "Other",
+      "NO": "No"
+    }
   },
   {
     "fieldName": "decisionOutcome",
-    "choices": [
-      {
-        "name": "POSITIVE",
-        "value": "Positive"
-      },
-      {
-        "name": "NEGATIVE",
-        "value": "Negative"
-      }
-    ]
+    "choices": {
+      "POSITIVE": "Positive",
+      "NEGATIVE": "Negative"
+    }
   },
   {
     "fieldName": "requestedRefund",
-    "choices": [
-      {
-        "name": "YES",
-        "value": "Yes"
-      },
-      {
-        "name": "NO",
-        "value": "No"
-      },
-      {
-        "name": "NOT_YET",
-        "value": "Not yet"
-      }
-    ]
+    "choices": {
+      "YES": "Yes",
+      "NO": "No",
+      "NOT_YET": "Not yet"
+    }
   },
   {
     "fieldName": "refundType",
-    "choices": [
-      {
-        "name": "STANDARD",
-        "value": "Standard"
-      },
-      {
-        "name": "PRIORITY",
-        "value": "Priority"
-      },
-      {
-        "name": "SUPER_PRIORITY",
-        "value": "Super priority"
-      },
-      {
-        "name": "PREMIUM",
-        "value": "Premium"
-      },
-      {
-        "name": "IHS",
-        "value": "IHS"
-      },
-      {
-        "name": "EU_SETTLEMENT",
-        "value": "EU settlement"
-      }
-    ]
+    "choices": {
+      "STANDARD": "Standard",
+      "PRIORITY": "Priority",
+      "SUPER_PRIORITY": "Super priority",
+      "PREMIUM": "Premium",
+      "IHS": "IHS",
+      "EU_SETTLEMENT": "EU settlement"
+    }
   },
   {
     "fieldName": "refundWhen",
-    "choices": [
-      {
-        "name": "MORE_THAN_SIX_WEEKS",
-        "value": "More than six weeks ago"
-      },
-      {
-        "name": "LESS_THAN_SIX_WEEKS",
-        "value": "Less than six weeks ago"
-      }
-    ]
+    "choices": {
+      "MORE_THAN_SIX_WEEKS": "More than six weeks ago",
+      "LESS_THAN_SIX_WEEKS": "Less than six weeks ago"
+    }
   },
   {
     "fieldName": "applicationLocation",
-    "choices": [
-      {
-        "name": "INSIDE_UK",
-        "value": "Inside UK"
-      },
-      {
-        "name": "OUTSIDE_UK",
-        "value": "Outside UK"
-      }
-    ]
+    "choices": {
+      "INSIDE_UK": "Inside UK",
+      "OUTSIDE_UK": "Outside UK"
+    }
   },
   {
     "fieldName": "centreType",
-    "choices": [
-      {
-        "name": "VAC",
-        "value": "VAC (visa application centre)"
-      },
-      {
-        "name": "SSC",
-        "value": "SSC (service support centre)"
-      },
-      {
-        "name": "UKVCAS",
-        "value": "UKVCAS"
-      }
-    ]
+    "choices": {
+      "VAC": "VAC (visa application centre)",
+      "SSC": "SSC (service support centre)",
+      "UKVCAS": "UKVCAS"
+    }
   },
   {
     "fieldName": "referenceType",
-    "choices": [
-      {
-        "name": "GWF_REF",
-        "value": "GWF reference"
-      },
-      {
-        "name": "HO_REF",
-        "value": "HO reference"
-      },
-      {
-        "name": "IHS_REF",
-        "value": "IHS reference"
-      },
-      {
-        "name": "UAN_REF",
-        "value": "UAN reference"
-      }
-    ]
+    "choices": {
+      "GWF_REF": "GWF reference",
+      "HO_REF": "HO reference",
+      "IHS_REF": "IHS reference",
+      "UAN_REF": "UAN reference"
+    }
   }
 ]
