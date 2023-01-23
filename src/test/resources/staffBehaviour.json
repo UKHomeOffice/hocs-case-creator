@@ -14,9 +14,9 @@
         "applicantDob": "1989-08-23"
       },
       "agentDetails": {
-        "agentName": "Peter Jones",
+        "agentName": "Test Agent",
         "agentType": "RELATIVE",
-        "agentEmail": "peterJ@gmailcom"
+        "agentEmail": "test@example.org"
       }
     },
     "complaintDetails": {
