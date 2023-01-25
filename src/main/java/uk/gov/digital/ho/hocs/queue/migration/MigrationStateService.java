@@ -29,7 +29,10 @@ public class MigrationStateService {
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
+        messageLogRepository.save(state);
+    }
 
+    public void createState(MessageLog state) {
         messageLogRepository.save(state);
     }
 }

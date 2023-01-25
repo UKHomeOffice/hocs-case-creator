@@ -49,6 +49,8 @@ public class MigrationServiceTest {
 
     private String json;
 
+    private String messageId;
+
     private MigrationCaseTypeData migrationCaseTypeData;
 
     private List<CaseAttachment> caseAttachment;
@@ -60,6 +62,7 @@ public class MigrationServiceTest {
         json = getResourceFileAsString("validMigration.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
+        messageId = UUID.randomUUID().toString();
         Map<String, String> initialData = Map.of("Channel", migrationCaseTypeData.getOrigin());
         objectMapper = new ObjectMapper();
 
@@ -95,7 +98,7 @@ public class MigrationServiceTest {
 
     @Test
     public void migrateCase() {
-        migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
+        migrationService.createMigrationCase(migrationData, migrationCaseTypeData, messageId);
         verify(migrationCaseworkClient, times(1)).migrateCase(createMigrationCaseRequest);
     }
 

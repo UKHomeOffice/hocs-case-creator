@@ -12,7 +12,10 @@ import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseR
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
+import uk.gov.digital.ho.hocs.domain.model.MessageLog;
+import uk.gov.digital.ho.hocs.domain.model.Status;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -44,12 +47,55 @@ public class MigrationService {
         this.migrationStateService = migrationStateService;
     }
 
-    public void createMigrationCase(MigrationData migrationCaseData, MigrationCaseTypeData migrationCaseTypeData) {
+    public void createMigrationCase(MigrationData migrationCaseData, MigrationCaseTypeData migrationCaseTypeData, String messageId) {
         var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData);
-        migrationStateService.createTestCase();
 
-        CreateCaseworkCaseResponse caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
+        MessageLog caseReceived = logNewCase(migrationCaseData, messageId);
+
+        CreateCaseworkCaseResponse caseResponse = createMigrationCase(migrationRequest);
+
+        logCreatedCase(migrationCaseData, messageId, caseReceived);
+
         log.info("Created migration case {}", caseResponse.getUuid());
+    }
+
+    private CreateCaseworkCaseResponse createMigrationCase(CreateMigrationCaseRequest migrationRequest) {
+        CreateCaseworkCaseResponse caseResponse = null;
+        try {
+            caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
+
+        } catch (Exception e) {
+            // Log failure to migration_failures table here.
+            log.info("Could not create case, reason: " + e.getMessage());
+        }
+        return caseResponse;
+    }
+
+    private MessageLog logNewCase(MigrationData migrationCaseData, String messageId) {
+        MessageLog caseReceived = new MessageLog(
+                UUID.fromString(messageId),
+                messageId,
+                UUID.randomUUID(),  // need to get from message
+                migrationCaseData.getRawPayload(),
+                Status.NEW,
+                null,
+                LocalDateTime.now()
+        );
+        migrationStateService.createState(caseReceived);
+        return caseReceived;
+    }
+
+    private void logCreatedCase(MigrationData migrationCaseData, String messageId, MessageLog originalCaseReceived) {
+        MessageLog caseCreated = new MessageLog(
+                UUID.fromString(messageId),
+                messageId,
+                UUID.randomUUID(),  // need to get from message
+                migrationCaseData.getRawPayload(),
+                Status.COMPLETED,
+                LocalDateTime.now(),
+                originalCaseReceived.getReceived()
+        );
+        migrationStateService.createState(caseCreated);
     }
 
     private CreateMigrationCaseRequest composeMigrateCaseRequest(MigrationData migrationData, MigrationCaseTypeData migrationCaseTypeData) {
