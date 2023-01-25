@@ -18,7 +18,6 @@ import java.util.UUID;
 public class MessageLog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="uuid")
     private UUID uuid;
 
@@ -32,7 +31,7 @@ public class MessageLog {
     protected String message;
 
     @Column(name = "status")
-    protected String messageBody;
+    protected Status status;
 
     @Column(name = "created")
     protected LocalDateTime created;

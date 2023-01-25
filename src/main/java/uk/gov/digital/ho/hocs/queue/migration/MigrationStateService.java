@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.domain.MessageLogRepository;
 import uk.gov.digital.ho.hocs.domain.model.MessageLog;
+import uk.gov.digital.ho.hocs.domain.model.Status;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class MigrationStateService {
                 "message_id",
                 UUID.randomUUID(),
                 "message: {}",
-                "new",
+                Status.NEW,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
