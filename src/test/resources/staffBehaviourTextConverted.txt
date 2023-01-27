@@ -3,14 +3,14 @@
   Creation Date : 2020-10-03
 
   Complaint
-      Complaint Type : POOR_STAFF_BEHAVIOUR
+      Complaint Type : Staff behaviour
 
       Reference
-          Reference Type : IHS_REF
+          Reference Type : IHS reference
           Reference : ABC12345
 
       Reporter Details
-          Applicant Type : AGENT
+          Applicant Type : Agent
 
           Applicant Details
               Applicant Name : Jack White
@@ -19,7 +19,7 @@
 
           Agent Details
               Agent Name : Test Agent
-              Agent Type : RELATIVE
+              Agent Type : Relative
               Agent Email : test@example.org
 
       Complaint Details
@@ -41,10 +41,10 @@
             Magna sit amet purus gravida.
 
           Experience
-              Experience Type : FACE_TO_FACE
+              Experience Type : Face to face
 
               Location
                   Country : United Kingdom
                   City : Dover
-                  Centre Type : VAC
+                  Centre Type : VAC (visa application centre)
 

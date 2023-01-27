@@ -1,7 +1,10 @@
 package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.mockito.Mock;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 import uk.gov.digital.ho.hocs.queue.complaints.ComplaintData;
 import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 
@@ -14,21 +17,27 @@ import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsSt
 
 public class UKVIComplaintDataTest {
 
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private EnumMappingsRepository enumMappingsRepository;
+
     @Test
     public void shouldGetDateReceived() {
-        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("staffBehaviour.json"));
+        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("staffBehaviour.json"), objectMapper, enumMappingsRepository);
         assertEquals(LocalDate.parse("2020-10-03"), complaintData.getDateReceived());
     }
 
     @Test
     public void shouldGetComplaintType() {
-        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("staffBehaviour.json"));
+        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("staffBehaviour.json"), objectMapper, enumMappingsRepository);
         assertEquals("POOR_STAFF_BEHAVIOUR", complaintData.getComplaintType());
     }
 
     @Test
     public void shouldGetUkviComplaintApplicantCorrespondent() {
-        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("applicantCorrespondent.json"));
+        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("applicantCorrespondent.json"), objectMapper, enumMappingsRepository);
         List<ComplaintCorrespondent> correspondents = complaintData.getComplaintCorrespondent();
         assertTrue(correspondents.size() == 1);
 
@@ -41,7 +50,7 @@ public class UKVIComplaintDataTest {
 
     @Test
     public void shouldGetPartialUkviComplaintApplicantCorrespondent() {
-        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("applicantCorrespondentPartial.json"));
+        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("applicantCorrespondentPartial.json"), objectMapper, enumMappingsRepository);
         List<ComplaintCorrespondent> correspondents = complaintData.getComplaintCorrespondent();
         assertTrue(correspondents.size() == 1);
 
@@ -52,7 +61,7 @@ public class UKVIComplaintDataTest {
 
     @Test
     public void shouldGetUkviComplaintAgentCorrespondent() {
-        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("agentCorrespondent.json"));
+        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("agentCorrespondent.json"), objectMapper, enumMappingsRepository);
         List<ComplaintCorrespondent> correspondents = complaintData.getComplaintCorrespondent();
         assertTrue(correspondents.size() == 2);
 
@@ -69,7 +78,7 @@ public class UKVIComplaintDataTest {
 
     @Test
     public void shouldGetUkviComplaintExistingNoCorrespondent() {
-        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("existingNoCorrespondent.json"));
+        ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("existingNoCorrespondent.json"), objectMapper, enumMappingsRepository);
         List<ComplaintCorrespondent> correspondents = complaintData.getComplaintCorrespondent();
         assertTrue(correspondents.size() == 0);
     }

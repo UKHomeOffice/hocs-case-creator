@@ -1,10 +1,15 @@
 package uk.gov.digital.ho.hocs.queue.complaints;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
@@ -13,12 +18,12 @@ import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
+import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 import uk.gov.digital.ho.hocs.queue.complaints.ukvi.UKVIComplaintData;
 import uk.gov.digital.ho.hocs.queue.complaints.ukvi.UKVITypeData;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,7 +35,9 @@ import static uk.gov.digital.ho.hocs.queue.complaints.ComplaintService.DOCUMENT_
 import static uk.gov.digital.ho.hocs.queue.complaints.ComplaintService.ORIGINAL_FILENAME;
 import static uk.gov.digital.ho.hocs.testutil.TestFileReader.getResourceFileAsString;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
+@RunWith(SpringRunner.class)
+@ActiveProfiles("local")
 public class ComplaintServiceTest {
 
     @Mock
@@ -41,6 +48,10 @@ public class ComplaintServiceTest {
     private ClientContext clientContext;
     @Mock
     private DocumentS3Client documentS3Client;
+    @SpyBean
+    private ObjectMapper objectMapper;
+    @Mock
+    private EnumMappingsRepository enumMappingsRepository;
 
     private ComplaintService complaintService;
 
@@ -88,7 +99,7 @@ public class ComplaintServiceTest {
     public void shouldCreateComplaint() throws IOException {
         goodSetup();
 
-        complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
+        complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
 
         verify(caseworkClient).updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(user));
 
@@ -113,41 +124,41 @@ public class ComplaintServiceTest {
     public void storeUntrustedDocumentShouldThrowException() {
         goodSetup();
         when(documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, expectedText)).thenThrow(new NullPointerException());
-        complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
+        complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
     }
 
     @Test(expected = NullPointerException.class)
     public void createCaseShouldThrowException() {
         goodSetup();
         when(workflowClient.createCase(createCaseRequest)).thenThrow(new NullPointerException());
-        complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
+        complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
     }
 
     @Test
     public void getStageForCaseShouldCatchException() {
         goodSetup();
         when(caseworkClient.getStageForCase(caseUUID)).thenThrow(new NullPointerException());
-        complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
+        complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
     }
 
     @Test
     public void updateStageUserShouldCatchException() {
         goodSetup();
         when(caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(user))).thenThrow(new NullPointerException());
-        complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
+        complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
     }
 
     @Test
     public void addCorrespondentToCaseShouldCatchException() {
         goodSetup();
         when(caseworkClient.addCorrespondentToCase(eq(caseUUID), eq(stageForCaseUUID), any(ComplaintCorrespondent.class))).thenThrow(new NullPointerException());
-        complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
+        complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
     }
 
     @Test
     public void getPrimaryCorrespondentShouldCatchException() {
         goodSetup();
         when(caseworkClient.getPrimaryCorrespondent(caseUUID)).thenThrow(new NullPointerException());
-        complaintService.createComplaint(new UKVIComplaintData(json), complaintTypeData);
+        complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
     }
 }

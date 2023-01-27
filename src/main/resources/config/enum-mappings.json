@@ -1,0 +1,128 @@
+[
+  {
+    "fieldName": "complaintType",
+    "choices": {
+      "SUBMITTING_APPLICATION": "Submitting application",
+      "MAKING_APPOINTMENT": "Making appointment",
+      "EXISTING": "Existing",
+      "DELAYS": "Decision or document delays",
+      "IMMIGRATION_DECISION": "Immigration decision",
+      "BIOMETRIC_RESIDENCE_PERMIT": "Biometric residence permit",
+      "REFUND": "Refund",
+      "POOR_INFORMATION_OR_STAFF_BEHAVIOUR": "Staff behaviour",
+      "SOMETHING_ELSE": "Something else"
+    }
+  },
+  {
+    "fieldName": "delayedWaitingFor",
+    "choices": {
+      "APPLICATION_DELAY": "Application delay",
+      "RETURN_OF_DOCUMENTS": "Return of documents"
+    }
+  },
+  {
+    "fieldName": "applicantType",
+    "choices": {
+      "APPLICANT": "Applicant",
+      "AGENT": "Agent"
+    }
+  },
+  {
+    "fieldName": "agentType",
+    "choices": {
+      "LEGAL_REP": "Legal representative",
+      "RELATIVE": "Relative",
+      "SPONSOR": "Sponsor",
+      "SUPPORT_ORG": "Support organisation"
+    }
+  },
+  {
+    "fieldName": "experienceType",
+    "choices": {
+      "PHONE": "Phone",
+      "LETTER_OR_EMAIL": "Letter or email",
+      "FACE_TO_FACE": "Face to face"
+    }
+  },
+  {
+    "fieldName": "problemExperienced",
+    "choices": {
+      "TECHNICAL_ISSUES": "Technical issues with website or payments",
+      "GUIDANCE": "Guidance",
+      "SOMETHING_ELSE": "Something else",
+      "LACK_AVAILABILITY": "Lack of availability",
+      "CHANGE_APPOINTMENT": "Change of appointment",
+      "TECHNICAL_APPOINTMENTS": "Technical issues with booking appointment",
+      "QUESTIONS_APPOINTMENTS": "Question about appointment",
+      "COMPLAIN_APPOINTMENTS": "Complain appointments",
+      "CARD_NOT_ARRIVED": "BRP card not arrived",
+      "CARD_INCORRECT": "BRP card incorrect",
+      "COMPLAIN_BRP": "Complain BRP"
+    }
+  },
+  {
+    "fieldName": "documentReturnRequest",
+    "choices": {
+      "YES_DOCS_SERVICE": "Documents service",
+      "YES_OTHER": "Other",
+      "NO": "No"
+    }
+  },
+  {
+    "fieldName": "decisionOutcome",
+    "choices": {
+      "POSITIVE": "Positive",
+      "NEGATIVE": "Negative"
+    }
+  },
+  {
+    "fieldName": "requestedRefund",
+    "choices": {
+      "YES": "Yes",
+      "NO": "No",
+      "NOT_YET": "Not yet"
+    }
+  },
+  {
+    "fieldName": "refundType",
+    "choices": {
+      "STANDARD": "Standard",
+      "PRIORITY": "Priority",
+      "SUPER_PRIORITY": "Super priority",
+      "PREMIUM": "Premium",
+      "IHS": "IHS",
+      "EU_SETTLEMENT": "EU settlement"
+    }
+  },
+  {
+    "fieldName": "refundWhen",
+    "choices": {
+      "MORE_THAN_SIX_WEEKS": "More than six weeks ago",
+      "LESS_THAN_SIX_WEEKS": "Less than six weeks ago"
+    }
+  },
+  {
+    "fieldName": "applicationLocation",
+    "choices": {
+      "INSIDE_UK": "Inside UK",
+      "OUTSIDE_UK": "Outside UK"
+    }
+  },
+  {
+    "fieldName": "centreType",
+    "choices": {
+      "VAC": "VAC (visa application centre)",
+      "SSC": "SSC (service support centre)",
+      "UKVCAS": "UKVCAS"
+    }
+  },
+  {
+    "fieldName": "referenceType",
+    "choices": {
+      "GWF_REF": "GWF reference",
+      "HO_REF": "HO reference",
+      "IHS_REF": "IHS reference",
+      "UAN_REF": "UAN reference"
+    }
+  }
+]

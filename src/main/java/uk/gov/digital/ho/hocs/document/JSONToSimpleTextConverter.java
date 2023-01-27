@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.WordUtils;
+import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 
 import java.io.IOException;
 
@@ -16,9 +17,13 @@ public class JSONToSimpleTextConverter {
     public static final boolean WRAP_LONG_WORDS = false;
     private final String inputJson;
     private final StringBuilder convertedOutput = new StringBuilder();
+    private final ObjectMapper objectMapper;
+    private final EnumMappingsRepository enumMappingsRepository;
 
-    public JSONToSimpleTextConverter(String inputJson) throws IOException {
+    public JSONToSimpleTextConverter(String inputJson, ObjectMapper objectMapper, EnumMappingsRepository enumMappingsRepository) throws IOException {
         this.inputJson = inputJson;
+        this.objectMapper = objectMapper;
+        this.enumMappingsRepository = enumMappingsRepository;
         convertedOutput.append("\n\n");
         convert();
     }
@@ -28,7 +33,6 @@ public class JSONToSimpleTextConverter {
     }
 
     private void convert() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(inputJson);
         traverse(rootNode, 1);
     }
@@ -54,9 +58,17 @@ public class JSONToSimpleTextConverter {
             convertedOutput.append(String.format("%n%" + (level * 4 - 3) + "s %s%n", "", fromJavaIdentifierToDisplayableString(keyName)));
         } else {
             String textValue = node.textValue();
+            if (textValue.equals(textValue.toUpperCase())) {
+                String label = enumMappingsRepository.getTextValueByNameAndFieldName(keyName, textValue);
+                if (label != null && !label.isEmpty()) {
+                    textValue = label;
+                }
+            }
             if (keyName.equals("complaintText")) {
                 textValue = textValue.replaceAll("[\\n]", NEW_LINE_STR);
                 textValue = WordUtils.wrap(NEW_LINE_STR + textValue, WRAP_LENGTH, NEW_LINE_STR, WRAP_LONG_WORDS);
+                convertedOutput.append(String.format("%" + (level * 4 - 3) + "s %s :%s%n", "", fromJavaIdentifierToDisplayableString(keyName), textValue));
+                return;
             }
             convertedOutput.append(String.format("%" + (level * 4 - 3) + "s %s : %s%n", "", fromJavaIdentifierToDisplayableString(keyName), textValue));
         }

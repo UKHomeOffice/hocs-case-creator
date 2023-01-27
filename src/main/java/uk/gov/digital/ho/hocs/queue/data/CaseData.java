@@ -1,10 +1,12 @@
 package uk.gov.digital.ho.hocs.queue.data;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.digital.ho.hocs.document.JSONToSimpleTextConverter;
+import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 import uk.gov.digital.ho.hocs.queue.complaints.ComplaintData;
 
 import java.io.IOException;
@@ -18,10 +20,21 @@ public abstract class CaseData implements ComplaintData {
 
     protected final ReadContext ctx;
     protected final String jsonBody;
+    protected final ObjectMapper objectMapper;
+    protected final EnumMappingsRepository enumMappingsRepository;
+
+    public CaseData(String jsonBody, ObjectMapper objectMapper, EnumMappingsRepository enumMappingsRepository) {
+        this.jsonBody = jsonBody;
+        this.objectMapper = objectMapper;
+        this.enumMappingsRepository = enumMappingsRepository;
+        ctx = JsonPath.parse(jsonBody);
+    }
 
     public CaseData(String jsonBody) {
         this.jsonBody = jsonBody;
         ctx = JsonPath.parse(jsonBody);
+        objectMapper = null;
+        enumMappingsRepository = null;
     }
 
     @Override
@@ -33,7 +46,7 @@ public abstract class CaseData implements ComplaintData {
     public String getFormattedDocument() {
         String formattedText = jsonBody; // Fall back if conversion fails
         try {
-            JSONToSimpleTextConverter jsonToSimpleTextConverter = new JSONToSimpleTextConverter(jsonBody);
+            JSONToSimpleTextConverter jsonToSimpleTextConverter = new JSONToSimpleTextConverter(jsonBody, objectMapper, enumMappingsRepository);
             formattedText = jsonToSimpleTextConverter.getConvertedOutput();
         } catch (IOException e) {
             log.warn("Document formatting failed due to : {}", e.getMessage());
