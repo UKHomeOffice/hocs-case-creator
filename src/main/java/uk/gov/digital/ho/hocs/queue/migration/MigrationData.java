@@ -19,6 +19,7 @@ public class MigrationData extends CaseData {
     private static final String PRIMARY_CORRESPONDENT = "$.primaryCorrespondent";
     private static final String ADDITIONAL_CORRESPONDENTS = "$.additionalCorrespondents";
     private static final String CASE_ATTACHMENTS = "$.caseAttachments";
+    private static final String EXTERNAL_REFERENCE = "$.sourceCaseId";
 
     public MigrationData(String jsonBody) {
         super(jsonBody);
@@ -32,6 +33,8 @@ public class MigrationData extends CaseData {
     public String getCaseAttachments() {
         return ctx.read(CASE_ATTACHMENTS).toString();
     }
+
+    public String getExternalReference() { return ctx.read(EXTERNAL_REFERENCE).toString(); }
 
     @Override
     public List<ComplaintCorrespondent> getComplaintCorrespondent() {

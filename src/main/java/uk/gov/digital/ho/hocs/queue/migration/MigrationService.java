@@ -6,12 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
+import uk.gov.digital.ho.hocs.application.LogEvent;
 import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
+import uk.gov.digital.ho.hocs.domain.exception.ApplicationException;
 import uk.gov.digital.ho.hocs.domain.model.MessageLog;
 import uk.gov.digital.ho.hocs.domain.model.Status;
 
@@ -33,18 +35,22 @@ public class MigrationService {
 
     private final MigrationStateService migrationStateService;
 
+    private final MigrationFailureService migrationFailureService;
+
     public MigrationService(WorkflowClient workflowClient,
                             MigrationCaseworkClient migrationCaseworkClient,
                             ClientContext clientContext,
                             DocumentS3Client documentS3Client,
                             ObjectMapper objectMapper,
-                            MigrationStateService migrationStateService) {
+                            MigrationStateService migrationStateService,
+                            MigrationFailureService migrationFailureService) {
         this.workflowClient = workflowClient;
         this.migrationCaseworkClient = migrationCaseworkClient;
         this.clientContext = clientContext;
         this.documentS3Client = documentS3Client;
         this.objectMapper = objectMapper;
         this.migrationStateService = migrationStateService;
+        this.migrationFailureService = migrationFailureService;
     }
 
     public void createMigrationCase(MigrationData migrationCaseData, MigrationCaseTypeData migrationCaseTypeData, String messageId) {
@@ -52,21 +58,24 @@ public class MigrationService {
 
         MessageLog caseReceived = logNewCase(migrationCaseData, messageId);
 
-        CreateCaseworkCaseResponse caseResponse = createMigrationCase(migrationRequest);
+        CreateCaseworkCaseResponse caseResponse = createMigrationCase(migrationRequest, caseReceived.getExternalReference());
 
         logCreatedCase(migrationCaseData, messageId, caseReceived);
 
         log.info("Created migration case {}", caseResponse.getUuid());
     }
 
-    private CreateCaseworkCaseResponse createMigrationCase(CreateMigrationCaseRequest migrationRequest) {
+    private CreateCaseworkCaseResponse createMigrationCase(CreateMigrationCaseRequest migrationRequest, UUID externalReference) {
         CreateCaseworkCaseResponse caseResponse = null;
         try {
             caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
 
         } catch (Exception e) {
-            // Log failure to migration_failures table here.
-            log.info("Could not create case, reason: " + e.getMessage());
+            MigrationFailure failure = new MigrationFailure(externalReference, e.getMessage());
+            migrationFailureService.addFailure(failure);
+            String message = "Could not create case from message, reason: ";
+            log.info(message + e.getMessage());
+            throw new ApplicationException.EntityCreationException(message, LogEvent.REST_HELPER_POST);
         }
         return caseResponse;
     }
@@ -75,7 +84,7 @@ public class MigrationService {
         MessageLog caseReceived = new MessageLog(
                 UUID.fromString(messageId),
                 messageId,
-                UUID.randomUUID(),  // need to get from message
+                UUID.fromString(migrationCaseData.getExternalReference()),
                 migrationCaseData.getRawPayload(),
                 Status.NEW,
                 null,
@@ -89,7 +98,7 @@ public class MigrationService {
         MessageLog caseCreated = new MessageLog(
                 UUID.fromString(messageId),
                 messageId,
-                UUID.randomUUID(),  // need to get from message
+                UUID.fromString(migrationCaseData.getExternalReference()),
                 migrationCaseData.getRawPayload(),
                 Status.COMPLETED,
                 LocalDateTime.now(),

@@ -39,6 +39,9 @@ public class MigrationServiceTest {
     @Mock
     private MigrationStateService migrationStateService;
 
+    @Mock
+    private MigrationFailureService migrationFailureService;
+
     private MigrationService migrationService;
 
     private CreateMigrationCaseRequest createMigrationCaseRequest;
@@ -72,7 +75,8 @@ public class MigrationServiceTest {
                 clientContext,
                 documentS3Client,
                 objectMapper,
-                migrationStateService);
+                migrationStateService,
+                migrationFailureService);
 
         MigrationComplaintCorrespondent primaryCorrespondent = migrationService.getPrimaryCorrespondent(
                 migrationData.getPrimaryCorrespondent());
@@ -134,7 +138,8 @@ public class MigrationServiceTest {
                 clientContext,
                 documentS3Client,
                 objectMapper,
-                migrationStateService);
+                migrationStateService,
+                migrationFailureService);
 
         migrationData.getPrimaryCorrespondent();
     }
@@ -161,7 +166,8 @@ public class MigrationServiceTest {
                 clientContext,
                 documentS3Client,
                 objectMapper,
-                migrationStateService);
+                migrationStateService,
+                migrationFailureService);
 
         List<MigrationComplaintCorrespondent> migrationComplaintCorrespondents =
                 migrationService.getAdditionalCorrespondents(
@@ -200,7 +206,8 @@ public class MigrationServiceTest {
                 clientContext,
                 documentS3Client,
                 objectMapper,
-                migrationStateService);
+                migrationStateService,
+                migrationFailureService);
 
         List<CaseAttachment> caseAttachments =
                 migrationService.getCaseAttachments(

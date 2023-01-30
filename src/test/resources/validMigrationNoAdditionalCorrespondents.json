@@ -1,6 +1,6 @@
 {
   "caseType": "COMP",
-  "sourceCaseId": "in",
+  "sourceCaseId": "example-cms-id",
   "primaryCorrespondent": {
     "fullName": "fullName",
     "correspondentType": "COMPLAINANT",
