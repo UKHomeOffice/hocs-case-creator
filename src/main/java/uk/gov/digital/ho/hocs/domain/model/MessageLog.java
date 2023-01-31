@@ -33,8 +33,8 @@ public class MessageLog {
     @Column(name = "status")
     protected Status status;
 
-    @Column(name = "created")
-    protected LocalDateTime created;
+    @Column(name = "completed")
+    protected LocalDateTime completed;
 
     @Column(name = "received")
     protected LocalDateTime received;

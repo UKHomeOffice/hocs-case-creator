@@ -7,6 +7,6 @@ CREATE TABLE IF NOT EXISTS message_log
     external_reference  UUID,
     message             TEXT                NOT NULL,
     status              VARCHAR(100),
-    created             TIMESTAMP,
+    completed           TIMESTAMP,
     received            TIMESTAMP           NOT NULL
 );
