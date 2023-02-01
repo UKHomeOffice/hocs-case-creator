@@ -13,6 +13,25 @@ server:
 spring:
   main:
     banner-mode: off
+    web-application-type: none
+  flyway:
+    locations: classpath:/db/migration/postgresql
+    schema: ${db.schema.name:message_log}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${db.host:localhost}:${db.port:5432}/${db.name:postgres}?currentSchema=${db.schema.name:message_log}&user=${db.username:root}&password=${db.password:dev}&stringtype=unspecified
+    message_log:
+      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://${db.host:localhost}:${db.port:5434};databaseName=message_log
+      username: ${db.username:root}
+      password: ${db.password:dev}
 
 aws:
   sqs:
@@ -45,9 +64,9 @@ case:
           team:
           user:
       migration:
-        group:
-        team:
-        user:
+        group: 85eecc42-cbfb-4352-ac4d-67f269346a67
+        team: d3c3cc3a-21e1-48b4-9268-7d5f66ac1dd9
+        user: 9f69d980-258b-448c-a958-199a698dfd44
     workflow-service: http://localhost:8091
 
 management:
