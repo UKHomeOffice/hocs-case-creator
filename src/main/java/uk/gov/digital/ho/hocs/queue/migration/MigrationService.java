@@ -70,10 +70,10 @@ public class MigrationService {
         try {
             caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
 
-        } catch (Exception e) {
+        } catch (Exception e) {         // to change to catch multiple types of exceptions -> ApplicationException's
             MigrationFailure failure = new MigrationFailure(externalReference, e.getMessage());
             migrationFailureService.addFailure(failure);
-            String message = "Could not create case from message, reason: ";
+            String message = "Failed to create case from message, reason: ";
             log.info(message + e.getMessage());
             throw new ApplicationException.EntityCreationException(message, LogEvent.REST_HELPER_POST);
         }

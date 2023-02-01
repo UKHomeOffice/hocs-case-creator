@@ -27,11 +27,6 @@ spring:
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://${db.host:localhost}:${db.port:5432}/${db.name:postgres}?currentSchema=${db.schema.name:message_log}&user=${db.username:root}&password=${db.password:dev}&stringtype=unspecified
-    message_log:
-      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-      url: jdbc:sqlserver://${db.host:localhost}:${db.port:5434};databaseName=message_log
-      username: ${db.username:root}
-      password: ${db.password:dev}
 
 aws:
   sqs:
