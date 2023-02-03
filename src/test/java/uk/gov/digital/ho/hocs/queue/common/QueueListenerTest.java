@@ -29,7 +29,7 @@ public class QueueListenerTest {
     public void messageTypeDoesNotMatch_doNothing() throws Exception {
         when(ukviComplaintMessageHandler.getMessageType()).thenReturn(MessageTypes.UNKNOWN);
 
-        queueListener.onComplaintEvent("test", "test");
+        queueListener.onComplaintEvent("test", "test", null);
 
         verify(ukviComplaintMessageHandler).getMessageType();
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
@@ -40,7 +40,7 @@ public class QueueListenerTest {
         when(ukviComplaintMessageHandler.getMessageType()).thenReturn(MessageTypes.UKVI_COMPLAINTS);
         when(ukviComplaintMessageHandler.shouldIgnoreMessage()).thenReturn(true);
 
-        queueListener.onComplaintEvent("test", "test");
+        queueListener.onComplaintEvent("test", "test", null);
 
         verify(ukviComplaintMessageHandler).getMessageType();
         verify(ukviComplaintMessageHandler).shouldIgnoreMessage();
