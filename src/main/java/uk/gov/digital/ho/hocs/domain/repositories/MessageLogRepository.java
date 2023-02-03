@@ -1,0 +1,24 @@
+package uk.gov.digital.ho.hocs.domain.repositories;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import uk.gov.digital.ho.hocs.domain.model.MessageLog;
+import uk.gov.digital.ho.hocs.domain.model.Status;
+
+public interface MessageLogRepository extends CrudRepository<MessageLog, String> {
+
+    @Modifying
+    @Query("UPDATE MessageLog m SET m.status = :status WHERE m.messageId = :messageId")
+    void updateStatus(@Param("messageId") String messageId,
+                      @Param("status") Status status);
+
+    @Modifying
+    @Query("UPDATE MessageLog m SET m.status = :status, m.completed = NOW() WHERE m.messageId = :messageId")
+    void updateStatusAndCompleted(@Param("messageId") String messageId,
+                                  @Param("status") Status status
+    );
+
+
+}
