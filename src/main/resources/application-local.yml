@@ -5,6 +5,9 @@ localstack:
     port: 4566
     region: eu-west-2
 
+case-creator:
+  mode: creation
+
 aws:
   sqs:
     case-creator:
