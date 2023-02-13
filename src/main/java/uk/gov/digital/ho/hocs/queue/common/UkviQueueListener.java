@@ -2,9 +2,9 @@ package uk.gov.digital.ho.hocs.queue.common;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-@ConditionalOnProperty(name = "case-creator.mode", havingValue = "creation", matchIfMissing = true)
+@Profile("ukvi")
 public class UkviQueueListener {
 
     // Contains a single queue message handler for now
