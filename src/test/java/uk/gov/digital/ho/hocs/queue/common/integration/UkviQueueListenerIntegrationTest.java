@@ -15,7 +15,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringRunner.class)
 @ActiveProfiles("local")
-public class QueueListenerIntegrationTest extends AwsSqsIntegrationTestBase {
+public class UkviQueueListenerIntegrationTest extends AwsSqsIntegrationTestBase {
 
     @Autowired
     public ObjectMapper objectMapper;
