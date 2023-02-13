@@ -14,7 +14,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringRunner.class)
-@ActiveProfiles("local")
+@ActiveProfiles({"local", "ukvi"})
 public class UkviQueueListenerIntegrationTest extends AwsSqsIntegrationTestBase {
 
     @Autowired
