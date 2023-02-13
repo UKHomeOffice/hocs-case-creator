@@ -17,7 +17,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class ConditionalBeanTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withUserConfiguration(QueueListener.class, MigrationQueueListener.class);
+            .withUserConfiguration(UkviQueueListener.class, MigrationQueueListener.class);
 
     @Test
     public void queueListenerSetForMigration() {
@@ -25,7 +25,7 @@ public class ConditionalBeanTest {
                 .withPropertyValues("case-creator.mode=migration")
                 .run(context -> assertAll(
                         () -> assertThat(context).hasSingleBean(MigrationQueueListener.class),
-                        () -> assertThat(context).doesNotHaveBean(QueueListener.class)));
+                        () -> assertThat(context).doesNotHaveBean(UkviQueueListener.class)));
     }
 
     @Test
@@ -33,7 +33,7 @@ public class ConditionalBeanTest {
         contextRunner
                 .withPropertyValues("case-creator.mode=creation")
                 .run(context  -> assertAll(
-                        () -> assertThat(context).hasSingleBean(QueueListener.class),
+                        () -> assertThat(context).hasSingleBean(UkviQueueListener.class),
                         () -> assertThat(context).doesNotHaveBean(MigrationQueueListener.class)));
     }
 
@@ -41,7 +41,7 @@ public class ConditionalBeanTest {
     public void queueListenerSetToDefaultCaseCreator() {
         contextRunner
                 .run(context  -> assertAll(
-                        () -> assertThat(context).hasSingleBean(QueueListener.class),
+                        () -> assertThat(context).hasSingleBean(UkviQueueListener.class),
                         () -> assertThat(context).doesNotHaveBean(MigrationQueueListener.class)));
     }
 

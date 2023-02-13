@@ -17,19 +17,19 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringRunner.class)
 @ActiveProfiles("local")
-public class QueueListenerTest {
+public class UkviQueueListenerTest {
 
     @MockBean
     private UKVIComplaintMessageHandler ukviComplaintMessageHandler;
 
     @Autowired
-    private QueueListener queueListener;
+    private UkviQueueListener ukviQueueListener;
 
     @Test
     public void messageTypeDoesNotMatch_doNothing() throws Exception {
         when(ukviComplaintMessageHandler.getMessageType()).thenReturn(MessageTypes.UNKNOWN);
 
-        queueListener.onComplaintEvent("test", "test");
+        ukviQueueListener.onComplaintEvent("test", "test");
 
         verify(ukviComplaintMessageHandler).getMessageType();
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
@@ -40,7 +40,7 @@ public class QueueListenerTest {
         when(ukviComplaintMessageHandler.getMessageType()).thenReturn(MessageTypes.UKVI_COMPLAINTS);
         when(ukviComplaintMessageHandler.shouldIgnoreMessage()).thenReturn(true);
 
-        queueListener.onComplaintEvent("test", "test");
+        ukviQueueListener.onComplaintEvent("test", "test");
 
         verify(ukviComplaintMessageHandler).getMessageType();
         verify(ukviComplaintMessageHandler).shouldIgnoreMessage();
