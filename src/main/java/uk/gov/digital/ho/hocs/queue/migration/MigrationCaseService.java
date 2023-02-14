@@ -32,6 +32,8 @@ public class MigrationCaseService {
 
     public void createMigrationCase(String messageId, String jsonBody) {
         clientContext.setContext(user, group, team, messageId);
-        migrationService.createMigrationCase(new MigrationData(jsonBody), migrationCaseTypeData);
+        MigrationData migrationData = new MigrationData(jsonBody);
+        migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
+        migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
     }
 }

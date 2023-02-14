@@ -53,14 +53,15 @@ public class MigrationService {
         }
     }
 
-    private CreateMigrationCaseRequest composeMigrateCaseRequest(MigrationData migrationData, MigrationCaseTypeData migrationCaseTypeData) {
+    CreateMigrationCaseRequest composeMigrateCaseRequest(MigrationData migrationData, MigrationCaseTypeData migrationCaseTypeData) {
         Map<String, String> initialData = Map.of(CHANNEL_LABEL, migrationCaseTypeData.getOrigin());
 
         MigrationComplaintCorrespondent primaryCorrespondent = getPrimaryCorrespondent(migrationData.getPrimaryCorrespondent());
         List<MigrationComplaintCorrespondent> additionalCorrespondents = getAdditionalCorrespondents(migrationData.getAdditionalCorrespondents());
         List<CaseAttachment> caseAttachments = getCaseAttachments(migrationData.getCaseAttachments());
 
-        return new CreateMigrationCaseRequest(migrationData.getComplaintType(),
+        return new CreateMigrationCaseRequest(
+                migrationData.getComplaintType(),
                 migrationData.getDateReceived(),
                 initialData,
                 "MIGRATION",
