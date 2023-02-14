@@ -27,7 +27,8 @@ public class MigrationMessageValidatorTest {
     @Before
     public void setUp() {
         migrationMessageValidator = new MigrationMessageValidator(
-                new SpringConfiguration().objectMapper(), messageLogService);
+                new SpringConfiguration().objectMapper(),
+                messageLogService);
     }
 
     @Test
