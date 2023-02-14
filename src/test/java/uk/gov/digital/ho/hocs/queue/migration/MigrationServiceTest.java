@@ -175,6 +175,62 @@ public class MigrationServiceTest {
         assertTrue(caseAttachments.isEmpty());
     }
 
+    @Test
+    public void shouldContainCorrectCOMPCaseType() {
+        json = getResourceFileAsString("validMigrationCOMP.json");
+        migrationData = new MigrationData(json);
+
+        MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData();
+        migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
+
+        CreateMigrationCaseRequest request =
+                migrationService.composeMigrateCaseRequest(migrationData, migrationCaseTypeData);
+
+        assertEquals("COMP", request.getType());
+    }
+
+    @Test
+    public void shouldContainCorrectBFCaseType() {
+        json = getResourceFileAsString("validMigrationBF.json");
+        migrationData = new MigrationData(json);
+
+        MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData();
+        migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
+
+        CreateMigrationCaseRequest request =
+                migrationService.composeMigrateCaseRequest(migrationData, migrationCaseTypeData);
+
+        assertEquals("BF", request.getType());
+    }
+
+    @Test
+    public void shouldContainCorrectIEDETCaseType() {
+        json = getResourceFileAsString("validMigrationIEDET.json");
+        migrationData = new MigrationData(json);
+
+        MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData();
+        migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
+
+        CreateMigrationCaseRequest request =
+                migrationService.composeMigrateCaseRequest(migrationData, migrationCaseTypeData);
+
+        assertEquals("IEDET", request.getType());
+    }
+
+    @Test
+    public void shouldContainCorrectPOGRCaseType() {
+        json = getResourceFileAsString("validMigrationPOGR.json");
+        migrationData = new MigrationData(json);
+
+        MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData();
+        migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
+
+        CreateMigrationCaseRequest request =
+                migrationService.composeMigrateCaseRequest(migrationData, migrationCaseTypeData);
+
+        assertEquals("POGR", request.getType());
+    }
+
     private MigrationComplaintCorrespondent createCorrespondent() {
         return new MigrationComplaintCorrespondent(
                 "fullName",
