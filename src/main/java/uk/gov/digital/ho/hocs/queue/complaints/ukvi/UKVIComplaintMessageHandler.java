@@ -19,9 +19,9 @@ public class UKVIComplaintMessageHandler implements MessageHandler {
     }
 
     @Override
-    public void handleMessage(String message, String messageId) throws Exception {
-        ukviComplaintValidator.validate(message, messageId);
-        ukviComplaintService.createComplaint(message, messageId);
+    public void handleMessage(String messageId, String message) throws Exception {
+        ukviComplaintValidator.validate(messageId, message);
+        ukviComplaintService.createComplaint(messageId, message);
     }
 
     @Override

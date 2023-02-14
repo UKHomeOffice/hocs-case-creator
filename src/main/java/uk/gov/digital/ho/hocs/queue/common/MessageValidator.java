@@ -24,7 +24,7 @@ public abstract class MessageValidator {
         this.objectMapper = objectMapper;
     }
 
-    public void validate(String jsonBody, String messageId) throws Exception {
+    public void validate(String messageId, String jsonBody) throws Exception {
         try {
             JsonNode json = objectMapper.readTree(jsonBody);
             Set<ValidationMessage> validationMessages = schema.validate(json);

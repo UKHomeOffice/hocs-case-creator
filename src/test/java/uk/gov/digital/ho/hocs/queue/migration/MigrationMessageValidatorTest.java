@@ -28,48 +28,48 @@ public class MigrationMessageValidatorTest {
     @Test
     public void shouldValidateWithValidMigrationMessage() throws Exception {
         var validMessage = getResourceFileAsString("validMigration.json");
-        migrationMessageValidator.validate(validMessage, messageId);
+        migrationMessageValidator.validate(messageId, validMessage);
     }
 
     @Test(expected = Exception.class)
     public void shouldNotValidateWithInvalidMigrationMessageWithMissingPrimaryCorrespondent() throws Exception {
         var invalidMessage = getResourceFileAsString("invalidMigrationMissingPrimaryCorrespondent.json");
-        migrationMessageValidator.validate(invalidMessage, messageId);
+        migrationMessageValidator.validate(messageId, invalidMessage);
     }
 
     @Test(expected = Exception.class)
     public void shouldNotValidateWithInvalidMigrationMessageWithMissingRequiredFieldsForPrimaryCorrespondent() throws Exception {
         var invalidMessage = getResourceFileAsString("invalidMigrationMissingRequiredFieldsPrimaryCorrespondent.json");
-        migrationMessageValidator.validate(invalidMessage, messageId);
+        migrationMessageValidator.validate(messageId, invalidMessage);
     }
 
     @Test(expected = Exception.class)
     public void shouldNotValidateWithInvalidMigrationMessageWithMissingRequiredFieldsForAdditionalCorrespondent() throws Exception {
         var invalidMessage = getResourceFileAsString("invalidMigrationMissingRequiredFieldsAdditionalCorrespondent.json");
-        migrationMessageValidator.validate(invalidMessage, messageId);
+        migrationMessageValidator.validate(messageId, invalidMessage);
     }
 
     @Test
     public void shouldValidateWithNoAdditionalCorrespondents() throws Exception {
         var validMessage = getResourceFileAsString("validMigrationNoAdditionalCorrespondents.json");
-        migrationMessageValidator.validate(validMessage, messageId);
+        migrationMessageValidator.validate(messageId, validMessage);
     }
 
     @Test(expected = Exception.class)
     public void shouldNotValidateWithInvalidMigrationMessageWithMissingCaseAttachments() throws Exception {
         var invalidMessage = getResourceFileAsString("invalidMigrationMessageMissingCaseAttachments.json");
-        migrationMessageValidator.validate(invalidMessage, messageId);
+        migrationMessageValidator.validate(messageId, invalidMessage);
     }
 
     @Test
     public void shouldValidateWithNoCaseAttachments() throws Exception {
         var validMessage = getResourceFileAsString("validMigrationNoCaseAttachments.json");
-        migrationMessageValidator.validate(validMessage, messageId);
+        migrationMessageValidator.validate(messageId, validMessage);
     }
 
     @Test
     public void shouldValidateWithOptionalFieldsNull() throws Exception {
         var validMessage = getResourceFileAsString("validMigrationWithOptionalFieldsNull.json");
-        migrationMessageValidator.validate(validMessage, messageId);
+        migrationMessageValidator.validate(messageId, validMessage);
     }
 }

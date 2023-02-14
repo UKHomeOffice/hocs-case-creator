@@ -23,10 +23,10 @@ public class MigrationMessageHandler implements MessageHandler {
     }
 
     @Override
-    public void handleMessage(String message, String messageId) throws Exception {
+    public void handleMessage(String messageId, String message) throws Exception {
         log.info("Received new message MessageId : {}", messageId);
-        migrationValidator.validate(message, messageId);
-        migrationCaseService.createMigrationCase(message, messageId);
+        migrationValidator.validate(messageId, message);
+        migrationCaseService.createMigrationCase(messageId, message);
     }
 
     @Override

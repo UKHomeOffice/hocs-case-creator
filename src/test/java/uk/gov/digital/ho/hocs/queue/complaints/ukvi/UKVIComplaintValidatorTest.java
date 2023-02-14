@@ -27,18 +27,18 @@ public class UKVIComplaintValidatorTest {
     @Test
     public void shouldPassValidationWithGoodJson() throws Exception {
         var goodJson =  getResourceFileAsString("staffBehaviour.json");
-        complaintValidator.validate(goodJson, messageId);
+        complaintValidator.validate(messageId, goodJson);
     }
 
     @Test(expected = Exception.class)
     public void shouldFailValidationWithBadJson() throws Exception {
         var badJson =  getResourceFileAsString("incorrect.json");
-        complaintValidator.validate(badJson, messageId);
+        complaintValidator.validate(messageId, badJson);
     }
 
     @Test(expected = Exception.class)
     public void shouldFailValidationWithNotJson() throws Exception {
         var notJson =  getResourceFileAsString("notJson.txt");
-        complaintValidator.validate(notJson, messageId);
+        complaintValidator.validate(messageId, notJson);
     }
 }

@@ -46,7 +46,7 @@ public class UkviQueueListener {
                     queueMessageHandlers) {
                 // Handles the only message at the minute, should be adapted to read a property from the message.
                 if (messageHandler.getMessageType().equals(MessageTypes.UKVI_COMPLAINTS)) {
-                    messageHandler.handleMessage(message, messageId);
+                    messageHandler.handleMessage(messageId, message);
                     break;
                 }
             }
