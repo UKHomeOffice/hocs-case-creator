@@ -45,8 +45,8 @@ public class CaseworkClient {
         return restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/user", caseUUID, stageUUID), request, Void.class);
     }
 
-    public ResponseEntity<Void> addCorrespondentToCase(UUID caseUUID, UUID stageUUID, ComplaintCorrespondent ComplaintCorrespondent) {
-        return restClient.post(serviceBaseURL, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageUUID), ComplaintCorrespondent, Void.class);
+    public ResponseEntity<Void> addCorrespondentToCase(UUID caseUUID, UUID stageUUID, ComplaintCorrespondent complaintCorrespondent) {
+        return restClient.post(serviceBaseURL, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageUUID), complaintCorrespondent, Void.class);
     }
 
     public UUID getPrimaryCorrespondent(UUID caseUUID) {
@@ -59,10 +59,9 @@ public class CaseworkClient {
         return restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), request, Void.class);
     }
 
-    public void updateCase(UUID caseUUID, UUID stageUUID, Map<String, String> data) {
+    public ResponseEntity<Void> updateCase(UUID caseUUID, UUID stageUUID, Map<String, String> data) {
         UpdateCaseworkCaseDataRequest request = new UpdateCaseworkCaseDataRequest(data);
-        restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/data", caseUUID, stageUUID), request, Void.class);
-        log.info("Set Case Data for Case {}", caseUUID);
+        return restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/data", caseUUID, stageUUID), request, Void.class);
     }
 
     public CreateCaseworkCaseResponse migrateCase(CreateMigrationCaseRequest request) {

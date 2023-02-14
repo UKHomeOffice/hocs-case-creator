@@ -26,7 +26,8 @@ public class UKVIComplaintValidatorTest {
     @Before
     public void setUp() {
         complaintValidator = new UKVIComplaintValidator(
-                new SpringConfiguration().objectMapper(), messageLogService);
+                new SpringConfiguration().objectMapper(),
+                messageLogService);
     }
 
     @Test
