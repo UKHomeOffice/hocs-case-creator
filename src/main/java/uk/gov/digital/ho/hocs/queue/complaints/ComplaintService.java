@@ -9,7 +9,6 @@ import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
-import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
 
 import java.util.*;
@@ -41,55 +40,68 @@ public class ComplaintService {
     }
 
     public void createComplaint(ComplaintData complaintData, ComplaintTypeData complaintTypeData) {
-
-        log.info("createComplaint, started : type {}", complaintData.getComplaintType());
-
-        String untrustedS3ObjectName = documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, complaintData.getFormattedDocument());
-
-        log.info("Untrusted document stored in {}, for messageId: {}", untrustedS3ObjectName, clientContext.getCorrelationId());
-
-        DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, untrustedS3ObjectName);
-
-        var createRequest = composeCreateCaseRequest(complaintData, complaintTypeData, documentSummary);
-        CreateCaseResponse createCaseResponse = workflowClient.createCase(createRequest);
-
-        UUID caseUUID = createCaseResponse.getUuid();
-
-        log.info("createComplaint, create case : caseUUID : {}, reference : {}", caseUUID, createCaseResponse.getReference());
+        var documentSummary = createDocument(complaintData);
+        var caseUuid = createCase(complaintData, complaintTypeData, documentSummary);
 
         /*
             We can swallow exceptions from this point onward, because we would prefer to reduce duplicates. And by this
             point we have the document stored, and the case is created.
          */
         try {
-            UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
-            log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageForCaseUUID);
-
-            caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
-
-            List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
-            if (!correspondentsList.isEmpty()) {
-                for (ComplaintCorrespondent correspondent : correspondentsList) {
-                    caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, correspondent);
-                }
-
-                UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
-                log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUUID, primaryCorrespondent);
-
-                caseworkClient.updateCase(caseUUID, stageForCaseUUID, Map.of(CORRESPONDENTS_LABEL, primaryCorrespondent.toString()));
-                log.info("createComplaint, case data updated with primary correspondent: caseUUID : {}, primaryCorrespondent : {}", caseUUID, complaintData.getComplaintType());
-            } else {
-                log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
-            }
-
-            caseworkClient.updateStageTeam(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getTeamId()));
-            log.info("createComplaint, team updated for case : caseUUID : {}, teamUUID : {}", caseUUID, clientContext.getTeamId());
-
-            log.info("createComplaint, completed : caseUUID : {}", caseUUID);
+            var stageForCaseUUID = getCaseStage(caseUuid);
+            updateCaseUser(caseUuid, stageForCaseUUID);
+            updateCaseCorrespondents(complaintData, caseUuid, stageForCaseUUID);
+            updateCaseTeam(caseUuid, stageForCaseUUID);
         } catch (Exception e) {
-            log.warn("Partial case creation for messageId: {}, caseId:{}, untrusted s3 name :{}", clientContext.getCorrelationId(), caseUUID, untrustedS3ObjectName);
+            log.warn("Partial case creation for messageId: {}, caseId:{}", clientContext.getCorrelationId(), caseUuid);
             log.warn(e.getMessage());
         }
+    }
+
+    private DocumentSummary createDocument(ComplaintData complaintData) {
+        String untrustedS3ObjectName = documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, complaintData.getFormattedDocument());
+        log.info("Untrusted document stored in {}, for messageId: {}", untrustedS3ObjectName, clientContext.getCorrelationId());
+        return new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, untrustedS3ObjectName);
+    }
+
+    private UUID createCase(ComplaintData complaintData, ComplaintTypeData complaintTypeData, DocumentSummary documentSummary) {
+        var createRequest = composeCreateCaseRequest(complaintData, complaintTypeData, documentSummary);
+        var createCaseResponse = workflowClient.createCase(createRequest);
+        log.info("createComplaint, create case : caseUUID : {}, reference : {}", createCaseResponse.getUuid(), createCaseResponse.getReference());
+        return createCaseResponse.getUuid();
+    }
+
+    private void updateCaseCorrespondents(ComplaintData complaintData, UUID caseUuid, UUID stageUuid) {
+        List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
+        if (!correspondentsList.isEmpty()) {
+            for (ComplaintCorrespondent correspondent : correspondentsList) {
+                caseworkClient.addCorrespondentToCase(caseUuid, stageUuid, correspondent);
+            }
+
+            UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUuid);
+            log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUuid, primaryCorrespondent);
+
+            caseworkClient.updateCase(caseUuid, stageUuid, Map.of(CORRESPONDENTS_LABEL, primaryCorrespondent.toString()));
+            log.info("createComplaint, case data updated with primary correspondent: caseUUID : {}, primaryCorrespondent : {}", caseUuid, complaintData.getComplaintType());
+        } else {
+            log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUuid);
+        }
+    }
+
+    private UUID getCaseStage(UUID caseUUID) {
+        var stageUuid = caseworkClient.getStageForCase(caseUUID);
+        log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageUuid);
+        return stageUuid;
+    }
+
+    private void updateCaseUser(UUID caseUuid, UUID stageUuid) {
+        caseworkClient.updateStageUser(caseUuid, stageUuid, UUID.fromString(clientContext.getUserId()));
+        log.info("createComplaint, user updated for case : caseUUID : {}, user : {}", caseUuid, clientContext.getUserId());
+    }
+
+    private void updateCaseTeam(UUID caseUuid, UUID stageUuid) {
+        caseworkClient.updateStageTeam(caseUuid, stageUuid, UUID.fromString(clientContext.getTeamId()));
+        log.info("createComplaint, team updated for case : caseUUID : {}, teamUUID : {}", caseUuid, clientContext.getTeamId());
     }
 
     private CreateCaseRequest composeCreateCaseRequest(ComplaintData complaintData, ComplaintTypeData complaintTypeData, DocumentSummary documentSummary) {
