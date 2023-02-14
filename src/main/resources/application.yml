@@ -58,6 +58,3 @@ management:
       enabled: true
       probes:
         enabled: true
-
-message:
-  ignored-types:

@@ -1,27 +1,23 @@
 package uk.gov.digital.ho.hocs.queue.migration;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.queue.common.BaseMessageHandler;
+import uk.gov.digital.ho.hocs.queue.common.MessageHandler;
 import uk.gov.digital.ho.hocs.queue.common.MessageTypes;
 
-import java.util.List;
 
 @Slf4j
 @Service
-public class MigrationMessageHandler extends BaseMessageHandler {
+public class MigrationMessageHandler implements MessageHandler {
 
     private final MigrationCaseService migrationCaseService;
 
     private final MigrationMessageValidator migrationValidator;
 
     public MigrationMessageHandler(
-            @Value("${message.ignored-types}") List<String> ignoredMessageTypes,
             MigrationCaseService migrationCaseService,
             MigrationMessageValidator migrationValidator
     ) {
-        super(ignoredMessageTypes);
         this.migrationCaseService = migrationCaseService;
         this.migrationValidator = migrationValidator;
     }

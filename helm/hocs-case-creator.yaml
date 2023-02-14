@@ -11,8 +11,6 @@ hocs-generic-service:
         cpu: 50m
 
   app:
-    env:
-      ignoredTypes: ''
     resources:
       limits:
         memory: 512Mi
