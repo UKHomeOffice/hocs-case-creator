@@ -32,7 +32,7 @@ public class UKVIComplaintServiceTest {
         UKVIComplaintService ukviComplaintService = new UKVIComplaintService(objectMapper, enumMappingsRepository, complaintService, clientContext, complaintTypeData, "user", "group", "team");
         String json = getResourceFileAsString("staffBehaviour.json");
 
-        ukviComplaintService.createComplaint(json, "messageId");
+        ukviComplaintService.createComplaint("messageId", json);
 
         verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(complaintTypeData));
     }
@@ -43,7 +43,7 @@ public class UKVIComplaintServiceTest {
         UKVIComplaintService ukviComplaintService = new UKVIComplaintService(objectMapper, enumMappingsRepository, complaintService, clientContext, complaintTypeData, "user", "group", "team");
         String json = getResourceFileAsString("existingNoCorrespondent.json");
 
-        ukviComplaintService.createComplaint(json, "messageId");
+        ukviComplaintService.createComplaint("messageId", json);
 
         verify(complaintService).createComplaint(any(UKVIComplaintData.class), eq(complaintTypeData));
     }

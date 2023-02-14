@@ -30,7 +30,7 @@ public class MigrationCaseService {
         this.team = team;
     }
 
-    public void createMigrationCase(String jsonBody, String messageId) {
+    public void createMigrationCase(String messageId, String jsonBody) {
         clientContext.setContext(user, group, team, messageId);
         migrationService.createMigrationCase(new MigrationData(jsonBody), migrationCaseTypeData);
     }

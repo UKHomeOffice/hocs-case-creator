@@ -41,7 +41,7 @@ public class UKVIComplaintService {
         this.team = team;
     }
 
-    public void createComplaint(String jsonBody, String messageId) {
+    public void createComplaint(String messageId, String jsonBody) {
         clientContext.setContext(user, group, team, messageId);
         complaintService.createComplaint(new UKVIComplaintData(jsonBody, objectMapper, enumMappingsRepository), ukviTypeData);
     }

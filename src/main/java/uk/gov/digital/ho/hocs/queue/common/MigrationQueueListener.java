@@ -44,7 +44,7 @@ public class MigrationQueueListener {
             for (MessageHandler messageHandler :
                     queueMessageHandlers) {
                 if (messageHandler.getMessageType().equals(MessageTypes.MIGRATION)) {
-                    messageHandler.handleMessage(message, messageId);
+                    messageHandler.handleMessage(messageId, message);
                     break;
                 }
             }
