@@ -29,7 +29,7 @@ public class MigrationQueueListenerTest {
     public void messageTypeDoesNotMatch_doNothing() throws Exception {
         when(migrationMessageHandler.getMessageType()).thenReturn(MessageTypes.UNKNOWN);
 
-        migrationQueueListener.onMigrationEvent("test", "test");
+        migrationQueueListener.onMigrationEvent("test", "test", null);
 
         verify(migrationMessageHandler).getMessageType();
         verifyNoMoreInteractions(migrationMessageHandler);
@@ -42,7 +42,7 @@ public class MigrationQueueListenerTest {
 
         when(migrationMessageHandler.getMessageType()).thenReturn(MessageTypes.MIGRATION);
 
-        migrationQueueListener.onMigrationEvent("test", "test");
+        migrationQueueListener.onMigrationEvent("test", "test", null);
 
         verifyNoMoreInteractions(migrationMessageHandler);
     }
