@@ -3,9 +3,11 @@ package uk.gov.digital.ho.hocs.queue.migration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.digital.ho.hocs.application.SpringConfiguration;
+import uk.gov.digital.ho.hocs.service.MessageLogService;
 
 import java.util.UUID;
 
@@ -17,12 +19,15 @@ public class MigrationMessageValidatorTest {
 
     private MigrationMessageValidator migrationMessageValidator;
 
+    @Mock
+    private MessageLogService messageLogService;
+
     private final String messageId = UUID.randomUUID().toString();
 
     @Before
     public void setUp() {
         migrationMessageValidator = new MigrationMessageValidator(
-                new SpringConfiguration().objectMapper());
+                new SpringConfiguration().objectMapper(), messageLogService);
     }
 
     @Test
