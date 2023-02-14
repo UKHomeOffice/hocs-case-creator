@@ -5,13 +5,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.digital.ho.hocs.queue.complaints.ukvi.UKVIComplaintMessageHandler;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -35,15 +35,16 @@ public class UkviQueueListenerTest {
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }
 
+
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void whenMessageShouldBeIgnored_doNothing() throws Exception {
+        ReflectionTestUtils.setField(ukviQueueListener, "shouldIgnoreMessages", true);
+
         when(ukviComplaintMessageHandler.getMessageType()).thenReturn(MessageTypes.UKVI_COMPLAINTS);
-        when(ukviComplaintMessageHandler.shouldIgnoreMessage()).thenReturn(true);
 
         ukviQueueListener.onComplaintEvent("test", "test");
 
-        verify(ukviComplaintMessageHandler).getMessageType();
-        verify(ukviComplaintMessageHandler).shouldIgnoreMessage();
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }
 
