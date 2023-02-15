@@ -25,6 +25,11 @@ public class MessageLogService {
     }
 
     @Transactional
+    public void updateMessageLogEntryCaseUuidAndStatus(String messageId, UUID caseUuid, Status status) {
+        messageLogRepository.updateCaseUuidAndStatus(messageId, caseUuid, status);
+    }
+
+    @Transactional
     public void updateMessageLogEntryStatus(String messageId, Status status) {
         messageLogRepository.updateStatus(messageId, status);
     }

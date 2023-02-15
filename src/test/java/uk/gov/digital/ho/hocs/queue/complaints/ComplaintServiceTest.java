@@ -112,7 +112,7 @@ public class ComplaintServiceTest {
         verify(messageLogService).updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_DOCUMENT_CREATED);
         // Case creation
         verify(workflowClient).createCase(createCaseRequest);
-        verify(messageLogService).updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_CREATED);
+        verify(messageLogService).updateMessageLogEntryCaseUuidAndStatus(clientContext.getCorrelationId(), caseUUID, Status.CASE_CREATED);
         // Get stage
         verify(caseworkClient).getStageForCase(caseUUID);
         verify(messageLogService).updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVED);
