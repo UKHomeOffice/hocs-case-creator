@@ -1,24 +1,19 @@
 package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.queue.common.BaseMessageHandler;
+import uk.gov.digital.ho.hocs.queue.common.MessageHandler;
 import uk.gov.digital.ho.hocs.queue.common.MessageTypes;
 
-import java.util.List;
-
 @Service
-public class UKVIComplaintMessageHandler extends BaseMessageHandler {
+public class UKVIComplaintMessageHandler implements MessageHandler {
 
     private final UKVIComplaintService ukviComplaintService;
     private final UKVIComplaintValidator ukviComplaintValidator;
 
     public UKVIComplaintMessageHandler(
-            @Value("${message.ignored-types}") List<String> ignoredMessageTypes,
             UKVIComplaintService ukviComplaintService,
             UKVIComplaintValidator ukviComplaintValidator
     ) {
-        super(ignoredMessageTypes);
         this.ukviComplaintService = ukviComplaintService;
         this.ukviComplaintValidator = ukviComplaintValidator;
     }

@@ -11,9 +11,9 @@ import uk.gov.digital.ho.hocs.testutil.TestFileReader;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties="case-creator.mode=migration")
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringRunner.class)
-@ActiveProfiles("local")
+@ActiveProfiles({"local", "migration"})
 public class MigrationQueueListenerIntegrationTest extends AwsSqsIntegrationTestBase {
 
     @Autowired

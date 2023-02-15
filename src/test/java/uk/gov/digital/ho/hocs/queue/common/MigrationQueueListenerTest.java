@@ -5,16 +5,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.digital.ho.hocs.queue.migration.MigrationMessageHandler;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = "case-creator.mode=migration")
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringRunner.class)
-@ActiveProfiles("local")
+@ActiveProfiles({"local", "migration"})
 public class MigrationQueueListenerTest {
 
     @MockBean
@@ -34,14 +36,14 @@ public class MigrationQueueListenerTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void whenMessageShouldBeIgnored_doNothing() throws Exception {
+        ReflectionTestUtils.setField(migrationQueueListener, "shouldIgnoreMessages", true);
+
         when(migrationMessageHandler.getMessageType()).thenReturn(MessageTypes.MIGRATION);
-        when(migrationMessageHandler.shouldIgnoreMessage()).thenReturn(true);
 
         migrationQueueListener.onMigrationEvent("test", "test");
 
-        verify(migrationMessageHandler).getMessageType();
-        verify(migrationMessageHandler).shouldIgnoreMessage();
         verifyNoMoreInteractions(migrationMessageHandler);
     }
 
