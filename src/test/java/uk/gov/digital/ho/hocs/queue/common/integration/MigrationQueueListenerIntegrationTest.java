@@ -49,4 +49,28 @@ public class MigrationQueueListenerIntegrationTest extends AwsSqsIntegrationTest
         String validMessage = TestFileReader.getResourceFileAsString("validMigrationWithOptionalFieldsNull.json");
         amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
     }
+
+    @Test
+    public void consumeMessageFromMigrationQueueWithCOMPCaseType() {
+        String validMessage = TestFileReader.getResourceFileAsString("validMigrationCOMP.json");
+        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+    }
+
+    @Test
+    public void consumeMessageFromMigrationQueueWithBFCaseType() {
+        String validMessage = TestFileReader.getResourceFileAsString("validMigrationBF.json");
+        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+    }
+
+    @Test
+    public void consumeMessageFromMigrationQueueWithIEDETCaseType() {
+        String validMessage = TestFileReader.getResourceFileAsString("validMigrationIEDET.json");
+        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+    }
+
+    @Test
+    public void consumeMessageFromMigrationQueueWithPOGRCaseType() {
+        String validMessage = TestFileReader.getResourceFileAsString("validMigrationPOGR.json");
+        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+    }
 }
