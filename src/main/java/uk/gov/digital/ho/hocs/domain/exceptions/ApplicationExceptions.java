@@ -144,4 +144,24 @@ public interface ApplicationExceptions {
 
     }
 
+    class InvalidMessageTypeException extends RuntimeException {
+
+        private final LogEvent event;
+
+        private final LogEvent exception;
+
+        public InvalidMessageTypeException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+            this.exception = null;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+
+        public LogEvent getException() {return exception;}
+
+    }
+
 }

@@ -7,9 +7,12 @@ import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.application.LogEvent;
+import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.domain.model.Status;
+import uk.gov.digital.ho.hocs.queue.migration.MigrationMessageHandler;
 import uk.gov.digital.ho.hocs.service.MessageLogService;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -17,16 +20,16 @@ import java.util.UUID;
 @Profile("migration")
 public class MigrationQueueListener {
 
-    private final List<MessageHandler> queueMessageHandlers;
+    private final MessageHandler messageHandler;
 
     private final MessageLogService messageLogService;
 
     private final boolean shouldIgnoreMessages;
 
-    public MigrationQueueListener(List<MessageHandler> queueMessageHandlers,
+    public MigrationQueueListener(MigrationMessageHandler messageHandler,
                                   MessageLogService messageLogService,
                                   @Value("${aws.sqs.ignore-messages:false}") boolean shouldIgnoreMessages) {
-        this.queueMessageHandlers = queueMessageHandlers;
+        this.messageHandler = messageHandler;
         this.messageLogService = messageLogService;
         this.shouldIgnoreMessages = shouldIgnoreMessages;
     }
@@ -34,20 +37,23 @@ public class MigrationQueueListener {
     @SqsListener(value = "${aws.sqs.case-migrator.url}", deletionPolicy = SqsMessageDeletionPolicy.NO_REDRIVE)
     public void onMigrationEvent(String message,
                                  @Header("MessageId") String messageId,
+                                 @Header(value = "MessageType", required = false) MessageType messageType,
                                  @Header(value = "ExternalReference", required = false) UUID externalReference) throws Exception {
         // Create message log entry
         messageLogService.createMessageLogEntry(messageId, externalReference, message);
 
         if (shouldIgnoreMessages) {
             log.warn("Message flagged to ignore: {}", messageId);
+            messageLogService.updateMessageLogEntryStatus(messageId, Status.IGNORED);
+            return;
+        }
+
+        if (messageType == null ||
+                messageHandler.getMessageType().equals(messageType)) {
+            messageHandler.handleMessage(messageId, message);
         } else {
-            for (MessageHandler messageHandler :
-                    queueMessageHandlers) {
-                if (messageHandler.getMessageType().equals(MessageTypes.MIGRATION)) {
-                    messageHandler.handleMessage(messageId, message);
-                    break;
-                }
-            }
+            messageLogService.updateMessageLogEntryStatus(messageId, Status.MESSAGE_TYPE_INVALID);
+            throw new ApplicationExceptions.InvalidMessageTypeException(String.format("Invalid message type %s", messageType), LogEvent.INVALID_MESSAGE_TYPE);
         }
 
         messageLogService.completeMessageLogEntry(messageId);
