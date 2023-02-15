@@ -45,6 +45,7 @@ public class MigrationService {
         try {
             var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData);
             CreateCaseworkCaseResponse caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
+            messageLogService.updateMessageLogEntryCaseUuidAndStatus(clientContext.getCorrelationId(), caseResponse.getUuid(), Status.CASE_CREATED);
             log.info("Created migration case {}", caseResponse.getUuid());
         } catch (Exception e) {
             messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_MIGRATION_FAILED);

@@ -72,7 +72,7 @@ public class ComplaintService {
             var createRequest = composeCreateCaseRequest(complaintData, complaintTypeData, documentSummary);
             var createCaseResponse = workflowClient.createCase(createRequest);
             log.info("createComplaint, create case : caseUUID : {}, reference : {}", createCaseResponse.getUuid(), createCaseResponse.getReference());
-            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_CREATED);
+            messageLogService.updateMessageLogEntryCaseUuidAndStatus(clientContext.getCorrelationId(), createCaseResponse.getUuid(), Status.CASE_CREATED);
             return createCaseResponse.getUuid();
         } catch (Exception e) {
             messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_CREATION_FAILED);

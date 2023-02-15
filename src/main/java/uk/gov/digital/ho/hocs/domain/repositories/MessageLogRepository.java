@@ -7,12 +7,21 @@ import org.springframework.data.repository.query.Param;
 import uk.gov.digital.ho.hocs.domain.model.MessageLog;
 import uk.gov.digital.ho.hocs.domain.model.Status;
 
+import java.util.UUID;
+
 public interface MessageLogRepository extends CrudRepository<MessageLog, String> {
 
     @Modifying
     @Query("UPDATE MessageLog m SET m.status = :status WHERE m.messageId = :messageId")
     void updateStatus(@Param("messageId") String messageId,
                       @Param("status") Status status);
+
+    @Modifying
+    @Query("UPDATE MessageLog m SET m.status = :status, m.caseUuid = :caseUuid WHERE m.messageId = :messageId")
+    void updateCaseUuidAndStatus(@Param("messageId") String messageId,
+                                  @Param("caseUuid") UUID caseUuid,
+                                  @Param("status") Status status
+    );
 
     @Modifying
     @Query("UPDATE MessageLog m SET m.status = :status, m.completed = NOW() WHERE m.messageId = :messageId")
