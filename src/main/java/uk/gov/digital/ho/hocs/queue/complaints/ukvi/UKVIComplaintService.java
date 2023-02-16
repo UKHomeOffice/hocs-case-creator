@@ -28,9 +28,9 @@ public class UKVIComplaintService {
                                 ComplaintService complaintService,
                                 ClientContext clientContext,
                                 UKVITypeData ukviTypeData,
-                                @Value("${case.creator.identities.complaints.ukvi.user}") String user,
-                                @Value("${case.creator.identities.complaints.ukvi.group}") String group,
-                                @Value("${case.creator.identities.complaints.ukvi.team}") String team) {
+                                @Value("${case.creator.identity.user}") String user,
+                                @Value("${case.creator.identity.group}") String group,
+                                @Value("${case.creator.identity.team}") String team) {
         this.objectMapper = objectMapper;
         this.enumMappingsRepository = enumMappingsRepository;
         this.complaintService = complaintService;
