@@ -19,9 +19,9 @@ public class MigrationCaseService {
     public MigrationCaseService(MigrationService migrationService,
                                 ClientContext clientContext,
                                 MigrationCaseTypeData migrationCaseTypeData,
-                                @Value("${case.creator.identities.migration.user}") String user,
-                                @Value("${case.creator.identities.migration.group}") String group,
-                                @Value("${case.creator.identities.migration.team}") String team) {
+                                @Value("${case.creator.identity.user}") String user,
+                                @Value("${case.creator.identity.group}") String group,
+                                @Value("${case.creator.identity.team}") String team) {
         this.migrationService = migrationService;
         this.clientContext = clientContext;
         this.migrationCaseTypeData = migrationCaseTypeData;
