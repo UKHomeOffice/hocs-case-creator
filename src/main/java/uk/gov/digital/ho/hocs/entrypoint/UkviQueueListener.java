@@ -38,17 +38,16 @@ public class UkviQueueListener implements QueueListener {
 
     @SqsListener(value = "${aws.sqs.case-creator.url}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
     public void onMessageReceived(String message,
-                                 @Header("MessageId") String messageId,
-                                 @Header(value = "MessageType", required = false) MessageType messageType,
-                                 @Header(value = "ExternalReference", required = false) UUID externalReference) throws Exception {
-        // Create message log entry
-        messageLogService.createMessageLogEntry(messageId, externalReference, message);
-
+                                  @Header("MessageId") String messageId,
+                                  @Header(value = "MessageType", required = false) MessageType messageType,
+                                  @Header(value = "ExternalReference", required = false) UUID externalReference) throws Exception {
         if (shouldIgnoreMessages) {
             log.warn("Message flagged to ignore: {}", messageId);
-            messageLogService.updateMessageLogEntryStatus(messageId, Status.IGNORED);
+            messageLogService.createMessageLogEntry(messageId, externalReference, message, Status.IGNORED);
             return;
         }
+
+        messageLogService.createMessageLogEntry(messageId, externalReference, message);
 
         if (messageType == null ||
                 messageHandler.getMessageType().equals(messageType)) {
