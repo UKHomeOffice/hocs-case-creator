@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.domain.queue.migration;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.domain.queue.common.MessageHandler;
 import uk.gov.digital.ho.hocs.domain.queue.common.MessageType;
@@ -8,6 +9,7 @@ import uk.gov.digital.ho.hocs.domain.queue.common.MessageType;
 
 @Slf4j
 @Service
+@Profile("migration")
 public class MigrationMessageHandler implements MessageHandler {
 
     private final MigrationCaseService migrationCaseService;
