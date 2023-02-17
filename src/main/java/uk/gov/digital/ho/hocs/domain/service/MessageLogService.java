@@ -6,8 +6,10 @@ import uk.gov.digital.ho.hocs.domain.repositories.MessageLogRepository;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.MessageLog;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 public class MessageLogService {
@@ -43,6 +45,22 @@ public class MessageLogService {
     @Transactional
     public void completeMessageLogEntry(String messageId) {
         messageLogRepository.updateStatusAndCompleted(messageId, Status.COMPLETED);
+    }
+
+    @Transactional(readOnly = true)
+    public long getCountOfPendingMessagesBetweenDates(LocalDateTime from, @NotNull LocalDateTime to) {
+        if (from == null) {
+            return messageLogRepository.countByStatusAndCompletedBefore(Status.PENDING, to);
+        }
+        return messageLogRepository.countByStatusAndCompletedBetween(Status.PENDING, from, to);
+    }
+
+    @Transactional(readOnly = true)
+    public Stream<MessageLog> getPendingMessagesBetweenDates(LocalDateTime from, @NotNull LocalDateTime to) {
+        if (from == null) {
+            return messageLogRepository.findByStatusAndCompletedBefore(Status.PENDING, to);
+        }
+        return messageLogRepository.findByStatusAndCompletedBetween(Status.PENDING, from, to);
     }
 
 
