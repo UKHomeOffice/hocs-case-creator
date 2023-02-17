@@ -9,19 +9,19 @@ import uk.gov.digital.ho.hocs.domain.queue.common.MessageHandler;
 import uk.gov.digital.ho.hocs.domain.queue.common.MessageType;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
+import uk.gov.digital.ho.hocs.domain.validation.MessageValidator;
 
 @Service
 @Profile("ukvi")
 public class UKVIComplaintMessageHandler implements MessageHandler {
 
     private final UKVIComplaintService ukviComplaintService;
-    private final UKVIComplaintValidator ukviComplaintValidator;
-
+    private final MessageValidator ukviComplaintValidator;
     private final MessageLogService messageLogService;
 
     public UKVIComplaintMessageHandler(
             UKVIComplaintService ukviComplaintService,
-            UKVIComplaintValidator ukviComplaintValidator,
+            MessageValidator ukviComplaintValidator,
             MessageLogService messageLogService
     ) {
         this.ukviComplaintService = ukviComplaintService;
