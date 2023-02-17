@@ -7,7 +7,9 @@ import org.springframework.data.repository.query.Param;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.MessageLog;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public interface MessageLogRepository extends CrudRepository<MessageLog, String> {
 
@@ -19,8 +21,8 @@ public interface MessageLogRepository extends CrudRepository<MessageLog, String>
     @Modifying
     @Query("UPDATE MessageLog m SET m.status = :status, m.caseUuid = :caseUuid WHERE m.messageId = :messageId")
     void updateCaseUuidAndStatus(@Param("messageId") String messageId,
-                                  @Param("caseUuid") UUID caseUuid,
-                                  @Param("status") Status status
+                                 @Param("caseUuid") UUID caseUuid,
+                                 @Param("status") Status status
     );
 
     @Modifying
@@ -29,5 +31,13 @@ public interface MessageLogRepository extends CrudRepository<MessageLog, String>
                                   @Param("status") Status status
     );
 
+
+    long countByStatusAndCompletedBetween(Status status, LocalDateTime from, LocalDateTime to);
+
+    long countByStatusAndCompletedBefore(Status status, LocalDateTime to);
+
+    Stream<MessageLog> findByStatusAndCompletedBetween(Status status, LocalDateTime from, LocalDateTime to);
+
+    Stream<MessageLog> findByStatusAndCompletedBefore(Status status, LocalDateTime to);
 
 }
