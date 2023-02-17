@@ -1,11 +1,11 @@
 package uk.gov.digital.ho.hocs.domain.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.domain.repositories.MessageLogRepository;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.MessageLog;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
