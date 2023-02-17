@@ -164,4 +164,84 @@ public interface ApplicationExceptions {
 
     }
 
+    class TooManyMessagesException extends RuntimeException {
+
+        private final LogEvent event;
+
+        private final LogEvent exception;
+
+        public TooManyMessagesException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+            this.exception = null;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+
+        public LogEvent getException() {return exception;}
+
+    }
+
+    class MessageSchemaParseException extends RuntimeException {
+
+        private final LogEvent event;
+
+        private final LogEvent exception;
+
+        public MessageSchemaParseException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+            this.exception = null;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+
+        public LogEvent getException() {return exception;}
+
+    }
+
+    class MessageSchemaValidationException extends RuntimeException {
+
+        private final LogEvent event;
+
+        private final LogEvent exception;
+
+        public MessageSchemaValidationException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+            this.exception = null;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+
+        public LogEvent getException() {return exception;}
+
+    }
+
+    class FailedMessageProcessingException extends RuntimeException {
+
+        private final LogEvent event;
+
+        private final LogEvent exception;
+
+        public FailedMessageProcessingException(String msg, LogEvent event, Object... args) {
+            super(String.format(msg, args));
+            this.event = event;
+            this.exception = null;
+        }
+
+        public LogEvent getEvent() {
+            return event;
+        }
+
+        public LogEvent getException() {return exception;}
+
+    }
+
 }

@@ -7,11 +7,9 @@ import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.application.LogEvent;
-import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.domain.model.Message;
 import uk.gov.digital.ho.hocs.domain.queue.common.MessageHandler;
 import uk.gov.digital.ho.hocs.domain.queue.common.MessageType;
-import uk.gov.digital.ho.hocs.domain.queue.migration.MigrationMessageHandler;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
 
@@ -22,17 +20,17 @@ import java.util.UUID;
 @Profile("migration")
 public class MigrationQueueListener implements QueueListener {
 
-    private final MessageHandler messageHandler;
-
     private final MessageLogService messageLogService;
+
+    private final MessageHandler messageHandler;
 
     private final boolean shouldIgnoreMessages;
 
-    public MigrationQueueListener(MigrationMessageHandler messageHandler,
-                                  MessageLogService messageLogService,
+    public MigrationQueueListener(MessageLogService messageLogService,
+                                  MessageHandler messageHandler,
                                   @Value("${aws.sqs.ignore-messages:false}") boolean shouldIgnoreMessages) {
-        this.messageHandler = messageHandler;
         this.messageLogService = messageLogService;
+        this.messageHandler = messageHandler;
         this.shouldIgnoreMessages = shouldIgnoreMessages;
     }
 
@@ -43,21 +41,11 @@ public class MigrationQueueListener implements QueueListener {
                                   @Header(value = "ExternalReference", required = false) UUID externalReference) throws Exception {
         if (shouldIgnoreMessages) {
             log.warn("Message flagged to ignore: {}", messageId);
-            messageLogService.createMessageLogEntry(messageId, externalReference, message, Status.IGNORED);
+            messageLogService.createMessageLogEntry(messageId, externalReference, messageType, message, Status.IGNORED);
             return;
         }
 
-        // Create message log entry
-        messageLogService.createMessageLogEntry(messageId, externalReference, message);
-
-        if (messageType == null ||
-                messageHandler.getMessageType().equals(messageType)) {
-            messageHandler.handleMessage(messageId, message);
-        } else {
-            messageLogService.updateMessageLogEntryStatus(messageId, Status.MESSAGE_TYPE_INVALID);
-            throw new ApplicationExceptions.InvalidMessageTypeException(String.format("Invalid message type %s", messageType), LogEvent.INVALID_MESSAGE_TYPE);
-        }
-
-        messageLogService.completeMessageLogEntry(messageId);
+        messageLogService.createMessageLogEntry(messageId, externalReference, messageType, message);
+        messageHandler.handleMessage(new Message(messageId, message, messageType));
     }
 }

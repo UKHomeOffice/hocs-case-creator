@@ -14,11 +14,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.UnsupportedEncodingException;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ActiveProfiles("local")
+@ActiveProfiles({"local", "ukvi"})
 public class DocumentS3ClientTest {
 
     @Autowired
