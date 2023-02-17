@@ -3,7 +3,7 @@ package uk.gov.digital.ho.hocs.queue.migration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.queue.common.MessageHandler;
-import uk.gov.digital.ho.hocs.queue.common.MessageTypes;
+import uk.gov.digital.ho.hocs.queue.common.MessageType;
 
 
 @Slf4j
@@ -23,15 +23,15 @@ public class MigrationMessageHandler implements MessageHandler {
     }
 
     @Override
-    public void handleMessage(String message, String messageId) throws Exception {
+    public void handleMessage(String messageId, String message) throws Exception {
         log.info("Received new message MessageId : {}", messageId);
-        migrationValidator.validate(message, messageId);
-        migrationCaseService.createMigrationCase(message, messageId);
+        migrationValidator.validate(messageId, message);
+        migrationCaseService.createMigrationCase(message);
     }
 
     @Override
-    public MessageTypes getMessageType() {
-        return MessageTypes.MIGRATION;
+    public MessageType getMessageType() {
+        return MessageType.MIGRATION;
     }
 
 }

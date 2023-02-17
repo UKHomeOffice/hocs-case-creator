@@ -1,13 +1,12 @@
 package uk.gov.digital.ho.hocs.queue.common;
 
-public enum MessageTypes {
+public enum MessageType {
     UKVI_COMPLAINTS("UKVI_COMPLAINTS"),
-    MIGRATION("MIGRATION"),
-    UNKNOWN("UNKNOWN");
+    MIGRATION("MIGRATION");
 
     private final String messageType;
 
-    MessageTypes(final String messageType) {
+    MessageType(final String messageType) {
         this.messageType = messageType;
     }
 

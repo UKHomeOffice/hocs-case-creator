@@ -4,13 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
+import uk.gov.digital.ho.hocs.application.LogEvent;
 import uk.gov.digital.ho.hocs.client.casework.CaseworkClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.document.DocumentS3Client;
 import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseRequest;
-import uk.gov.digital.ho.hocs.client.workflow.dto.CreateCaseResponse;
 import uk.gov.digital.ho.hocs.client.workflow.dto.DocumentSummary;
+import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
+import uk.gov.digital.ho.hocs.domain.model.Status;
+import uk.gov.digital.ho.hocs.service.MessageLogService;
 
 import java.util.*;
 
@@ -28,67 +31,109 @@ public class ComplaintService {
     private final CaseworkClient caseworkClient;
     private final ClientContext clientContext;
     private final DocumentS3Client documentS3Client;
+    private final MessageLogService messageLogService;
 
     @Autowired
     public ComplaintService(WorkflowClient workflowClient,
                             CaseworkClient caseworkClient,
                             ClientContext clientContext,
-                            DocumentS3Client documentS3Client) {
+                            DocumentS3Client documentS3Client,
+                            MessageLogService messageLogService) {
         this.workflowClient = workflowClient;
         this.caseworkClient = caseworkClient;
         this.clientContext = clientContext;
         this.documentS3Client = documentS3Client;
+        this.messageLogService = messageLogService;
     }
 
     public void createComplaint(ComplaintData complaintData, ComplaintTypeData complaintTypeData) {
+        var documentSummary = createDocument(complaintData);
+        var caseUuid = createCase(complaintData, complaintTypeData, documentSummary);
+        var stageForCaseUUID = getCaseStage(caseUuid);
+        updateCaseUser(caseUuid, stageForCaseUUID);
+        updateCaseCorrespondents(complaintData, caseUuid, stageForCaseUUID);
+        updateCaseTeam(caseUuid, stageForCaseUUID);
+    }
 
-        log.info("createComplaint, started : type {}", complaintData.getComplaintType());
-
-        String untrustedS3ObjectName = documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, complaintData.getFormattedDocument());
-
-        log.info("Untrusted document stored in {}, for messageId: {}", untrustedS3ObjectName, clientContext.getCorrelationId());
-
-        DocumentSummary documentSummary = new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, untrustedS3ObjectName);
-
-        var createRequest = composeCreateCaseRequest(complaintData, complaintTypeData, documentSummary);
-        CreateCaseResponse createCaseResponse = workflowClient.createCase(createRequest);
-
-        UUID caseUUID = createCaseResponse.getUuid();
-
-        log.info("createComplaint, create case : caseUUID : {}, reference : {}", caseUUID, createCaseResponse.getReference());
-
-        /*
-            We can swallow exceptions from this point onward, because we would prefer to reduce duplicates. And by this
-            point we have the document stored, and the case is created.
-         */
+    private DocumentSummary createDocument(ComplaintData complaintData) {
         try {
-            UUID stageForCaseUUID = caseworkClient.getStageForCase(caseUUID);
-            log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageForCaseUUID);
+            String untrustedS3ObjectName = documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, complaintData.getFormattedDocument());
+            log.info("Untrusted document stored in {}, for messageId: {}", untrustedS3ObjectName, clientContext.getCorrelationId());
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_DOCUMENT_CREATED);
+            return new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, untrustedS3ObjectName);
+        } catch (Exception e) {
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
+            throw new ApplicationExceptions.DocumentCreationException(e.getMessage(), LogEvent.CASE_DOCUMENT_CREATION_FAILURE);
+        }
+    }
 
-            caseworkClient.updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getUserId()));
+    private UUID createCase(ComplaintData complaintData, ComplaintTypeData complaintTypeData, DocumentSummary documentSummary) {
+        try {
+            var createRequest = composeCreateCaseRequest(complaintData, complaintTypeData, documentSummary);
+            var createCaseResponse = workflowClient.createCase(createRequest);
+            log.info("createComplaint, create case : caseUUID : {}, reference : {}", createCaseResponse.getUuid(), createCaseResponse.getReference());
+            messageLogService.updateMessageLogEntryCaseUuidAndStatus(clientContext.getCorrelationId(), createCaseResponse.getUuid(), Status.CASE_CREATED);
+            return createCaseResponse.getUuid();
+        } catch (Exception e) {
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_CREATION_FAILED);
+            throw new ApplicationExceptions.CaseCreationException(e.getMessage(), LogEvent.CASE_CREATION_FAILURE);
+        }
+    }
 
+    private void updateCaseCorrespondents(ComplaintData complaintData, UUID caseUuid, UUID stageUuid) {
+        try {
             List<ComplaintCorrespondent> correspondentsList = complaintData.getComplaintCorrespondent();
             if (!correspondentsList.isEmpty()) {
                 for (ComplaintCorrespondent correspondent : correspondentsList) {
-                    caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, correspondent);
+                    caseworkClient.addCorrespondentToCase(caseUuid, stageUuid, correspondent);
                 }
 
-                UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUUID);
-                log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUUID, primaryCorrespondent);
+                UUID primaryCorrespondent = caseworkClient.getPrimaryCorrespondent(caseUuid);
+                log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUuid, primaryCorrespondent);
 
-                caseworkClient.updateCase(caseUUID, stageForCaseUUID, Map.of(CORRESPONDENTS_LABEL, primaryCorrespondent.toString()));
-                log.info("createComplaint, case data updated with primary correspondent: caseUUID : {}, primaryCorrespondent : {}", caseUUID, complaintData.getComplaintType());
+                caseworkClient.updateCase(caseUuid, stageUuid, Map.of(CORRESPONDENTS_LABEL, primaryCorrespondent.toString()));
+                log.info("createComplaint, case data updated with primary correspondent: caseUUID : {}, primaryCorrespondent : {}", caseUuid, complaintData.getComplaintType());
             } else {
-                log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUUID);
+                log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUuid);
             }
-
-            caseworkClient.updateStageTeam(caseUUID, stageForCaseUUID, UUID.fromString(clientContext.getTeamId()));
-            log.info("createComplaint, team updated for case : caseUUID : {}, teamUUID : {}", caseUUID, clientContext.getTeamId());
-
-            log.info("createComplaint, completed : caseUUID : {}", caseUUID);
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_HANDLED);
         } catch (Exception e) {
-            log.warn("Partial case creation for messageId: {}, caseId:{}, untrusted s3 name :{}", clientContext.getCorrelationId(), caseUUID, untrustedS3ObjectName);
-            log.warn(e.getMessage());
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
+            throw new ApplicationExceptions.CaseCorrespondentCreationException(e.getMessage(), LogEvent.CASE_CORRESPONDENTS_FAILURE);
+        }
+    }
+
+    private UUID getCaseStage(UUID caseUUID) {
+        try {
+            var stageUuid = caseworkClient.getStageForCase(caseUUID);
+            log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageUuid);
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVED);
+            return stageUuid;
+        } catch (Exception e) {
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVAL_FAILED);
+            throw new ApplicationExceptions.CaseStageRetrievalException(e.getMessage(), LogEvent.CASE_STAGE_RETRIEVAL_FAILURE);
+        }
+    }
+
+    private void updateCaseUser(UUID caseUuid, UUID stageUuid) {
+        try {
+            caseworkClient.updateStageUser(caseUuid, stageUuid, UUID.fromString(clientContext.getUserId()));
+            log.info("createComplaint, user updated for case : caseUUID : {}, user : {}", caseUuid, clientContext.getUserId());
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_USER_UPDATED);
+        } catch (Exception e) {
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_USER_UPDATE_FAILED);
+            throw new ApplicationExceptions.CaseUserUpdateException(e.getMessage(), LogEvent.CASE_USER_UPDATE_FAILURE);
+        }
+    }
+
+    private void updateCaseTeam(UUID caseUuid, UUID stageUuid) {
+        try {
+            caseworkClient.updateStageTeam(caseUuid, stageUuid, UUID.fromString(clientContext.getTeamId()));
+            log.info("createComplaint, team updated for case : caseUUID : {}, teamUUID : {}", caseUuid, clientContext.getTeamId());
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_TEAM_UPDATED);
+        } catch (Exception e) {
+            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_TEAM_UPDATE_FAILED);
+            throw new ApplicationExceptions.CaseTeamUpdateException(e.getMessage(), LogEvent.CASE_TEAM_UPDATE_FAILURE);
         }
     }
 

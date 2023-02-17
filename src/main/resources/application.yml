@@ -13,6 +13,14 @@ server:
 spring:
   main:
     banner-mode: off
+  flyway:
+    locations: classpath:/db/migration/postgresql
+    schemas: ${db.schema.name:case_creator}
+  datasource:
+    url: jdbc:postgresql://${db.host:localhost}:${db.port:5432}/${db.name:postgres}?currentSchema=${db.schema.name:case_creator}&user=${db.username:root}&password=${db.password:dev}&stringtype=unspecified
+  jpa:
+    database: postgresql
+    open-in-view: false
 
 aws:
   sqs:
@@ -38,17 +46,11 @@ aws:
 case:
   creator:
     case-service: http://localhost:8082
-    identities:
-      complaints:
-        ukvi:
-          group:
-          team:
-          user:
-      migration:
-        group:
-        team:
-        user:
     workflow-service: http://localhost:8091
+    identity:
+      group:
+      team:
+      user:
 
 management:
   endpoints:

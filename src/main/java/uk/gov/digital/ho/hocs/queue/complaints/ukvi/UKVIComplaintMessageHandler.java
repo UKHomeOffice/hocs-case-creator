@@ -2,7 +2,7 @@ package uk.gov.digital.ho.hocs.queue.complaints.ukvi;
 
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.queue.common.MessageHandler;
-import uk.gov.digital.ho.hocs.queue.common.MessageTypes;
+import uk.gov.digital.ho.hocs.queue.common.MessageType;
 
 @Service
 public class UKVIComplaintMessageHandler implements MessageHandler {
@@ -19,14 +19,14 @@ public class UKVIComplaintMessageHandler implements MessageHandler {
     }
 
     @Override
-    public void handleMessage(String message, String messageId) throws Exception {
-        ukviComplaintValidator.validate(message, messageId);
-        ukviComplaintService.createComplaint(message, messageId);
+    public void handleMessage(String messageId, String message) throws Exception {
+        ukviComplaintValidator.validate(messageId, message);
+        ukviComplaintService.createComplaint(message);
     }
 
     @Override
-    public MessageTypes getMessageType() {
-        return MessageTypes.UKVI_COMPLAINTS;
+    public MessageType getMessageType() {
+        return MessageType.UKVI_COMPLAINTS;
     }
 
 }

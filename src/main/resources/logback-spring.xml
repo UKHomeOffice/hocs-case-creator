@@ -20,6 +20,7 @@
     <springProfile name="!development">
         <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeCallerData>true</includeCallerData>
                 <provider class="net.logstash.logback.composite.loggingevent.LoggingEventPatternJsonProvider">
                     <pattern>
                         {
@@ -43,6 +44,18 @@
     </logger>
 
     <logger name="org.springframework" additivity="false" level="WARN">
+        <appender-ref ref="consoleAppender"/>
+    </logger>
+
+    <logger name="org.flywaydb" additivity="false" level="WARN">
+        <appender-ref ref="consoleAppender"/>
+    </logger>
+
+    <logger name="org.hibernate" additivity="false" level="WARN">
+        <appender-ref ref="consoleAppender"/>
+    </logger>
+
+    <logger name="com.zaxxer" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 

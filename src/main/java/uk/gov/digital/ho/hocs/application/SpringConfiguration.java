@@ -14,11 +14,6 @@ import java.text.SimpleDateFormat;
 public class SpringConfiguration {
 
     @Bean
-    public ClientContext createThreadContext() {
-        return new ClientContext();
-    }
-
-    @Bean
     public RestTemplate createRestTemplate() {
         return new RestTemplate();
     }

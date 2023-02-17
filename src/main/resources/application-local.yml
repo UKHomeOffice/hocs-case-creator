@@ -28,17 +28,11 @@ aws:
         bucket-kms-key:
       bucket-name: untrusted-bucket
 
-  case:
-    creator:
-      case-service: http://localhost:8082
-      identities:
-        complaints:
-          ukvi:
-            group:
-            team:
-            user:
-        migration:
-          group:
-          team:
-          user:
-      workflow-service: http://localhost:8091
+case:
+  creator:
+    case-service: http://localhost:8082
+    workflow-service: http://localhost:8091
+    identity:
+      group:
+      team:
+      user:

@@ -8,23 +8,31 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.digital.ho.hocs.domain.model.Status;
+import uk.gov.digital.ho.hocs.service.MessageLogService;
 
 import java.io.InputStream;
 import java.util.Set;
 @Slf4j
 public abstract class MessageValidator {
 
-    protected final ObjectMapper objectMapper;
-    protected final JsonSchema schema;
+    private final ObjectMapper objectMapper;
 
-    public MessageValidator(ObjectMapper objectMapper, String schemaName) {
+    private final MessageLogService messageLogService;
+
+    private final JsonSchema schema;
+
+    public MessageValidator(ObjectMapper objectMapper,
+                            MessageLogService messageLogService,
+                            String schemaName) {
         InputStream in = getClass().getResourceAsStream(schemaName);
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
         schema = schemaFactory.getSchema(in);
         this.objectMapper = objectMapper;
+        this.messageLogService = messageLogService;
     }
 
-    public void validate(String jsonBody, String messageId) throws Exception {
+    public void validate(String messageId, String jsonBody) throws Exception {
         try {
             JsonNode json = objectMapper.readTree(jsonBody);
             Set<ValidationMessage> validationMessages = schema.validate(json);
@@ -32,11 +40,15 @@ public abstract class MessageValidator {
                 for (ValidationMessage validationMessage : validationMessages) {
                     log.warn("MessageId : {}, {}", messageId, validationMessage.getMessage());
                 }
+                messageLogService.updateMessageLogEntryStatus(messageId, Status.MESSAGE_VALIDATION_FAILED);
                 throw new Exception("Schema validation failed for messageId : " + messageId);
             }
         } catch (JsonParseException e) {
             log.error("Schema validation failed for messageId {}, Exception : {} ", messageId, e.getMessage());
+            messageLogService.updateMessageLogEntryStatus(messageId, Status.MESSAGE_PARSE_FAILURE);
             throw e;
         }
+
+        messageLogService.updateMessageLogEntryStatus(messageId, Status.MESSAGE_VALIDATION_SUCCESS);
     }
 }

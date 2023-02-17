@@ -1,0 +1,53 @@
+{
+  "caseType": "COMP",
+  "sourceCaseId": "in",
+  "primaryCorrespondent": {
+    "fullName": "fullName",
+    "correspondentType": "COMPLAINANT",
+    "address1": "address1",
+    "address2": "address2",
+    "address3": "address3",
+    "postcode": "postcode",
+    "country": "country",
+    "organisation": "organisation",
+    "telephone": "telephone",
+    "email": "email",
+    "reference": "reference"
+  },
+  "additionalCorrespondents": [
+    {
+      "fullName": "fullName",
+      "correspondentType": "COMPLAINANT",
+      "address1": "address1",
+      "address2": "address2",
+      "address3": "address3",
+      "postcode": "postcode",
+      "country": "country",
+      "organisation": "organisation",
+      "telephone": "telephone",
+      "email": "email",
+      "reference": "reference"
+    },
+    {
+      "fullName": "fullName",
+      "correspondentType": "COMPLAINANT",
+      "address1": "address1",
+      "address2": "address2",
+      "address3": "address3",
+      "postcode": "postcode",
+      "country": "country",
+      "organisation": "organisation",
+      "telephone": "telephone",
+      "email": "email",
+      "reference": "reference"
+    }
+  ],
+  "caseStatus": "caseStatus",
+  "caseStatusDate": "1947-02-14",
+  "creationDate": "1965-06-22",
+  "caseData": [
+    {"name": "type", "value": "cms"},
+    {"name": "creationDate", "value": "01/07/2022"}
+  ],
+  "caseAttachments": []
+}
