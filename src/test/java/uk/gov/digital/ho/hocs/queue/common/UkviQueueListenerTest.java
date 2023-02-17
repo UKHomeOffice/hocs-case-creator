@@ -42,23 +42,23 @@ public class UkviQueueListenerTest {
     public void messageTypeMatches_callHandler() throws Exception {
         when(ukviComplaintMessageHandler.getMessageType()).thenCallRealMethod();
 
-        ukviQueueListener.onComplaintEvent("test", "test", MessageType.UKVI_COMPLAINTS, UUID.randomUUID());
+        ukviQueueListener.onMessageReceived("test", "test", MessageType.UKVI_COMPLAINTS, UUID.randomUUID());
 
         verify(messageLogService).createMessageLogEntry(eq("test"), any(UUID.class), eq("test"));
         verify(ukviComplaintMessageHandler).getMessageType();
         verify(ukviComplaintMessageHandler).handleMessage("test", "test");
-        verify(messageLogService).completeMessageLogEntry(eq("test"));
+        verify(messageLogService).completeMessageLogEntry("test");
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }
 
     @Test
     public void messageTypeNull_callHandler() throws Exception {
-        ukviQueueListener.onComplaintEvent("test", "test", null, UUID.randomUUID());
+        ukviQueueListener.onMessageReceived("test", "test", null, UUID.randomUUID());
 
         verify(messageLogService).createMessageLogEntry(eq("test"), any(UUID.class), eq("test"));
         verify(ukviComplaintMessageHandler, times(0)).getMessageType();
         verify(ukviComplaintMessageHandler).handleMessage("test", "test");
-        verify(messageLogService).completeMessageLogEntry(eq("test"));
+        verify(messageLogService).completeMessageLogEntry("test");
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }
 
@@ -66,11 +66,11 @@ public class UkviQueueListenerTest {
     public void messageTypeNotMatch_callHandler() throws Exception {
         when(ukviComplaintMessageHandler.getMessageType()).thenCallRealMethod();
 
-        ukviQueueListener.onComplaintEvent("test", "test", MessageType.MIGRATION, UUID.randomUUID());
+        ukviQueueListener.onMessageReceived("test", "test", MessageType.MIGRATION, UUID.randomUUID());
 
         verify(messageLogService).createMessageLogEntry(eq("test"), any(UUID.class), eq("test"));
         verify(ukviComplaintMessageHandler).getMessageType();
-        verify(messageLogService).updateMessageLogEntryStatus(eq("test"), eq(Status.MESSAGE_TYPE_INVALID));
+        verify(messageLogService).updateMessageLogEntryStatus("test", Status.MESSAGE_TYPE_INVALID);
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }
 
@@ -81,7 +81,7 @@ public class UkviQueueListenerTest {
 
         when(ukviComplaintMessageHandler.getMessageType()).thenReturn(MessageType.MIGRATION);
 
-        ukviQueueListener.onComplaintEvent("test", "test", null, null);
+        ukviQueueListener.onMessageReceived("test", "test", null, null);
 
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }

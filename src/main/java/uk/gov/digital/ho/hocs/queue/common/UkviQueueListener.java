@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @Profile("ukvi")
-public class UkviQueueListener {
+public class UkviQueueListener implements QueueListener {
 
     private final MessageHandler messageHandler;
 
@@ -35,7 +35,7 @@ public class UkviQueueListener {
     }
 
     @SqsListener(value = "${aws.sqs.case-creator.url}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
-    public void onComplaintEvent(String message,
+    public void onMessageReceived(String message,
                                  @Header("MessageId") String messageId,
                                  @Header(value = "MessageType", required = false) MessageType messageType,
                                  @Header(value = "ExternalReference", required = false) UUID externalReference) throws Exception {
