@@ -27,7 +27,7 @@ public class QueueListenerContextAspect {
         this.team = team;
     }
 
-    @Pointcut("execution(* uk.gov.digital.ho.hocs.queue.common.QueueListener.onMessageReceived(..))")
+    @Pointcut("execution(* uk.gov.digital.ho.hocs.entrypoint.QueueListener.onMessageReceived(..))")
     public void messageReceivedPointcut(){
     }
 
