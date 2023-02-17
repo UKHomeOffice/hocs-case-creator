@@ -7,8 +7,6 @@ import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.application.LogEvent;
-import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.domain.queue.common.MessageType;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
@@ -36,18 +34,12 @@ public class UkviQueueListener implements QueueListener {
                                   @Header(value = "MessageType", required = false) MessageType messageType,
                                   @Header(value = "ExternalReference", required = false) UUID externalReference) {
         if (shouldIgnoreMessages) {
-            log.warn("Message flagged to ignore: {}", messageId);
-            messageLogService.createMessageLogEntry(messageId, externalReference, message, Status.IGNORED);
+            messageLogService.createMessageLogEntry(messageId, externalReference, messageType, message, Status.IGNORED);
             return;
         }
 
-        if (messageType != null && messageType != MessageType.UKVI_COMPLAINTS) {
-            messageLogService.updateMessageLogEntryStatus(messageId, Status.MESSAGE_TYPE_INVALID);
-            throw new ApplicationExceptions.InvalidMessageTypeException(String.format("Invalid message type %s", messageType), LogEvent.INVALID_MESSAGE_TYPE);
-        }
-
         // Create message log entry
-        messageLogService.createMessageLogEntry(messageId, externalReference, message);
+        messageLogService.createMessageLogEntry(messageId, externalReference, messageType, message);
     }
 
 }

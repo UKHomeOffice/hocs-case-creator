@@ -8,6 +8,7 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.digital.ho.hocs.domain.model.Message;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
 
@@ -32,23 +33,23 @@ public abstract class MessageValidator {
         this.messageLogService = messageLogService;
     }
 
-    public void validate(String messageId, String jsonBody) throws Exception {
+    public void validate(Message message) throws Exception {
         try {
-            JsonNode json = objectMapper.readTree(jsonBody);
+            JsonNode json = objectMapper.readTree(message.message());
             Set<ValidationMessage> validationMessages = schema.validate(json);
             if (!validationMessages.isEmpty()) {
                 for (ValidationMessage validationMessage : validationMessages) {
-                    log.warn("MessageId : {}, {}", messageId, validationMessage.getMessage());
+                    log.warn("MessageId : {}, {}", message.id(), validationMessage.getMessage());
                 }
-                messageLogService.updateMessageLogEntryStatus(messageId, Status.MESSAGE_VALIDATION_FAILED);
-                throw new Exception("Schema validation failed for messageId : " + messageId);
+                messageLogService.updateMessageLogEntryStatus(message.id(), Status.MESSAGE_VALIDATION_FAILED);
+                throw new Exception("Schema validation failed for messageId : " + message.id());
             }
         } catch (JsonParseException e) {
-            log.error("Schema validation failed for messageId {}, Exception : {} ", messageId, e.getMessage());
-            messageLogService.updateMessageLogEntryStatus(messageId, Status.MESSAGE_PARSE_FAILURE);
+            log.error("Schema validation failed for messageId {}, Exception : {} ", message.id(), e.getMessage());
+            messageLogService.updateMessageLogEntryStatus(message.id(), Status.MESSAGE_PARSE_FAILURE);
             throw e;
         }
 
-        messageLogService.updateMessageLogEntryStatus(messageId, Status.MESSAGE_VALIDATION_SUCCESS);
+        messageLogService.updateMessageLogEntryStatus(message.id(), Status.MESSAGE_VALIDATION_SUCCESS);
     }
 }

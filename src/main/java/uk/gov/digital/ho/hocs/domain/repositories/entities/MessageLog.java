@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import uk.gov.digital.ho.hocs.domain.queue.common.MessageType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +39,10 @@ public class MessageLog {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     protected Status status;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    protected MessageType type;
 
     @Column(name = "completed")
     protected LocalDateTime completed;
