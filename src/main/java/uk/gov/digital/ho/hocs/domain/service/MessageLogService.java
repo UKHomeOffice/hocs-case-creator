@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.domain.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.digital.ho.hocs.domain.queue.common.MessageType;
 import uk.gov.digital.ho.hocs.domain.repositories.MessageLogRepository;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.MessageLog;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
@@ -20,15 +21,15 @@ public class MessageLogService {
         this.messageLogRepository = messageLogRepository;
     }
 
-    public void createMessageLogEntry(String messageId, UUID externalReference, String message) {
+    public void createMessageLogEntry(String messageId, UUID externalReference, MessageType type, String message) {
         var messageLog =
-                new MessageLog(messageId, externalReference, null, message, Status.PENDING, null, LocalDateTime.now());
+                new MessageLog(messageId, externalReference, null, message, Status.PENDING, type, null, LocalDateTime.now());
         messageLogRepository.save(messageLog);
     }
 
-    public void createMessageLogEntry(String messageId, UUID externalReference, String message, Status status) {
+    public void createMessageLogEntry(String messageId, UUID externalReference, MessageType type, String message, Status status) {
         var messageLog =
-                new MessageLog(messageId, externalReference, null, message, status, null, LocalDateTime.now());
+                new MessageLog(messageId, externalReference, null, message, status, type, null, LocalDateTime.now());
         messageLogRepository.save(messageLog);
     }
 

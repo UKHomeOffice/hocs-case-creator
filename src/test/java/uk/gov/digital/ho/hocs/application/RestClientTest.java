@@ -10,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.UUID;
+
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,14 +29,15 @@ public class RestClientTest {
 
     @Before
     public void setUp() {
-        ClientContext clientContext = new ClientContext();
-        restClient = new RestClient(restTemplate, clientContext);
+        RequestData requestData = new RequestData();
+        MessageContext messageContext = new MessageContext(requestData,  "u1", "g1", "t1");
+        restClient = new RestClient(restTemplate, messageContext);
         baseUrl = "http://service";
         url = "/url";
         expectedUrl = String.format("%s%s", baseUrl, url);
         request = "body";
-        clientContext.setContext("u1", "g1", "t1", "c1");
-        expectedAuthHeaders = restClient.createAuthHeaders(clientContext);
+        messageContext.initialiseContext(UUID.randomUUID().toString());
+        expectedAuthHeaders = restClient.createAuthHeaders();
     }
 
     @Test

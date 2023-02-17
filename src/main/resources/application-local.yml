@@ -33,6 +33,6 @@ case:
     case-service: http://localhost:8082
     workflow-service: http://localhost:8091
     identity:
-      group:
-      team:
-      user:
+      group: /TEST_TEAM_GROUP
+      team: 00000000-0000-0000-0000-000000000002
+      user: 00000000-0000-0000-0000-000000000003
