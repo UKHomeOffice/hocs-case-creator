@@ -1,9 +1,13 @@
 package uk.gov.digital.ho.hocs.client.migration.casework.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.lang.NonNull;
-import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
+import uk.gov.digital.ho.hocs.domain.queue.complaints.CorrespondentType;
 
 import javax.validation.constraints.NotEmpty;
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import uk.gov.digital.ho.hocs.queue.migration.CaseAttachment;
+import uk.gov.digital.ho.hocs.domain.queue.migration.CaseAttachment;
 
 import java.time.LocalDate;
 import java.util.List;
