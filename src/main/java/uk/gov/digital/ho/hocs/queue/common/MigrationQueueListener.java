@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @Profile("migration")
-public class MigrationQueueListener {
+public class MigrationQueueListener implements QueueListener {
 
     private final MessageHandler messageHandler;
 
@@ -35,7 +35,7 @@ public class MigrationQueueListener {
     }
 
     @SqsListener(value = "${aws.sqs.case-migrator.url}", deletionPolicy = SqsMessageDeletionPolicy.NO_REDRIVE)
-    public void onMigrationEvent(String message,
+    public void onMessageReceived(String message,
                                  @Header("MessageId") String messageId,
                                  @Header(value = "MessageType", required = false) MessageType messageType,
                                  @Header(value = "ExternalReference", required = false) UUID externalReference) throws Exception {

@@ -42,23 +42,23 @@ public class MigrationQueueListenerTest {
     public void messageTypeMatches_callHandler() throws Exception {
         when(migrationMessageHandler.getMessageType()).thenCallRealMethod();
 
-        migrationQueueListener.onMigrationEvent("test", "test", MessageType.MIGRATION, UUID.randomUUID());
+        migrationQueueListener.onMessageReceived("test", "test", MessageType.MIGRATION, UUID.randomUUID());
 
         verify(messageLogService).createMessageLogEntry(eq("test"), any(UUID.class), eq("test"));
         verify(migrationMessageHandler).getMessageType();
         verify(migrationMessageHandler).handleMessage("test", "test");
-        verify(messageLogService).completeMessageLogEntry(eq("test"));
+        verify(messageLogService).completeMessageLogEntry("test");
         verifyNoMoreInteractions(migrationMessageHandler);
     }
 
     @Test
     public void messageTypeNull_callHandler() throws Exception {
-        migrationQueueListener.onMigrationEvent("test", "test", null, UUID.randomUUID());
+        migrationQueueListener.onMessageReceived("test", "test", null, UUID.randomUUID());
 
         verify(messageLogService).createMessageLogEntry(eq("test"), any(UUID.class), eq("test"));
         verify(migrationMessageHandler, times(0)).getMessageType();
         verify(migrationMessageHandler).handleMessage("test", "test");
-        verify(messageLogService).completeMessageLogEntry(eq("test"));
+        verify(messageLogService).completeMessageLogEntry("test");
         verifyNoMoreInteractions(migrationMessageHandler);
     }
 
@@ -66,11 +66,11 @@ public class MigrationQueueListenerTest {
     public void messageTypeNotMatch_callHandler() throws Exception {
         when(migrationMessageHandler.getMessageType()).thenCallRealMethod();
 
-        migrationQueueListener.onMigrationEvent("test", "test", MessageType.UKVI_COMPLAINTS, UUID.randomUUID());
+        migrationQueueListener.onMessageReceived("test", "test", MessageType.UKVI_COMPLAINTS, UUID.randomUUID());
 
         verify(messageLogService).createMessageLogEntry(eq("test"), any(UUID.class), eq("test"));
         verify(migrationMessageHandler).getMessageType();
-        verify(messageLogService).updateMessageLogEntryStatus(eq("test"), eq(Status.MESSAGE_TYPE_INVALID));
+        verify(messageLogService).updateMessageLogEntryStatus("test", Status.MESSAGE_TYPE_INVALID);
         verifyNoMoreInteractions(migrationMessageHandler);
     }
 
@@ -81,7 +81,7 @@ public class MigrationQueueListenerTest {
 
         when(migrationMessageHandler.getMessageType()).thenReturn(MessageType.MIGRATION);
 
-        migrationQueueListener.onMigrationEvent("test", "test", null, null);
+        migrationQueueListener.onMessageReceived("test", "test", null, null);
 
         verifyNoMoreInteractions(migrationMessageHandler);
     }
