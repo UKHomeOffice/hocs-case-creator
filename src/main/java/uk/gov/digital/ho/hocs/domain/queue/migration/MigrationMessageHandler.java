@@ -10,6 +10,7 @@ import uk.gov.digital.ho.hocs.domain.queue.common.MessageHandler;
 import uk.gov.digital.ho.hocs.domain.queue.common.MessageType;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
+import uk.gov.digital.ho.hocs.domain.validation.MessageValidator;
 
 @Slf4j
 @Service
@@ -18,12 +19,12 @@ public class MigrationMessageHandler implements MessageHandler {
 
     private final MigrationCaseService migrationCaseService;
 
-    private final MigrationMessageValidator migrationValidator;
+    private final MessageValidator migrationValidator;
     private final MessageLogService messageLogService;
 
     public MigrationMessageHandler(
             MigrationCaseService migrationCaseService,
-            MigrationMessageValidator migrationValidator,
+            MessageValidator migrationValidator,
             MessageLogService messageLogService
     ) {
         this.migrationCaseService = migrationCaseService;
