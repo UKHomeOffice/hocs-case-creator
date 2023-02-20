@@ -41,7 +41,7 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.5.4'
     implementation 'org.flywaydb:flyway-core:9.15.0'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
 
     implementation 'uk.gov.digital.ho.hocs:hocs-ukvi-complaint-schema:1.3.0'
     implementation 'uk.gov.digital.ho.hocs:hocs-migration-schema:0.10.0'
