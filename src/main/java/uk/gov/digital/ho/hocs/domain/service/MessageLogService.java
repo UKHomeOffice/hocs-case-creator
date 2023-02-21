@@ -24,6 +24,12 @@ public class MessageLogService {
         messageLogRepository.save(messageLog);
     }
 
+    public void createMessageLogEntry(String messageId, UUID externalReference, String message, Status status) {
+        var messageLog =
+                new MessageLog(messageId, externalReference, null, message, status, null, LocalDateTime.now());
+        messageLogRepository.save(messageLog);
+    }
+
     @Transactional
     public void updateMessageLogEntryCaseUuidAndStatus(String messageId, UUID caseUuid, Status status) {
         messageLogRepository.updateCaseUuidAndStatus(messageId, caseUuid, status);
@@ -38,5 +44,6 @@ public class MessageLogService {
     public void completeMessageLogEntry(String messageId) {
         messageLogRepository.updateStatusAndCompleted(messageId, Status.COMPLETED);
     }
+
 
 }
