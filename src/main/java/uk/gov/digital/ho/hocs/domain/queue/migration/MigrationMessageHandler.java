@@ -35,14 +35,14 @@ public class MigrationMessageHandler implements MessageHandler {
     @Override
     public void handleMessage(Message message) throws Exception {
         if (message.type() != null && message.type() != MessageType.MIGRATION) {
-            messageLogService.updateMessageLogEntryStatus(message.id(), Status.MESSAGE_TYPE_INVALID);
+            messageLogService.updateStatus(message.id(), Status.MESSAGE_TYPE_INVALID);
             throw new ApplicationExceptions.InvalidMessageTypeException(String.format("Invalid message type %s", message.id()), LogEvent.INVALID_MESSAGE_TYPE);
         }
 
         migrationValidator.validate(message);
         migrationCaseService.createMigrationCase(message.message());
 
-        messageLogService.completeMessageLogEntry(message.id());
+        messageLogService.complete(message.id());
     }
 
 }

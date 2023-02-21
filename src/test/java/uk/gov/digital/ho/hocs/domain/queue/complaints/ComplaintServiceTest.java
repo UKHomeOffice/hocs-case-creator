@@ -106,24 +106,24 @@ public class ComplaintServiceTest {
 
         // Document addition
         verify(documentS3Client).storeUntrustedDocument(ORIGINAL_FILENAME, expectedText);
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_DOCUMENT_CREATED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_DOCUMENT_CREATED);
         // Case creation
         verify(workflowClient).createCase(createCaseRequest);
-        verify(messageLogService).updateMessageLogEntryCaseUuidAndStatus(messageContext.getCorrelationId(), caseUUID, Status.CASE_CREATED);
+        verify(messageLogService).updateCaseUuidAndStatus(messageContext.getCorrelationId(), caseUUID, Status.CASE_CREATED);
         // Get stage
         verify(caseworkClient).getStageForCase(caseUUID);
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVED);
         // Update user
         verify(caseworkClient).updateStageUser(caseUUID, stageForCaseUUID, UUID.fromString(messageContext.getUserId()));
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_USER_UPDATED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_USER_UPDATED);
         // Correspondent addition
         verify(caseworkClient, times(2)).addCorrespondentToCase(eq(caseUUID), eq(stageForCaseUUID), any(ComplaintCorrespondent.class));
         verify(caseworkClient).getPrimaryCorrespondent(caseUUID);
         verify(caseworkClient).updateCase(eq(caseUUID), eq(stageForCaseUUID), anyMap());
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_HANDLED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_HANDLED);
         // Update team
         verify(caseworkClient).updateStageTeam(caseUUID, stageForCaseUUID, UUID.fromString(messageContext.getTeamId()));
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_TEAM_UPDATED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_TEAM_UPDATED);
     }
 
     @Test(expected = ApplicationExceptions.DocumentCreationException.class)
@@ -132,7 +132,7 @@ public class ComplaintServiceTest {
 
         complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
 
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
     }
 
     @Test(expected = ApplicationExceptions.CaseCreationException.class)
@@ -143,7 +143,7 @@ public class ComplaintServiceTest {
 
         complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
 
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_CREATION_FAILED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_CREATION_FAILED);
     }
 
     @Test(expected = ApplicationExceptions.CaseStageRetrievalException.class)
@@ -152,7 +152,7 @@ public class ComplaintServiceTest {
 
         complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
 
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVAL_FAILED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVAL_FAILED);
     }
 
     @Test(expected = ApplicationExceptions.CaseUserUpdateException.class)
@@ -161,7 +161,7 @@ public class ComplaintServiceTest {
 
         complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
 
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_USER_UPDATE_FAILED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_USER_UPDATE_FAILED);
     }
 
     @Test(expected = ApplicationExceptions.CaseCorrespondentCreationException.class)
@@ -170,7 +170,7 @@ public class ComplaintServiceTest {
 
         complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
 
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
     }
 
     @Test(expected = ApplicationExceptions.CaseCorrespondentCreationException.class)
@@ -179,7 +179,7 @@ public class ComplaintServiceTest {
 
         complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
 
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
     }
 
     @Test(expected = ApplicationExceptions.CaseCorrespondentCreationException.class)
@@ -188,7 +188,7 @@ public class ComplaintServiceTest {
 
         complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
 
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
     }
 
     @Test(expected = ApplicationExceptions.CaseTeamUpdateException.class)
@@ -197,7 +197,7 @@ public class ComplaintServiceTest {
 
         complaintService.createComplaint(new UKVIComplaintData(json, objectMapper, enumMappingsRepository), complaintTypeData);
 
-        verify(messageLogService).updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_TEAM_UPDATE_FAILED);
+        verify(messageLogService).updateStatus(messageContext.getCorrelationId(), Status.CASE_TEAM_UPDATE_FAILED);
     }
 
 }

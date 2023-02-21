@@ -31,6 +31,12 @@ public interface MessageLogRepository extends CrudRepository<MessageLog, String>
                                   @Param("status") Status status
     );
 
+    @Modifying
+    @Query("UPDATE MessageLog m SET m.processed = :processingDateTime WHERE m.messageId = :messageId")
+    void updateProcessedTime(@Param("messageId") String messageId,
+                             @Param("processingDateTime") LocalDateTime processingDateTime
+    );
+
 
     long countByStatusAndCompletedBetween(Status status, LocalDateTime from, LocalDateTime to);
 

@@ -41,11 +41,11 @@ public class MigrationQueueListener implements QueueListener {
                                   @Header(value = "ExternalReference", required = false) UUID externalReference) throws Exception {
         if (shouldIgnoreMessages) {
             log.warn("Message flagged to ignore: {}", messageId);
-            messageLogService.createMessageLogEntry(messageId, externalReference, messageType, message, Status.IGNORED);
+            messageLogService.createEntry(messageId, externalReference, messageType, message, Status.IGNORED);
             return;
         }
 
-        messageLogService.createMessageLogEntry(messageId, externalReference, messageType, message);
+        messageLogService.createEntry(messageId, externalReference, messageType, message);
         messageHandler.handleMessage(new Message(messageId, message, messageType));
     }
 }

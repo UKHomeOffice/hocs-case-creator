@@ -1,6 +1,5 @@
 package uk.gov.digital.ho.hocs.domain.repositories.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,6 @@ import java.util.UUID;
 @Setter
 @Getter
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="message_log")
 public class MessageLog {
@@ -49,4 +47,17 @@ public class MessageLog {
 
     @Column(name = "received")
     protected LocalDateTime received;
+
+    @Column(name = "processed")
+    protected LocalDateTime processed;
+
+    public MessageLog(String messageId, UUID externalReference, String message, Status status, MessageType type) {
+        this.messageId = messageId;
+        this.externalReference = externalReference;
+        this.message = message;
+        this.status = status;
+        this.type = type;
+        this.received = LocalDateTime.now();
+    }
+
 }

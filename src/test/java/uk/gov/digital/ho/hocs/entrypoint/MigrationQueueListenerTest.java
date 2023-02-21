@@ -42,7 +42,7 @@ public class MigrationQueueListenerTest {
     public void messageNotIgnored_addedToMessageLogAndProcessed() throws Exception {
         migrationQueueListener.onMessageReceived("test", "test", MessageType.MIGRATION, UUID.randomUUID());
 
-        verify(messageLogService).createMessageLogEntry(eq("test"), any(UUID.class), eq(MessageType.MIGRATION), eq("test"));
+        verify(messageLogService).createEntry(eq("test"), any(UUID.class), eq(MessageType.MIGRATION), eq("test"));
         verify(migrationMessageHandler).handleMessage(refEq(new Message("test", "test", MessageType.MIGRATION)));
         verifyNoMoreInteractions(messageLogService);
     }
@@ -54,7 +54,7 @@ public class MigrationQueueListenerTest {
 
         migrationQueueListener.onMessageReceived("test", "test", null, null);
 
-        verify(messageLogService).createMessageLogEntry("test", null, null, "test", Status.IGNORED);
+        verify(messageLogService).createEntry("test", null, null, "test", Status.IGNORED);
         verifyNoMoreInteractions(migrationMessageHandler);
     }
 

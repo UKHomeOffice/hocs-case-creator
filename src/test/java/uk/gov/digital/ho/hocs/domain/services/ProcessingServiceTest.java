@@ -42,7 +42,7 @@ public class ProcessingServiceTest {
     public void whenMessageProcessSuccessfullyNoException() throws Exception {
         when(messageLogService.getCountOfPendingMessagesBetweenDates(any(), any())).thenReturn(1L);
         when(messageLogService.getPendingMessagesBetweenDates(any(), any())).thenReturn(
-                Stream.of(new MessageLog("TEST-MESSAGE-ID", null, null, "TEST-MESSAGE", Status.PENDING, null, null, LocalDateTime.now())));
+                Stream.of(new MessageLog("TEST-MESSAGE-ID", null, "TEST-MESSAGE", Status.PENDING, null)));
 
         processingService.retrieveAndProcessMessages(10, LocalDateTime.now(), LocalDateTime.now());
 
@@ -60,7 +60,7 @@ public class ProcessingServiceTest {
     public void whenMessageProcessingFailsThenThrowException() throws Exception {
         when(messageLogService.getCountOfPendingMessagesBetweenDates(any(), any())).thenReturn(1L);
         when(messageLogService.getPendingMessagesBetweenDates(any(), any())).thenReturn(
-                Stream.of(new MessageLog("TEST-MESSAGE-ID", null, null, "TEST-MESSAGE", Status.PENDING, null, null, LocalDateTime.now())));
+                Stream.of(new MessageLog("TEST-MESSAGE-ID", null, "TEST-MESSAGE", Status.PENDING, null)));
 
         doThrow(new RuntimeException("TEST")).when(messageHandler).handleMessage(any());
 
