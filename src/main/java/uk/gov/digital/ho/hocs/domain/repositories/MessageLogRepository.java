@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import uk.gov.digital.ho.hocs.domain.model.MessageLog;
-import uk.gov.digital.ho.hocs.domain.model.Status;
+import uk.gov.digital.ho.hocs.domain.repositories.entities.MessageLog;
+import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 
 import java.util.UUID;
 

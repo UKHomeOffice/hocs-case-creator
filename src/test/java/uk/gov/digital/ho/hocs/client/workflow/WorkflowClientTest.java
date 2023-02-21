@@ -20,8 +20,8 @@ import java.util.UUID;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.when;
-import static uk.gov.digital.ho.hocs.queue.complaints.ComplaintService.DOCUMENT_TYPE;
-import static uk.gov.digital.ho.hocs.queue.complaints.ComplaintService.ORIGINAL_FILENAME;
+import static uk.gov.digital.ho.hocs.domain.queue.complaints.ComplaintService.DOCUMENT_TYPE;
+import static uk.gov.digital.ho.hocs.domain.queue.complaints.ComplaintService.ORIGINAL_FILENAME;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkflowClientTest {
