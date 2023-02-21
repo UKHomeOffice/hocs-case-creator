@@ -34,7 +34,7 @@ public class MigrationQueueListener implements QueueListener {
         this.shouldIgnoreMessages = shouldIgnoreMessages;
     }
 
-    @SqsListener(value = "${aws.sqs.case-migrator.url}", deletionPolicy = SqsMessageDeletionPolicy.NO_REDRIVE)
+    @SqsListener(value = "${aws.sqs.queue.url}", deletionPolicy = SqsMessageDeletionPolicy.NO_REDRIVE)
     public void onMessageReceived(String message,
                                   @Header("MessageId") String messageId,
                                   @Header(value = "MessageType", required = false) MessageType messageType,

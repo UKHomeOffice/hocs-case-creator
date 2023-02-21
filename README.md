@@ -87,26 +87,26 @@ The service is designed that you should only run one message profile at a time, 
 
 The following table contains the mandatory and optional properties that need to be set for deployment.
 
-| Property                                    | Description                                | Example                                        | Mandatory |
-|---------------------------------------------|--------------------------------------------|------------------------------------------------|-----------|
-| AWS_SQS_CONFIG_REGION                       | The region for the AWS SQS queue           | eu-west-2                                      | Yes       |
-| AWS_SQS_CASE_CREATOR_URL                    | The full AWS SQS queue URL                 | http://localhost:4566/queue/case-creator-queue | Yes       |
-| AWS_SQS_CASE_CREATOR_ACCOUNT_ACCESS_KEY     | The SQS access key                         | 12345                                          | Yes       |
-| AWS_SQS_CASE_CREATOR_ACCOUNT_SECRET_KEY     | The SQS secret key                         | 12345                                          | Yes       |
-| AWS_SQS_CASE_CREATOR_ATTRIBUTE_MAX_MESSAGES | The amount of messages to read at one time | 10                                             | No        |
-| AWS_SQS_CASE_CREATOR_ATTRIBUTE_WAIT_TIME    | The poll time for the queue listener       | 5                                              | No        |
-| AWS_SQS_IGNORE_MESSAGES                     | The messages to ignore                     | false/true                                     | No        |
-| AWS_S3_CONFIG_REGION                        | The region for the AWS S3 queue            | eu-west-2                                      | Yes       |
-| AWS_S3_UNTRUSTED_ACCOUNT_ACCESS_KEY         | The S3 access key                          | 12345                                          | Yes       |
-| AWS_S3_UNTRUSTED_ACCOUNT_SECRET_KEY         | The S3 secret key                          | 12345                                          | Yes       |
-| AWS_S3_UNTRUSTED_ACCOUNT_BUCKET_KMS_KEY     | The S3 bucket kms key                      | [UNSET]                                        | Yes       |
-| AWS_S3_UNTRUSTED_BUCKET_NAME                | The S3 bucket name to send to              | untrusted-bucket                               | Yes       |
-| CASE_CREATOR_WORKFLOW_SERVICE               | The URL of the workflow service            | http://localhost:8091                          | Yes       |
-| CASE_CREATOR_CASE_SERVICE                   | The URL of the casework service            | http://localhost:8082                          | Yes       |
-| CASE_CREATOR_IDENTITY_USER                  | The User ID                                | UUID                                           | Yes       |
-| CASE_CREATOR_IDENTITY_GROUP                 | The Group ID                               | /TEAM_UUID_GROUP                               | Yes       |
-| CASE_CREATOR_IDENTITY_TEAM                  | The Team ID                                | UUID                                           | Yes       |
-| SERVER_PORT                                 | The port the server listens on             | 8092                                           | Yes       |
+| Property                                | Description                                | Example                                        | Mandatory |
+|-----------------------------------------|--------------------------------------------|------------------------------------------------|-----------|
+| AWS_SQS_CONFIG_REGION                   | The region for the AWS SQS queue           | eu-west-2                                      | Yes       |
+| AWS_SQS_QUEUE_URL                       | The full AWS SQS queue URL                 | http://localhost:4566/queue/case-creator-queue | Yes       |
+| AWS_SQS_QUEUE_ACCOUNT_ACCESS_KEY        | The SQS access key                         | 12345                                          | Yes       |
+| AWS_SQS_QUEUE_ACCOUNT_SECRET_KEY        | The SQS secret key                         | 12345                                          | Yes       |
+| AWS_SQS_QUEUE_ATTRIBUTE_MAX_MESSAGES    | The amount of messages to read at one time | 10                                             | No        |
+| AWS_SQS_QUEUE_ATTRIBUTE_WAIT_TIME       | The poll time for the queue listener       | 5                                              | No        |
+| AWS_SQS_IGNORE_MESSAGES                 | The messages to ignore                     | false/true                                     | No        |
+| AWS_S3_CONFIG_REGION                    | The region for the AWS S3 queue            | eu-west-2                                      | Yes       |
+| AWS_S3_UNTRUSTED_ACCOUNT_ACCESS_KEY     | The S3 access key                          | 12345                                          | Yes       |
+| AWS_S3_UNTRUSTED_ACCOUNT_SECRET_KEY     | The S3 secret key                          | 12345                                          | Yes       |
+| AWS_S3_UNTRUSTED_ACCOUNT_BUCKET_KMS_KEY | The S3 bucket kms key                      | [UNSET]                                        | Yes       |
+| AWS_S3_UNTRUSTED_BUCKET_NAME            | The S3 bucket name to send to              | untrusted-bucket                               | Yes       |
+| CASE_CREATOR_WORKFLOW_SERVICE           | The URL of the workflow service            | http://localhost:8091                          | Yes       |
+| CASE_CREATOR_CASE_SERVICE               | The URL of the casework service            | http://localhost:8082                          | Yes       |
+| CASE_CREATOR_IDENTITY_USER              | The User ID                                | UUID                                           | Yes       |
+| CASE_CREATOR_IDENTITY_GROUP             | The Group ID                               | /TEAM_UUID_GROUP                               | Yes       |
+| CASE_CREATOR_IDENTITY_TEAM              | The Team ID                                | UUID                                           | Yes       |
+| SERVER_PORT                             | The port the server listens on             | 8092                                           | Yes       |
 
 ## JSON Schemas
 

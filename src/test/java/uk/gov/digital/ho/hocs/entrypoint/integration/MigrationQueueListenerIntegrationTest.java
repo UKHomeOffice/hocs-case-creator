@@ -23,54 +23,54 @@ public class MigrationQueueListenerIntegrationTest extends AwsSqsIntegrationTest
     @Test
     public void consumeMessageFromMigrationQueue() {
        String validMessage = TestFileReader.getResourceFileAsString("migration/validMigration.json");
-       amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+       amazonSQSAsync.sendMessage(queueUrl, validMessage);
     }
 
     @Test
     public void consumeMessageFromMigrationQueueWithNoAdditionalCorrespondents() {
         String validMessage = TestFileReader.getResourceFileAsString("migration/validMigrationNoAdditionalCorrespondents.json");
-        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+        amazonSQSAsync.sendMessage(queueUrl, validMessage);
     }
 
     @Test
     public void consumeMessageFromMigrationQueueWithNoCaseAttachments() {
         String validMessage = TestFileReader.getResourceFileAsString("migration/validMigrationNoCaseAttachments.json");
-        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+        amazonSQSAsync.sendMessage(queueUrl, validMessage);
     }
 
     @Test
     public void consumeMessageFromMigrationQueueWithCaseAttachments() {
         String validMessage = TestFileReader.getResourceFileAsString("migration/validMigrationWithCaseAttachments.json");
-        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+        amazonSQSAsync.sendMessage(queueUrl, validMessage);
     }
 
     @Test
     public void consumeMessageFromMigrationQueueWithOptionalFieldsNull() {
         String validMessage = TestFileReader.getResourceFileAsString("migration/validMigrationWithOptionalFieldsNull.json");
-        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+        amazonSQSAsync.sendMessage(queueUrl, validMessage);
     }
 
     @Test
     public void consumeMessageFromMigrationQueueWithCOMPCaseType() {
         String validMessage = TestFileReader.getResourceFileAsString("migration/validMigrationCOMP.json");
-        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+        amazonSQSAsync.sendMessage(queueUrl, validMessage);
     }
 
     @Test
     public void consumeMessageFromMigrationQueueWithBFCaseType() {
         String validMessage = TestFileReader.getResourceFileAsString("migration/validMigrationBF.json");
-        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+        amazonSQSAsync.sendMessage(queueUrl, validMessage);
     }
 
     @Test
     public void consumeMessageFromMigrationQueueWithIEDETCaseType() {
         String validMessage = TestFileReader.getResourceFileAsString("migration/validMigrationIEDET.json");
-        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+        amazonSQSAsync.sendMessage(queueUrl, validMessage);
     }
 
     @Test
     public void consumeMessageFromMigrationQueueWithPOGRCaseType() {
         String validMessage = TestFileReader.getResourceFileAsString("migration/validMigrationPOGR.json");
-        amazonSQSAsync.sendMessage(migrationQueueUrl, validMessage);
+        amazonSQSAsync.sendMessage(queueUrl, validMessage);
     }
 }

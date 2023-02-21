@@ -18,8 +18,8 @@ public class SqsConfiguration {
 
     @Primary
     @Bean
-    public AmazonSQSAsync sqsClient(@Value("${aws.sqs.case-creator.account.access-key}") String accessKey,
-                                    @Value("${aws.sqs.case-creator.account.secret-key}") String secretkey,
+    public AmazonSQSAsync sqsClient(@Value("${aws.sqs.queue.account.access-key}") String accessKey,
+                                    @Value("${aws.sqs.queue.account.secret-key}") String secretkey,
                                     @Value("${aws.sqs.config.region}") String region) {
         var credentialsProvider = new AWSStaticCredentialsProvider(
                 new BasicAWSCredentials(accessKey, secretkey));
