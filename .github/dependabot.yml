@@ -16,9 +16,9 @@ updates:
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
-        interval: "daily"
+      interval: "daily"
     commit-message:
-        prefix: "⬆️ "
+      prefix: "⬆️ "
     pull-request-branch-name:
       separator: "-"
     reviewers:
