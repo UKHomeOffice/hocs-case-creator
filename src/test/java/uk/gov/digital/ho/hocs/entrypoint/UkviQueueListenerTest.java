@@ -40,7 +40,7 @@ public class UkviQueueListenerTest {
     public void messageNotIgnored_addedToMessageLog() {
         ukviQueueListener.onMessageReceived("test", "test", MessageType.UKVI_COMPLAINTS, UUID.randomUUID());
 
-        verify(messageLogService).createMessageLogEntry(eq("test"), any(UUID.class), eq(MessageType.UKVI_COMPLAINTS), eq("test"));
+        verify(messageLogService).createEntry(eq("test"), any(UUID.class), eq(MessageType.UKVI_COMPLAINTS), eq("test"));
         verifyNoMoreInteractions(messageLogService);
     }
 
@@ -51,7 +51,7 @@ public class UkviQueueListenerTest {
 
         ukviQueueListener.onMessageReceived("test", "test", null, null);
 
-        verify(messageLogService).createMessageLogEntry("test", null, null, "test", Status.IGNORED);
+        verify(messageLogService).createEntry("test", null, null, "test", Status.IGNORED);
         verifyNoMoreInteractions(ukviComplaintMessageHandler);
     }
 

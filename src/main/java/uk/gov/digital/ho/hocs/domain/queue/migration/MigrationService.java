@@ -49,10 +49,10 @@ public class MigrationService {
         try {
             var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData);
             CreateCaseworkCaseResponse caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
-            messageLogService.updateMessageLogEntryCaseUuidAndStatus(requestData.getCorrelationId(), caseResponse.getUuid(), Status.CASE_CREATED);
+            messageLogService.updateCaseUuidAndStatus(requestData.getCorrelationId(), caseResponse.getUuid(), Status.CASE_CREATED);
             log.info("Created migration case {}", caseResponse.getUuid());
         } catch (Exception e) {
-            messageLogService.updateMessageLogEntryStatus(requestData.getCorrelationId(), Status.CASE_MIGRATION_FAILED);
+            messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_MIGRATION_FAILED);
             throw new ApplicationExceptions.DocumentCreationException(e.getMessage(), LogEvent.CASE_MIGRATION_FAILURE);
         }
     }

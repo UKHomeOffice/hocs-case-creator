@@ -21,30 +21,35 @@ public class MessageLogService {
         this.messageLogRepository = messageLogRepository;
     }
 
-    public void createMessageLogEntry(String messageId, UUID externalReference, MessageType type, String message) {
+    public void createEntry(String messageId, UUID externalReference, MessageType type, String message) {
         var messageLog =
-                new MessageLog(messageId, externalReference, null, message, Status.PENDING, type, null, LocalDateTime.now());
+                new MessageLog(messageId, externalReference, message, Status.PENDING, type);
         messageLogRepository.save(messageLog);
     }
 
-    public void createMessageLogEntry(String messageId, UUID externalReference, MessageType type, String message, Status status) {
+    public void createEntry(String messageId, UUID externalReference, MessageType type, String message, Status status) {
         var messageLog =
-                new MessageLog(messageId, externalReference, null, message, status, type, null, LocalDateTime.now());
+                new MessageLog(messageId, externalReference, message, status, type);
         messageLogRepository.save(messageLog);
     }
 
     @Transactional
-    public void updateMessageLogEntryCaseUuidAndStatus(String messageId, UUID caseUuid, Status status) {
+    public void updateCaseUuidAndStatus(String messageId, UUID caseUuid, Status status) {
         messageLogRepository.updateCaseUuidAndStatus(messageId, caseUuid, status);
     }
 
     @Transactional
-    public void updateMessageLogEntryStatus(String messageId, Status status) {
+    public void updateStatus(String messageId, Status status) {
         messageLogRepository.updateStatus(messageId, status);
     }
 
     @Transactional
-    public void completeMessageLogEntry(String messageId) {
+    public void updateProcessedTime(String id, LocalDateTime processingDateTime) {
+        messageLogRepository.updateProcessedTime(id, processingDateTime);
+    }
+
+    @Transactional
+    public void complete(String messageId) {
         messageLogRepository.updateStatusAndCompleted(messageId, Status.COMPLETED);
     }
 
@@ -63,6 +68,5 @@ public class MessageLogService {
         }
         return messageLogRepository.findByStatusAndCompletedBetween(Status.PENDING, from, to);
     }
-
 
 }

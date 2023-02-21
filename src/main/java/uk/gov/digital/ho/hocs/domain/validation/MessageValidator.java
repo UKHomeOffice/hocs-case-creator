@@ -44,19 +44,19 @@ public class MessageValidator {
                 for (ValidationMessage validationMessage : validationMessages) {
                     log.warn("Message schema validation failed for message: {}. Reason: {}", message.id(), validationMessage.getMessage());
                 }
-                messageLogService.updateMessageLogEntryStatus(message.id(), Status.MESSAGE_VALIDATION_FAILED);
+                messageLogService.updateStatus(message.id(), Status.MESSAGE_VALIDATION_FAILED);
                 throw new ApplicationExceptions.MessageSchemaValidationException(
                         String.format("Schema validation failed for messageId: %s." + message.id()),
                         LogEvent.MESSAGE_SCHEMA_VALIDATION_FAILURE);
             }
         } catch (JsonParseException e) {
             log.error("Message schema failed to parse for message: {}. Reason: {}", message.id(), e.getMessage());
-            messageLogService.updateMessageLogEntryStatus(message.id(), Status.MESSAGE_PARSE_FAILURE);
+            messageLogService.updateStatus(message.id(), Status.MESSAGE_PARSE_FAILURE);
             throw new ApplicationExceptions.MessageSchemaParseException(
                     String.format("Message schema failed to parse for message: %s. Reason: %s", message.id(), e.getMessage()),
                     LogEvent.MESSAGE_SCHEMA_PARSE_FAILURE);
         }
 
-        messageLogService.updateMessageLogEntryStatus(message.id(), Status.MESSAGE_VALIDATION_SUCCESS);
+        messageLogService.updateStatus(message.id(), Status.MESSAGE_VALIDATION_SUCCESS);
     }
 }

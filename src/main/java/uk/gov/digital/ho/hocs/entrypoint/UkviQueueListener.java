@@ -34,12 +34,12 @@ public class UkviQueueListener implements QueueListener {
                                   @Header(value = "MessageType", required = false) MessageType messageType,
                                   @Header(value = "ExternalReference", required = false) UUID externalReference) {
         if (shouldIgnoreMessages) {
-            messageLogService.createMessageLogEntry(messageId, externalReference, messageType, message, Status.IGNORED);
+            messageLogService.createEntry(messageId, externalReference, messageType, message, Status.IGNORED);
             return;
         }
 
         // Create message log entry
-        messageLogService.createMessageLogEntry(messageId, externalReference, messageType, message);
+        messageLogService.createEntry(messageId, externalReference, messageType, message);
     }
 
 }

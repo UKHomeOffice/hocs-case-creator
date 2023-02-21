@@ -61,10 +61,10 @@ public class ComplaintService {
         try {
             String untrustedS3ObjectName = documentS3Client.storeUntrustedDocument(ORIGINAL_FILENAME, complaintData.getFormattedDocument());
             log.info("Untrusted document stored in {}, for messageId: {}", untrustedS3ObjectName, messageContext.getCorrelationId());
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_DOCUMENT_CREATED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_DOCUMENT_CREATED);
             return new DocumentSummary(ORIGINAL_FILENAME, DOCUMENT_TYPE, untrustedS3ObjectName);
         } catch (Exception e) {
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
             throw new ApplicationExceptions.DocumentCreationException(e.getMessage(), LogEvent.CASE_DOCUMENT_CREATION_FAILURE);
         }
     }
@@ -74,10 +74,10 @@ public class ComplaintService {
             var createRequest = composeCreateCaseRequest(complaintData, complaintTypeData, documentSummary);
             var createCaseResponse = workflowClient.createCase(createRequest);
             log.info("createComplaint, create case : caseUUID : {}, reference : {}", createCaseResponse.getUuid(), createCaseResponse.getReference());
-            messageLogService.updateMessageLogEntryCaseUuidAndStatus(messageContext.getCorrelationId(), createCaseResponse.getUuid(), Status.CASE_CREATED);
+            messageLogService.updateCaseUuidAndStatus(messageContext.getCorrelationId(), createCaseResponse.getUuid(), Status.CASE_CREATED);
             return createCaseResponse.getUuid();
         } catch (Exception e) {
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_CREATION_FAILED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_CREATION_FAILED);
             throw new ApplicationExceptions.CaseCreationException(e.getMessage(), LogEvent.CASE_CREATION_FAILURE);
         }
     }
@@ -98,9 +98,9 @@ public class ComplaintService {
             } else {
                 log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUuid);
             }
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_HANDLED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_HANDLED);
         } catch (Exception e) {
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
             throw new ApplicationExceptions.CaseCorrespondentCreationException(e.getMessage(), LogEvent.CASE_CORRESPONDENTS_FAILURE);
         }
     }
@@ -109,10 +109,10 @@ public class ComplaintService {
         try {
             var stageUuid = caseworkClient.getStageForCase(caseUUID);
             log.info("createComplaint, get stage for case : caseUUID : {}, stageForCaseUUID : {}", caseUUID, stageUuid);
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVED);
             return stageUuid;
         } catch (Exception e) {
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVAL_FAILED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_STAGE_RETRIEVAL_FAILED);
             throw new ApplicationExceptions.CaseStageRetrievalException(e.getMessage(), LogEvent.CASE_STAGE_RETRIEVAL_FAILURE);
         }
     }
@@ -121,9 +121,9 @@ public class ComplaintService {
         try {
             caseworkClient.updateStageUser(caseUuid, stageUuid, UUID.fromString(messageContext.getUserId()));
             log.info("createComplaint, user updated for case : caseUUID : {}, user : {}", caseUuid, messageContext.getUserId());
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_USER_UPDATED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_USER_UPDATED);
         } catch (Exception e) {
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_USER_UPDATE_FAILED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_USER_UPDATE_FAILED);
             throw new ApplicationExceptions.CaseUserUpdateException(e.getMessage(), LogEvent.CASE_USER_UPDATE_FAILURE);
         }
     }
@@ -132,9 +132,9 @@ public class ComplaintService {
         try {
             caseworkClient.updateStageTeam(caseUuid, stageUuid, UUID.fromString(messageContext.getTeamId()));
             log.info("createComplaint, team updated for case : caseUUID : {}, teamUUID : {}", caseUuid, messageContext.getTeamId());
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_TEAM_UPDATED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_TEAM_UPDATED);
         } catch (Exception e) {
-            messageLogService.updateMessageLogEntryStatus(messageContext.getCorrelationId(), Status.CASE_TEAM_UPDATE_FAILED);
+            messageLogService.updateStatus(messageContext.getCorrelationId(), Status.CASE_TEAM_UPDATE_FAILED);
             throw new ApplicationExceptions.CaseTeamUpdateException(e.getMessage(), LogEvent.CASE_TEAM_UPDATE_FAILURE);
         }
     }

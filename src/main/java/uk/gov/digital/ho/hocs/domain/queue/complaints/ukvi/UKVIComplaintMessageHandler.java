@@ -32,14 +32,14 @@ public class UKVIComplaintMessageHandler implements MessageHandler {
     @Override
     public void handleMessage(Message message) throws Exception {
         if (message.type() != null && message.type() != MessageType.UKVI_COMPLAINTS) {
-            messageLogService.updateMessageLogEntryStatus(message.id(), Status.MESSAGE_TYPE_INVALID);
+            messageLogService.updateStatus(message.id(), Status.MESSAGE_TYPE_INVALID);
             throw new ApplicationExceptions.InvalidMessageTypeException(String.format("Invalid message type %s", message.id()), LogEvent.INVALID_MESSAGE_TYPE);
         }
 
         ukviComplaintValidator.validate(message);
         ukviComplaintService.createComplaint(message.message());
 
-        messageLogService.completeMessageLogEntry(message.id());
+        messageLogService.complete(message.id());
 
     }
 
