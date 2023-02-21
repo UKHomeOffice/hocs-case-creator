@@ -26,7 +26,7 @@ aws:
   sqs:
     config:
       region: eu-west-2
-    case-creator:
+    queue:
       url:
       account:
         access-key:
