@@ -58,7 +58,7 @@ public class JSONToSimpleTextConverter {
         if (isTraversable(node)) {
             convertedOutput.append(String.format("%n%" + (level * 4 - 3) + "s %s%n", "", fromJavaIdentifierToDisplayableString(keyName)));
         } else {
-            String textValue = node.textValue(); //StringEscapeUtils.escapeHtml4(node.textValue());
+            String textValue = node.textValue();
             try {
                 textValue = java.net.URLEncoder.encode(textValue, "UTF-8")
                         .replace("+", " ")
