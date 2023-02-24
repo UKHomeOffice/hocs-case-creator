@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.text.WordUtils;
 import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 @Slf4j
 public class JSONToSimpleTextConverter {
@@ -57,7 +59,14 @@ public class JSONToSimpleTextConverter {
         if (isTraversable(node)) {
             convertedOutput.append(String.format("%n%" + (level * 4 - 3) + "s %s%n", "", fromJavaIdentifierToDisplayableString(keyName)));
         } else {
-            String textValue = node.textValue();
+            String textValue = node.textValue(); //StringEscapeUtils.escapeHtml4(node.textValue());
+            try {
+                textValue = java.net.URLEncoder.encode(textValue, "UTF-8")
+                        .replace("+", " ")
+                        .replace("%40", "@");
+            } catch (UnsupportedEncodingException exception) {
+                log.error(exception.getMessage());
+            }
             if (textValue.equals(textValue.toUpperCase())) {
                 String label = enumMappingsRepository.getTextValueByNameAndFieldName(keyName, textValue);
                 if (label != null && !label.isEmpty()) {
