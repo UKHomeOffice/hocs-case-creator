@@ -32,7 +32,7 @@ public class UKVIComplaintDataTest {
     @Test
     public void shouldGetComplaintType() {
         ComplaintData complaintData = new UKVIComplaintData(getResourceFileAsString("webform/staffBehaviour.json"), objectMapper, enumMappingsRepository);
-        assertEquals("POOR_STAFF_BEHAVIOUR", complaintData.getComplaintType());
+        assertEquals("POOR_INFORMATION_OR_STAFF_BEHAVIOUR", complaintData.getComplaintType());
     }
 
     @Test
