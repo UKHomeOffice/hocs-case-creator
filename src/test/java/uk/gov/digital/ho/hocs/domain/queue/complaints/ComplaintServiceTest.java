@@ -87,7 +87,7 @@ public class ComplaintServiceTest {
         complaintTypeData = new UKVITypeData();
 
         var initialCaseData = Map.of(
-                "ComplaintType", "POOR_STAFF_BEHAVIOUR",
+                "ComplaintType", "POOR_INFORMATION_OR_STAFF_BEHAVIOUR",
                 "Channel", "Webform",
                 "XOriginatedFrom", "Webform");
 
