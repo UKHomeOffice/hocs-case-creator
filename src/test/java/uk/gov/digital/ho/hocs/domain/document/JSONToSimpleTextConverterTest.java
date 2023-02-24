@@ -32,7 +32,7 @@ public class JSONToSimpleTextConverterTest {
         String expectedText = getResourceFileAsString("webform/staffBehaviourTextConverted.txt");
 
         doReturn("").when(enumMappingsRepository).getTextValueByNameAndFieldName("creationDate", "2020-10-03");
-        doReturn("Staff behaviour").when(enumMappingsRepository).getTextValueByNameAndFieldName("complaintType", "POOR_STAFF_BEHAVIOUR");
+        doReturn("Staff behaviour").when(enumMappingsRepository).getTextValueByNameAndFieldName("complaintType", "POOR_INFORMATION_OR_STAFF_BEHAVIOUR");
         doReturn("IHS reference").when(enumMappingsRepository).getTextValueByNameAndFieldName("referenceType", "IHS_REF");
         doReturn("").when(enumMappingsRepository).getTextValueByNameAndFieldName("reference", "ABC12345");
         doReturn("Agent").when(enumMappingsRepository).getTextValueByNameAndFieldName("applicantType", "AGENT");
