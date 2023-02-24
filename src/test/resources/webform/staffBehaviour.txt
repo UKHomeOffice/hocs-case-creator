@@ -3,7 +3,7 @@
   Creation Date : 2020-10-03
 
   Complaint
-      Complaint Type : POOR_STAFF_BEHAVIOUR
+      Complaint Type : POOR_INFORMATION_OR_STAFF_BEHAVIOUR
 
       Reference
           Reference Type : IHS_REF

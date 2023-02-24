@@ -62,7 +62,10 @@ public class JSONToSimpleTextConverter {
             try {
                 textValue = java.net.URLEncoder.encode(textValue, "UTF-8")
                         .replace("+", " ")
-                        .replace("%40", "@");
+                        .replace("%2C", ",")
+                        .replace("%40", "@")
+                        .replace("%0A", "\n")
+                        .replace("%22", "\"");
             } catch (UnsupportedEncodingException exception) {
                 log.error(exception.getMessage());
             }
