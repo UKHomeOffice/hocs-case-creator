@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
-import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseAttachmentRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
 
 @Slf4j
 @Component
@@ -19,9 +21,30 @@ public class MigrationCaseworkClient {
         this.serviceBaseURL = serviceBaseURL;
     }
 
-    public CreateCaseworkCaseResponse migrateCase(CreateMigrationCaseRequest request) {
-        ResponseEntity<CreateCaseworkCaseResponse> responseEntity = restClient.post(serviceBaseURL, "/migrate", request, CreateCaseworkCaseResponse.class);
+    public CreateMigrationCaseResponse migrateCase(CreateMigrationCaseRequest request) {
+        ResponseEntity<CreateMigrationCaseResponse> responseEntity = restClient.post(
+                serviceBaseURL,
+                "/migrate/case",
+                request,
+                CreateMigrationCaseResponse.class);
         return responseEntity.getBody();
     }
 
+    public ResponseEntity migrateCorrespondent(CreateMigrationCorrespondentRequest request) {
+        ResponseEntity responseEntity = restClient.post(
+                serviceBaseURL,
+                "/migrate/correspondent",
+                request,
+                Void.class);
+        return responseEntity;
+    }
+
+    public ResponseEntity migrateCaseAttachments(CreateMigrationCaseAttachmentRequest request) {
+        ResponseEntity responseEntity = restClient.post(
+                serviceBaseURL,
+                "/migrate/caseAttachment",
+                request,
+                Void.class);
+        return responseEntity;
+    }
 }

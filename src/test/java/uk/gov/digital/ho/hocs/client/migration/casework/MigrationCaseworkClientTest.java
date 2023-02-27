@@ -8,8 +8,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.application.RestClient;
-import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -35,6 +35,7 @@ public class MigrationCaseworkClientTest {
     @Test
     public void shouldMigrateCase() {
         UUID responseUUID = UUID.randomUUID();
+        UUID stageUUID = UUID.randomUUID();
         String caseRef = "COMP/0120003/21";
         Map<String, String> data = new HashMap<>();
         LocalDate date = LocalDate.now();
@@ -43,18 +44,15 @@ public class MigrationCaseworkClientTest {
                 "Migration",
                 date,
                 data,
-                "COMP_MIGRATION_END",
-                null,
-                null,
-                null);
+                "COMP_MIGRATION_END");
 
-        CreateCaseworkCaseResponse expectedResponse = new CreateCaseworkCaseResponse(responseUUID, caseRef, data);
-        ResponseEntity<CreateCaseworkCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
+        CreateMigrationCaseResponse expectedResponse = new CreateMigrationCaseResponse(responseUUID, stageUUID, caseRef, data);
+        ResponseEntity<CreateMigrationCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
 
-        when(restClient.post(serviceUrl, "/migrate", request, CreateCaseworkCaseResponse.class)).thenReturn(responseEntity);
+        when(restClient.post(serviceUrl, "/migrate/case", request, CreateMigrationCaseResponse.class)).thenReturn(responseEntity);
 
         migrationCaseworkClient.migrateCase(request);
 
-        verify(restClient).post(serviceUrl, "/migrate", request, CreateCaseworkCaseResponse.class);
+        verify(restClient).post(serviceUrl, "/migrate/case", request, CreateMigrationCaseResponse.class);
     }
 }

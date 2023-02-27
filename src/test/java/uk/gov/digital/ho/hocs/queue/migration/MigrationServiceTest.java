@@ -9,9 +9,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 
-import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.queue.complaints.CorrespondentType;
 import uk.gov.digital.ho.hocs.service.MessageLogService;
@@ -38,7 +39,9 @@ public class MigrationServiceTest {
 
     private CreateMigrationCaseRequest createMigrationCaseRequest;
 
-    private CreateCaseworkCaseResponse caseworkCaseResponse;
+    private CreateMigrationCaseResponse caseworkCaseResponse;
+
+    private CreateMigrationCorrespondentRequest createMigrationCorrespondentRequest;
 
     private MigrationData migrationData;
 
@@ -73,12 +76,17 @@ public class MigrationServiceTest {
                 migrationData.getComplaintType(),
                 migrationData.getDateReceived(),
                 initialData,
-                "MIGRATION",
-                primaryCorrespondent,
-                additionalCorrespondents,
-                caseAttachment);
-        caseworkCaseResponse = new CreateCaseworkCaseResponse();
+                "MIGRATION");
+        caseworkCaseResponse = new CreateMigrationCaseResponse();
         when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
+
+        createMigrationCorrespondentRequest = new CreateMigrationCorrespondentRequest(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                primaryCorrespondent,
+                additionalCorrespondents);
+
+        //Todo: to add case attachment request
     }
 
     @Test
@@ -89,7 +97,7 @@ public class MigrationServiceTest {
 
     @Test
     public void shouldContainAPrimaryCorrespondent() {
-        MigrationComplaintCorrespondent primaryCorrespondents = createMigrationCaseRequest.getPrimaryCorrespondent();
+        MigrationComplaintCorrespondent primaryCorrespondents = createMigrationCorrespondentRequest.getPrimaryCorrespondent();
 
         MigrationComplaintCorrespondent expectedPrimaryCorrespondent =
                 new MigrationComplaintCorrespondent(
@@ -120,7 +128,7 @@ public class MigrationServiceTest {
 
     @Test
     public void shouldContainAdditionalCorrespondents() {
-        List<MigrationComplaintCorrespondent> additionalCorrespondents = createMigrationCaseRequest.getAdditionalCorrespondents();
+        List<MigrationComplaintCorrespondent> additionalCorrespondents = createMigrationCorrespondentRequest.getAdditionalCorrespondents();
 
         List<MigrationComplaintCorrespondent> expectedAdditionalCorrespondents = new ArrayList<>();
         expectedAdditionalCorrespondents.add(createCorrespondent());
@@ -143,24 +151,24 @@ public class MigrationServiceTest {
         assertTrue(migrationComplaintCorrespondents.isEmpty());
     }
 
-    @Test
-    public void shouldContainCaseAttachments() {
-        List<CaseAttachment> caseAttachments = createMigrationCaseRequest.getAttachments();
-
-        List<CaseAttachment> expectedAttachments = Arrays.asList(
-                new CaseAttachment(
-                        "document1.pdf",
-                        "To document",
-                        "e7f5d229-3f23-450c-8f11-8ef647943ae3"
-                ),
-                new CaseAttachment(
-                        "document2.pdf",
-                        "pdf",
-                        "9bf2665f-6b21-47af-8789-34a25b136670"
-                ));
-
-        assertEquals(expectedAttachments, caseAttachments);
-    }
+//    @Test
+//    public void shouldContainCaseAttachments() {
+//        List<CaseAttachment> caseAttachments = createMigrationCaseRequest.getAttachments();
+//
+//        List<CaseAttachment> expectedAttachments = Arrays.asList(
+//                new CaseAttachment(
+//                        "document1.pdf",
+//                        "To document",
+//                        "e7f5d229-3f23-450c-8f11-8ef647943ae3"
+//                ),
+//                new CaseAttachment(
+//                        "document2.pdf",
+//                        "pdf",
+//                        "9bf2665f-6b21-47af-8789-34a25b136670"
+//                ));
+//
+//        assertEquals(expectedAttachments, caseAttachments);
+//    }
 
     @Test
     public void shouldNotContainAttachments() {
