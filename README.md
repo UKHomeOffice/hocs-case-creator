@@ -123,6 +123,28 @@ or pass it in as a build argument. See [build.gradle](./build.gradle) for more i
 For local development, build the schema locally and publish to a Maven local repository. View the README in the schema 
 for more information.
 
+## Processing 
+
+Not all queues automatically process messages and create a backlog of `PENDING` messages to process within the database.
+
+To process these messages you can run the following command:
+
+```console
+$ curl http://localhost:8092/process \ 
+  -H 'Content-Type: application/json' \ 
+  -d '{"maxMessages": ..., "from": ..., "to": ...}'
+```
+
+The following parameters are available:
+| Parameter   | Description                                                                 | Example    | Required |
+|-------------|-----------------------------------------------------------------------------|------------|----------|
+| maxMessages | The maximum number of messages to process                                   | 10         | Yes      |
+| from        | The date to start processing messages from (inclusive)                      | 2020-01-01 | No       |
+| to          | The date to stop processing messages from (inclusive)                       | 2020-01-02 | No       |
+
+If (from) and (to) are not provided, the service will process all messages from the queue unless the amount of messages 
+exceeds the (maxMessages) parameter.
+
 ## Versioning
 
 For versioning this project uses [SemVer](https://semver.org/).
