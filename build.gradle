@@ -51,7 +51,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.apache.commons:commons-text:1.10.0'
     implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE'
-    implementation group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.15.3'
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"

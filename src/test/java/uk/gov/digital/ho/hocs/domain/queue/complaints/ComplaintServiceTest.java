@@ -32,10 +32,8 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.anyMap;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
 import static uk.gov.digital.ho.hocs.domain.queue.complaints.ComplaintService.DOCUMENT_TYPE;
 import static uk.gov.digital.ho.hocs.domain.queue.complaints.ComplaintService.ORIGINAL_FILENAME;
 import static uk.gov.digital.ho.hocs.utilities.TestFileReader.getResourceFileAsString;
@@ -73,7 +71,7 @@ public class ComplaintServiceTest {
     @Before
     public void setUp() {
         json = getResourceFileAsString("webform/staffBehaviour.json");
-        expectedText = getResourceFileAsString("webform/staffBehaviour.txt");
+        expectedText = getResourceFileAsString("webform/staffBehaviourTextConverted.txt");
 
         messageContext.initialiseContext(UUID.randomUUID().toString());
 
@@ -98,6 +96,12 @@ public class ComplaintServiceTest {
         when(workflowClient.createCase(createCaseRequest)).thenReturn(createCaseResponse);
         when(caseworkClient.getStageForCase(caseUUID)).thenReturn(stageForCaseUUID);
         when(caseworkClient.getPrimaryCorrespondent(caseUUID)).thenReturn(primaryCorrespondent);
+        when(enumMappingsRepository.getTextValueByNameAndFieldName("complaintType", "POOR_INFORMATION_OR_STAFF_BEHAVIOUR")).thenReturn("Staff behaviour");
+        when(enumMappingsRepository.getTextValueByNameAndFieldName("referenceType", "IHS_REF")).thenReturn("IHS reference");
+        when(enumMappingsRepository.getTextValueByNameAndFieldName("applicantType", "AGENT")).thenReturn("Agent");
+        when(enumMappingsRepository.getTextValueByNameAndFieldName("agentType", "RELATIVE")).thenReturn("Relative");
+        when(enumMappingsRepository.getTextValueByNameAndFieldName("experienceType", "FACE_TO_FACE")).thenReturn("Face to face");
+        when(enumMappingsRepository.getTextValueByNameAndFieldName("centreType", "VAC")).thenReturn("VAC (visa application centre)");
     }
 
     @Test

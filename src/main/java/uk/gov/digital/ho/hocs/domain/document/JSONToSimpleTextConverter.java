@@ -8,12 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 public class JSONToSimpleTextConverter {
@@ -100,7 +98,7 @@ public class JSONToSimpleTextConverter {
     private String sanitizeInput(String input) {
         // Clean html tags but allow special characters
         Document.OutputSettings outputSettings = new Document.OutputSettings();
-        return Jsoup.clean(input, "", Whitelist.none(), outputSettings.prettyPrint(false))
+        return Jsoup.clean(input, "", Safelist.none(), outputSettings.prettyPrint(false))
                 .replace("&lt;", "<")
                 .replace("&gt;", ">");
     }
