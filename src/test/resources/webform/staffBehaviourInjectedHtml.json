@@ -1,0 +1,34 @@
+{
+  "creationDate": "2020-10-03",
+  "complaint": {
+    "complaintType": "POOR_INFORMATION_OR_STAFF_BEHAVIOUR",
+    "reference": {
+      "referenceType": "IHS_REF",
+      "reference": "ABC12345"
+    },
+    "reporterDetails": {
+      "applicantType": "AGENT",
+      "applicantDetails": {
+        "applicantName": "<a>https://www.test.org/injection/</a>",
+        "applicantNationality": "Lorem",
+        "applicantDob": "1989-08-23"
+      },
+      "agentDetails": {
+        "agentName": "Test Agent",
+        "agentType": "RELATIVE",
+        "agentEmail": "test@example.org"
+      }
+    },
+    "complaintDetails": {
+      "complaintText": "Test<script>console.log(\"Injection!\")</script>script",
+      "experience": {
+        "experienceType": "FACE_TO_FACE",
+        "location": {
+          "country": "United Kingdom",
+          "city": "Dover",
+          "centreType": "VAC"
+        }
+      }
+    }
+  }
+}

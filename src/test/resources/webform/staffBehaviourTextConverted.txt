@@ -38,7 +38,7 @@
             Ipsum dolor sit amet consectetur adipiscing elit
             pellentesque habitant. Vel risus commodo viverra maecenas.
             Sed vulputate mi sit amet mauris commodo quis imperdiet.
-            Magna sit amet purus gravida.
+            Magna sit amet purus gravida ! ? @ < > / #
 
           Experience
               Experience Type : Face to face
