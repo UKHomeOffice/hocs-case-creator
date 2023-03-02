@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.domain.document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,11 +27,8 @@ public class JSONToSimpleTextConverterTest {
     @SpyBean
     private EnumMappingsRepository enumMappingsRepository;
 
-    @Test
-    public void shouldBuildFormattedDocument() throws IOException {
-        String json = getResourceFileAsString("webform/staffBehaviour.json");
-        String expectedText = getResourceFileAsString("webform/staffBehaviourTextConverted.txt");
-
+    @Before
+    public void setUp() {
         doReturn("").when(enumMappingsRepository).getTextValueByNameAndFieldName("creationDate", "2020-10-03");
         doReturn("Staff behaviour").when(enumMappingsRepository).getTextValueByNameAndFieldName("complaintType", "POOR_INFORMATION_OR_STAFF_BEHAVIOUR");
         doReturn("IHS reference").when(enumMappingsRepository).getTextValueByNameAndFieldName("referenceType", "IHS_REF");
@@ -40,8 +38,22 @@ public class JSONToSimpleTextConverterTest {
         doReturn("Relative").when(enumMappingsRepository).getTextValueByNameAndFieldName("agentType", "RELATIVE");
         doReturn("Face to face").when(enumMappingsRepository).getTextValueByNameAndFieldName("experienceType", "FACE_TO_FACE");
         doReturn("VAC (visa application centre)").when(enumMappingsRepository).getTextValueByNameAndFieldName("centreType", "VAC");
+    }
 
+    @Test
+    public void shouldBuildFormattedDocument() throws IOException {
+        String json = getResourceFileAsString("webform/staffBehaviour.json");
+        String expectedText = getResourceFileAsString("webform/staffBehaviourTextConverted.txt");
         JSONToSimpleTextConverter complaintData = new JSONToSimpleTextConverter(json, objectMapper, enumMappingsRepository);
         assertEquals(expectedText, complaintData.getConvertedOutput());
     }
+
+    @Test
+    public void shouldEscapeHtmlInDocument() throws IOException {
+        String json = getResourceFileAsString("webform/staffBehaviourInjectedHtml.json");
+        String expectedText = getResourceFileAsString("webform/staffBehaviourInjectedHtml.txt");
+        JSONToSimpleTextConverter complaintData = new JSONToSimpleTextConverter(json, objectMapper, enumMappingsRepository);
+        assertEquals(expectedText, complaintData.getConvertedOutput());
+    }
+
 }

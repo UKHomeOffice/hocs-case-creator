@@ -6,10 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.WordUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Whitelist;
 import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class JSONToSimpleTextConverter {
@@ -58,17 +62,8 @@ public class JSONToSimpleTextConverter {
         if (isTraversable(node)) {
             convertedOutput.append(String.format("%n%" + (level * 4 - 3) + "s %s%n", "", fromJavaIdentifierToDisplayableString(keyName)));
         } else {
-            String textValue = node.textValue();
-            try {
-                textValue = java.net.URLEncoder.encode(textValue, "UTF-8")
-                        .replace("+", " ")
-                        .replace("%2C", ",")
-                        .replace("%40", "@")
-                        .replace("%0A", "\n")
-                        .replace("%22", "\"");
-            } catch (UnsupportedEncodingException exception) {
-                log.error(exception.getMessage());
-            }
+            String textValue = sanitizeInput(node.textValue());
+
             if (textValue.equals(textValue.toUpperCase())) {
                 String label = enumMappingsRepository.getTextValueByNameAndFieldName(keyName, textValue);
                 if (label != null && !label.isEmpty()) {
@@ -100,6 +95,14 @@ public class JSONToSimpleTextConverter {
             displayable = Character.toUpperCase(displayable.charAt(0)) + displayable.substring(1);
         }
         return displayable;
+    }
+
+    private String sanitizeInput(String input) {
+        // Clean html tags but allow special characters
+        Document.OutputSettings outputSettings = new Document.OutputSettings();
+        return Jsoup.clean(input, "", Whitelist.none(), outputSettings.prettyPrint(false))
+                .replace("&lt;", "<")
+                .replace("&gt;", ">");
     }
 
 }
