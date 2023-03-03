@@ -7,7 +7,7 @@ localstack:
 
 aws:
   sqs:
-    case-creator:
+    queue:
       url: ${localstack.base-url}/queue/case-creator-queue
       account:
         access-key: 12345
@@ -15,8 +15,6 @@ aws:
       attributes:
         max-messages: 1
         wait-time: 5
-    case-migrator:
-      url: ${localstack.base-url}/queue/migration-queue
 
   s3:
     config:
@@ -33,6 +31,6 @@ case:
     case-service: http://localhost:8082
     workflow-service: http://localhost:8091
     identity:
-      group:
-      team:
-      user:
+      group: /TEST_TEAM_GROUP
+      team: 00000000-0000-0000-0000-000000000002
+      user: 00000000-0000-0000-0000-000000000003

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import org.springframework.stereotype.Service;
-import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.application.LogEvent;
+import uk.gov.digital.ho.hocs.application.RequestData;
 import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
@@ -29,18 +29,18 @@ public class MigrationService {
 
     private final MigrationCaseworkClient migrationCaseworkClient;
 
-    private final ClientContext clientContext;
+    private final RequestData requestData;
 
     private final MessageLogService messageLogService;
 
     private final ObjectMapper objectMapper;
 
     public MigrationService(MigrationCaseworkClient migrationCaseworkClient,
-                            ClientContext clientContext,
+                            RequestData requestData,
                             ObjectMapper objectMapper,
                             MessageLogService messageLogService) {
         this.migrationCaseworkClient = migrationCaseworkClient;
-        this.clientContext = clientContext;
+        this.requestData = requestData;
         this.objectMapper = objectMapper;
         this.messageLogService = messageLogService;
     }
@@ -49,10 +49,10 @@ public class MigrationService {
         try {
             var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData);
             CreateCaseworkCaseResponse caseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
-            messageLogService.updateMessageLogEntryCaseUuidAndStatus(clientContext.getCorrelationId(), caseResponse.getUuid(), Status.CASE_CREATED);
+            messageLogService.updateCaseUuidAndStatus(requestData.getCorrelationId(), caseResponse.getUuid(), Status.CASE_CREATED);
             log.info("Created migration case {}", caseResponse.getUuid());
         } catch (Exception e) {
-            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_MIGRATION_FAILED);
+            messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_MIGRATION_FAILED);
             throw new ApplicationExceptions.DocumentCreationException(e.getMessage(), LogEvent.CASE_MIGRATION_FAILURE);
         }
     }

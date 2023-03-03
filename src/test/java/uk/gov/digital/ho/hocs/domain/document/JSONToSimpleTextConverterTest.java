@@ -18,7 +18,7 @@ import static uk.gov.digital.ho.hocs.utilities.TestFileReader.getResourceFileAsS
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ActiveProfiles("local")
+@ActiveProfiles({"local", "ukvi"})
 public class JSONToSimpleTextConverterTest {
 
     @SpyBean

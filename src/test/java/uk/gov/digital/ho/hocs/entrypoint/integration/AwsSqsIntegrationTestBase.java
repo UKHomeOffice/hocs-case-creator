@@ -18,11 +18,8 @@ public class AwsSqsIntegrationTestBase {
     @Autowired
     public AmazonSQSAsync amazonSQSAsync;
 
-    @Value("${aws.sqs.case-creator.url}")
+    @Value("${aws.sqs.queue.url}")
     protected String queueUrl;
-
-    @Value("${aws.sqs.case-migrator.url}")
-    protected String migrationQueueUrl;
     
     @Before
     public void setup() {

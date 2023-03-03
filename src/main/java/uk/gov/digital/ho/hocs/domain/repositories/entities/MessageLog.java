@@ -1,9 +1,9 @@
 package uk.gov.digital.ho.hocs.domain.repositories.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import uk.gov.digital.ho.hocs.domain.queue.common.MessageType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +17,6 @@ import java.util.UUID;
 @Setter
 @Getter
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="message_log")
 public class MessageLog {
@@ -39,9 +38,26 @@ public class MessageLog {
     @Enumerated(EnumType.STRING)
     protected Status status;
 
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    protected MessageType type;
+
     @Column(name = "completed")
     protected LocalDateTime completed;
 
     @Column(name = "received")
     protected LocalDateTime received;
+
+    @Column(name = "processed")
+    protected LocalDateTime processed;
+
+    public MessageLog(String messageId, UUID externalReference, String message, Status status, MessageType type) {
+        this.messageId = messageId;
+        this.externalReference = externalReference;
+        this.message = message;
+        this.status = status;
+        this.type = type;
+        this.received = LocalDateTime.now();
+    }
+
 }
