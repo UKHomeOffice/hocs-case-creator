@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import static uk.gov.digital.ho.hocs.utilities.TestFileReader.getResourceFileAsString;
 
-@ActiveProfiles(profiles = "local")
+@ActiveProfiles({"local", "ukvi"})
 @RunWith(MockitoJUnitRunner.class)
 public class UKVIComplaintValidatorTest {
     private UKVIComplaintValidator complaintValidator;

@@ -33,7 +33,6 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doReturn;
 import static uk.gov.digital.ho.hocs.domain.queue.complaints.ComplaintService.DOCUMENT_TYPE;
 import static uk.gov.digital.ho.hocs.domain.queue.complaints.ComplaintService.ORIGINAL_FILENAME;
 import static uk.gov.digital.ho.hocs.utilities.TestFileReader.getResourceFileAsString;
