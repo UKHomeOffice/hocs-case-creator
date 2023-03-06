@@ -41,10 +41,5 @@
             Magna sit amet purus gravida ! ? @ < > / #
 
           Experience
-              Experience Type : Face to face
-
-              Location
-                  Country : United Kingdom
-                  City : Dover
-                  Centre Type : VAC (visa application centre)
+              Experience Type : Letter or email
 
