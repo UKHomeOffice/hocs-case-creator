@@ -46,7 +46,7 @@ public class MessageValidator {
                 }
                 messageLogService.updateStatus(message.id(), Status.MESSAGE_VALIDATION_FAILED);
                 throw new ApplicationExceptions.MessageSchemaValidationException(
-                        String.format("Schema validation failed for messageId: %s." + message.id()),
+                        String.format("Schema validation failed for messageId: %s.", message.id()),
                         LogEvent.MESSAGE_SCHEMA_VALIDATION_FAILURE);
             }
         } catch (JsonParseException e) {
