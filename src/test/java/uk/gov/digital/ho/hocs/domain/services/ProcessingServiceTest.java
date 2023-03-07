@@ -8,13 +8,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.domain.model.Message;
 import uk.gov.digital.ho.hocs.domain.queue.common.MessageHandler;
-import uk.gov.digital.ho.hocs.domain.repositories.entities.MessageLog;
-import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
 import uk.gov.digital.ho.hocs.domain.service.ProcessingService;
 
 import java.time.LocalDateTime;
-import java.util.stream.Stream;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
@@ -41,8 +39,8 @@ public class ProcessingServiceTest {
     @Test
     public void whenMessageProcessSuccessfullyNoException() throws Exception {
         when(messageLogService.getCountOfPendingMessagesBetweenDates(any(), any())).thenReturn(1L);
-        when(messageLogService.getPendingMessagesBetweenDates(any(), any())).thenReturn(
-                Stream.of(new MessageLog("TEST-MESSAGE-ID", null, "TEST-MESSAGE", Status.PENDING, null)));
+        when(messageLogService.getPendingMessagesBetweenDates(any(), any()))
+                .thenReturn(List.of(new Message("TEST-MESSAGE-ID", "TEST-MESSAGE", null)));
 
         processingService.retrieveAndProcessMessages(10, LocalDateTime.now(), LocalDateTime.now());
 
@@ -59,8 +57,8 @@ public class ProcessingServiceTest {
     @Test(expected = ApplicationExceptions.FailedMessageProcessingException.class)
     public void whenMessageProcessingFailsThenThrowException() throws Exception {
         when(messageLogService.getCountOfPendingMessagesBetweenDates(any(), any())).thenReturn(1L);
-        when(messageLogService.getPendingMessagesBetweenDates(any(), any())).thenReturn(
-                Stream.of(new MessageLog("TEST-MESSAGE-ID", null, "TEST-MESSAGE", Status.PENDING, null)));
+        when(messageLogService.getPendingMessagesBetweenDates(any(), any()))
+                .thenReturn(List.of(new Message("TEST-MESSAGE-ID", "TEST-MESSAGE", null)));
 
         doThrow(new RuntimeException("TEST")).when(messageHandler).handleMessage(any());
 

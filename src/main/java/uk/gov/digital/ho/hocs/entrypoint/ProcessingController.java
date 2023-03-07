@@ -20,11 +20,11 @@ public class ProcessingController {
 
     @PostMapping("/process")
     public ResponseEntity<Void> processMessages(@RequestBody ProcessingRequest processingRequest) {
-        log.info("Processing {} messages from {} to {}", processingRequest.getMaxMessages(), processingRequest.getFrom(), processingRequest.getTo());
+        log.info("Processing {} messages from {} to {}.", processingRequest.getMaxMessages(), processingRequest.getFrom(), processingRequest.getTo());
         processingService.retrieveAndProcessMessages(processingRequest.getMaxMessages(),
                 processingRequest.getFrom(),
                 processingRequest.getTo());
-        log.info("Finished processing messages");
+        log.info("Finished processing messages.");
         return ResponseEntity.ok().build();
     }
 
