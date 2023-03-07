@@ -37,13 +37,12 @@ public interface MessageLogRepository extends CrudRepository<MessageLog, String>
                              @Param("processingDateTime") LocalDateTime processingDateTime
     );
 
+    long countByStatusAndReceivedBetween(Status status, LocalDateTime from, LocalDateTime to);
 
-    long countByStatusAndCompletedBetween(Status status, LocalDateTime from, LocalDateTime to);
+    long countByStatusAndReceivedBefore(Status status, LocalDateTime to);
 
-    long countByStatusAndCompletedBefore(Status status, LocalDateTime to);
+    Stream<MessageLog> findByStatusAndReceivedBetween(Status status, LocalDateTime from, LocalDateTime to);
 
-    Stream<MessageLog> findByStatusAndCompletedBetween(Status status, LocalDateTime from, LocalDateTime to);
-
-    Stream<MessageLog> findByStatusAndCompletedBefore(Status status, LocalDateTime to);
+    Stream<MessageLog> findByStatusAndReceivedBefore(Status status, LocalDateTime to);
 
 }
