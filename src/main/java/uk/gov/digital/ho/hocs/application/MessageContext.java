@@ -4,6 +4,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -21,21 +22,26 @@ public class MessageContext {
 
     private final RequestData requestData;
 
+    private final Map<String, String> mdcContextMap;
+
     public MessageContext(RequestData requestData,
                           @Value("${case.creator.identity.user}") String user,
                           @Value("${case.creator.identity.group}") String group,
                           @Value("${case.creator.identity.team}") String team) {
         this.requestData = requestData;
 
-        MDC.put(USER_ID_HEADER, user);
-        MDC.put(GROUP_HEADER, group);
-        MDC.put(TEAM_ID, team);
+        this.mdcContextMap = Map.of(
+                USER_ID_HEADER, user,
+                GROUP_HEADER, group,
+                TEAM_ID, team
+        );
     }
 
     public void initialiseContext(String messageId) {
         var correlationId = this.requestData.getCorrelationId() == null ?
                 UUID.randomUUID().toString() : this.requestData.getCorrelationId();
 
+        MDC.setContextMap(mdcContextMap);
         MDC.put(CORRELATION_ID_HEADER, correlationId);
         MDC.put(MESSAGE_ID_HEADER, messageId);
     }
