@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.application.LogEvent;
 import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.domain.model.Message;
@@ -23,6 +24,7 @@ public class ProcessingService {
         this.messageHandler = messageHandler;
     }
 
+    @Transactional
     public void retrieveAndProcessMessages(int maxMessages, LocalDateTime from, @NotNull LocalDateTime to) {
         checkMessageCount(maxMessages, from, to);
         processMessages(from, to);
