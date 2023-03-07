@@ -2,7 +2,6 @@ package uk.gov.digital.ho.hocs.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.application.LogEvent;
 import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.domain.model.Message;
@@ -24,7 +23,6 @@ public class ProcessingService {
         this.messageHandler = messageHandler;
     }
 
-    @Transactional
     public void retrieveAndProcessMessages(int maxMessages, LocalDateTime from, @NotNull LocalDateTime to) {
         checkMessageCount(maxMessages, from, to);
         processMessages(from, to);
@@ -32,17 +30,17 @@ public class ProcessingService {
 
     private void checkMessageCount(int maxMessages, LocalDateTime from, @NotNull LocalDateTime to) {
         var messageCount = messageLogService.getCountOfPendingMessagesBetweenDates(from, to);
+
         if (messageCount > maxMessages) {
             throw new ApplicationExceptions.TooManyMessagesException(
-                    String.format("Too many messages to process. Maximum allowed: %s. Current: %s", maxMessages, messageCount),
+                    String.format("Too many messages to process. Maximum allowed: %s. Current: %s.", maxMessages, messageCount),
                     LogEvent.TOO_MANY_MESSAGES);
         }
     }
 
     private void processMessages(LocalDateTime from, @NotNull LocalDateTime to) {
         var failedMessageCount = 0;
-        var messages = messageLogService.getPendingMessagesBetweenDates(from, to)
-                .map(Message::new).toList();
+        var messages = messageLogService.getPendingMessagesBetweenDates(from, to);
 
         for (Message message : messages) {
             try {
