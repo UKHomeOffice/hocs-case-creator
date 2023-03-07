@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.domain.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.digital.ho.hocs.domain.model.Message;
 import uk.gov.digital.ho.hocs.domain.queue.common.MessageType;
 import uk.gov.digital.ho.hocs.domain.repositories.MessageLogRepository;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.MessageLog;
@@ -9,8 +10,8 @@ import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 public class MessageLogService {
@@ -56,17 +57,18 @@ public class MessageLogService {
     @Transactional(readOnly = true)
     public long getCountOfPendingMessagesBetweenDates(LocalDateTime from, @NotNull LocalDateTime to) {
         if (from == null) {
-            return messageLogRepository.countByStatusAndCompletedBefore(Status.PENDING, to);
+            return messageLogRepository.countByStatusAndReceivedBefore(Status.PENDING, to);
         }
-        return messageLogRepository.countByStatusAndCompletedBetween(Status.PENDING, from, to);
+        return messageLogRepository.countByStatusAndReceivedBetween(Status.PENDING, from, to);
     }
 
     @Transactional(readOnly = true)
-    public Stream<MessageLog> getPendingMessagesBetweenDates(LocalDateTime from, @NotNull LocalDateTime to) {
-        if (from == null) {
-            return messageLogRepository.findByStatusAndCompletedBefore(Status.PENDING, to);
-        }
-        return messageLogRepository.findByStatusAndCompletedBetween(Status.PENDING, from, to);
+    public List<Message> getPendingMessagesBetweenDates(LocalDateTime from, @NotNull LocalDateTime to) {
+        var messageLogStream = from == null
+                ? messageLogRepository.findByStatusAndReceivedBefore(Status.PENDING, to)
+                : messageLogRepository.findByStatusAndReceivedBetween(Status.PENDING, from, to);
+
+        return messageLogStream.map(Message::new).toList();
     }
 
 }

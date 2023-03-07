@@ -24,23 +24,29 @@ public class ProcessingService {
     }
 
     public void retrieveAndProcessMessages(int maxMessages, LocalDateTime from, @NotNull LocalDateTime to) {
-        checkMessageCount(maxMessages, from, to);
+        if (checkMessageCount(maxMessages, from, to) == 0) {
+            log.info("No messages to process.");
+            return;
+        }
+
         processMessages(from, to);
     }
 
-    private void checkMessageCount(int maxMessages, LocalDateTime from, @NotNull LocalDateTime to) {
+    private long checkMessageCount(int maxMessages, LocalDateTime from, @NotNull LocalDateTime to) {
         var messageCount = messageLogService.getCountOfPendingMessagesBetweenDates(from, to);
+
         if (messageCount > maxMessages) {
             throw new ApplicationExceptions.TooManyMessagesException(
-                    String.format("Too many messages to process. Maximum allowed: %s. Current: %s", maxMessages, messageCount),
+                    String.format("Too many messages to process. Maximum allowed: %s. Current: %s.", maxMessages, messageCount),
                     LogEvent.TOO_MANY_MESSAGES);
         }
+
+        return messageCount;
     }
 
     private void processMessages(LocalDateTime from, @NotNull LocalDateTime to) {
         var failedMessageCount = 0;
-        var messages = messageLogService.getPendingMessagesBetweenDates(from, to)
-                .map(Message::new).toList();
+        var messages = messageLogService.getPendingMessagesBetweenDates(from, to);
 
         for (Message message : messages) {
             try {
@@ -56,5 +62,7 @@ public class ProcessingService {
                     String.format("Failed to process message. %s messages failed to process.", failedMessageCount),
                     LogEvent.MESSAGE_PROCESSING_FAILURE);
         }
+
+        log.info("Processed {} messages.", messages.size() - failedMessageCount);
     }
 }
