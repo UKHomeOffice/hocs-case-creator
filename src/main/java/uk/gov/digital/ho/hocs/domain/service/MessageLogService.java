@@ -56,17 +56,17 @@ public class MessageLogService {
     @Transactional(readOnly = true)
     public long getCountOfPendingMessagesBetweenDates(LocalDateTime from, @NotNull LocalDateTime to) {
         if (from == null) {
-            return messageLogRepository.countByStatusAndCompletedBefore(Status.PENDING, to);
+            return messageLogRepository.countByStatusAndReceivedBefore(Status.PENDING, to);
         }
-        return messageLogRepository.countByStatusAndCompletedBetween(Status.PENDING, from, to);
+        return messageLogRepository.countByStatusAndReceivedBetween(Status.PENDING, from, to);
     }
 
     @Transactional(readOnly = true)
     public Stream<MessageLog> getPendingMessagesBetweenDates(LocalDateTime from, @NotNull LocalDateTime to) {
         if (from == null) {
-            return messageLogRepository.findByStatusAndCompletedBefore(Status.PENDING, to);
+            return messageLogRepository.findByStatusAndReceivedBefore(Status.PENDING, to);
         }
-        return messageLogRepository.findByStatusAndCompletedBetween(Status.PENDING, from, to);
+        return messageLogRepository.findByStatusAndReceivedBetween(Status.PENDING, from, to);
     }
 
 }
