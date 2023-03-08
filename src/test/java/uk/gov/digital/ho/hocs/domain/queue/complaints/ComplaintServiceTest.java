@@ -99,7 +99,8 @@ public class ComplaintServiceTest {
         when(enumMappingsRepository.getTextValueByNameAndFieldName("referenceType", "IHS_REF")).thenReturn("IHS reference");
         when(enumMappingsRepository.getTextValueByNameAndFieldName("applicantType", "AGENT")).thenReturn("Agent");
         when(enumMappingsRepository.getTextValueByNameAndFieldName("agentType", "RELATIVE")).thenReturn("Relative");
-        when(enumMappingsRepository.getTextValueByNameAndFieldName("experienceType", "LETTER_OR_EMAIL")).thenReturn("Letter or email");
+        when(enumMappingsRepository.getTextValueByNameAndFieldName("experienceType", "FACE_TO_FACE")).thenReturn("Face to face");
+        when(enumMappingsRepository.getTextValueByNameAndFieldName("centreType", "VAC")).thenReturn("VAC (visa application centre)");
     }
 
     @Test
