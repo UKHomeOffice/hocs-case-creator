@@ -21,13 +21,13 @@ public class MigrationCaseworkClient {
         this.serviceBaseURL = serviceBaseURL;
     }
 
-    public CreateMigrationCaseResponse migrateCase(CreateMigrationCaseRequest request) {
+    public ResponseEntity migrateCase(CreateMigrationCaseRequest request) {
         ResponseEntity<CreateMigrationCaseResponse> responseEntity = restClient.post(
                 serviceBaseURL,
                 "/migrate/case",
                 request,
                 CreateMigrationCaseResponse.class);
-        return responseEntity.getBody();
+        return responseEntity;
     }
 
     public ResponseEntity migrateCorrespondent(CreateMigrationCorrespondentRequest request) {

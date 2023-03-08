@@ -7,6 +7,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
@@ -53,6 +56,9 @@ public class MigrationServiceTest {
 
     private ObjectMapper objectMapper;
 
+    @Mock
+    private ResponseEntity<CreateMigrationCaseResponse> responseEntity;
+
     @Before
     public void setUp() {
         json = getResourceFileAsString("validMigration.json");
@@ -78,7 +84,14 @@ public class MigrationServiceTest {
                 initialData,
                 "MIGRATION");
         caseworkCaseResponse = new CreateMigrationCaseResponse();
-        when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
+
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(
+                caseworkCaseResponse,
+                null,
+                HttpStatus.OK
+        );
+
+        when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(responseEntity);
 
         createMigrationCorrespondentRequest = new CreateMigrationCorrespondentRequest(
                 UUID.randomUUID(),
