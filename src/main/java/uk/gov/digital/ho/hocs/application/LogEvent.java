@@ -14,6 +14,7 @@ public enum LogEvent {
     INVALID_MESSAGE_TYPE,
     REST_HELPER_GET,
     REST_HELPER_POST,
+    DOCUMENT_CLIENT_CREATE_SUCCESS,
     REST_HELPER_PUT;
 
     public static final String EVENT = "event_id";

@@ -7,11 +7,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 
+import uk.gov.digital.ho.hocs.client.document.DocumentClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
@@ -33,6 +33,9 @@ public class MigrationServiceTest {
 
     @Mock
     private MigrationCaseworkClient migrationCaseworkClient;
+
+    @Mock
+    private DocumentClient documentClient;
     @Mock
     private ClientContext clientContext;
     @Mock
@@ -66,7 +69,12 @@ public class MigrationServiceTest {
         migrationCaseTypeData = new MigrationCaseTypeData();
         Map<String, String> initialData = Map.of("Channel", migrationCaseTypeData.getOrigin());
         objectMapper = new ObjectMapper();
-        migrationService = new MigrationService(migrationCaseworkClient, clientContext, objectMapper, messageLogService);
+        migrationService = new MigrationService(
+                migrationCaseworkClient,
+                clientContext,
+                objectMapper,
+                messageLogService,
+                documentClient);
 
         MigrationComplaintCorrespondent primaryCorrespondent = migrationService.getPrimaryCorrespondent(
                 migrationData.getPrimaryCorrespondent());
@@ -134,7 +142,12 @@ public class MigrationServiceTest {
         json = getResourceFileAsString("invalidMigrationMissingPrimaryCorrespondent.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
-        migrationService = new MigrationService(migrationCaseworkClient, clientContext, objectMapper, messageLogService);
+        migrationService = new MigrationService(
+                migrationCaseworkClient,
+                clientContext,
+                objectMapper,
+                messageLogService,
+                documentClient);
 
         migrationData.getPrimaryCorrespondent();
     }
@@ -155,7 +168,12 @@ public class MigrationServiceTest {
         json = getResourceFileAsString("validMigrationNoAdditionalCorrespondents.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
-        migrationService = new MigrationService(migrationCaseworkClient, clientContext, objectMapper, messageLogService);
+        migrationService = new MigrationService(
+                migrationCaseworkClient,
+                clientContext,
+                objectMapper,
+                messageLogService,
+                documentClient);
 
         List<MigrationComplaintCorrespondent> migrationComplaintCorrespondents =
                 migrationService.getAdditionalCorrespondents(
@@ -188,7 +206,12 @@ public class MigrationServiceTest {
         json = getResourceFileAsString("validMigrationNoCaseAttachments.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
-        migrationService = new MigrationService(migrationCaseworkClient, clientContext, objectMapper, messageLogService);
+        migrationService = new MigrationService(
+                migrationCaseworkClient,
+                clientContext,
+                objectMapper,
+                messageLogService,
+                documentClient);
 
         List<CaseAttachment> caseAttachments =
                 migrationService.getCaseAttachments(
@@ -225,6 +248,4 @@ public class MigrationServiceTest {
                 "reference"
         );
     }
-
-
 }

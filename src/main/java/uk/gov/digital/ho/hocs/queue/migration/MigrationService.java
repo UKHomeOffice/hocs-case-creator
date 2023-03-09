@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.ClientContext;
 import uk.gov.digital.ho.hocs.application.LogEvent;
+import uk.gov.digital.ho.hocs.client.document.DocumentClient;
+import uk.gov.digital.ho.hocs.client.document.dto.CreateDocumentRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.*;
 import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
@@ -24,6 +26,8 @@ public class MigrationService {
 
     private final MigrationCaseworkClient migrationCaseworkClient;
 
+    private final DocumentClient documentClient;
+
     private final ClientContext clientContext;
 
     private final MessageLogService messageLogService;
@@ -33,11 +37,13 @@ public class MigrationService {
     public MigrationService(MigrationCaseworkClient migrationCaseworkClient,
                             ClientContext clientContext,
                             ObjectMapper objectMapper,
-                            MessageLogService messageLogService) {
+                            MessageLogService messageLogService,
+                            DocumentClient documentClient) {
         this.migrationCaseworkClient = migrationCaseworkClient;
         this.clientContext = clientContext;
         this.objectMapper = objectMapper;
         this.messageLogService = messageLogService;
+        this.documentClient = documentClient;
     }
 
     public void createMigrationCase(MigrationData migrationCaseData, MigrationCaseTypeData migrationCaseTypeData) {
@@ -109,15 +115,35 @@ public class MigrationService {
     }
 
     private ResponseEntity createCaseAttachments(UUID caseId, MigrationData migrationCaseData) {
-        try {
-            var migrationCaseAttachmentRequest = composeMigrationCaseAttachmentRequest(caseId, migrationCaseData);
-            ResponseEntity responseEntity = migrationCaseworkClient.migrateCaseAttachments(migrationCaseAttachmentRequest);
-            log.info("Created case attachments for migrated case {}", caseId);
-            return responseEntity;
-        } catch (Exception e) {
+//        try {
+//            var migrationCaseAttachmentRequest = composeMigrationCaseAttachmentRequest(caseId, migrationCaseData);
+//            ResponseEntity responseEntity = migrationCaseworkClient.migrateCaseAttachments(migrationCaseAttachmentRequest);
+//            log.info("Created case attachments for migrated case {}", caseId);
+//            return responseEntity;
+//        } catch (Exception e) {
+//            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
+//            throw new ApplicationExceptions.DocumentCreationException(e.getMessage(), LogEvent.CASE_DOCUMENT_CREATION_FAILURE);
+//        }
+       try {
+           var caseAttachments = getCaseAttachments(
+                   caseId,
+                   migrationCaseData);
+           for(CaseAttachment attachment : caseAttachments) {
+               CreateDocumentRequest document =
+                       new CreateDocumentRequest(
+                               attachment.getDisplayName(),
+                               attachment.getType(),
+                               attachment.getDocumentPath(),
+                               caseId);
+               documentClient.createDocument(caseId, document);
+           }
+           messageLogService.updateMessageLogEntryCaseUuidAndStatus(clientContext.getCorrelationId(), caseId, Status.CASE_DOCUMENT_CREATED);
+           log.info("Created case attachments for migrated case {}", caseId);
+       } catch (Exception e) {
             messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
             throw new ApplicationExceptions.DocumentCreationException(e.getMessage(), LogEvent.CASE_DOCUMENT_CREATION_FAILURE);
-        }
+       }
+       return ResponseEntity.ok().build();
     }
 
     private void completeMigration() {
@@ -146,13 +172,20 @@ public class MigrationService {
         );
     }
 
-    CreateMigrationCaseAttachmentRequest composeMigrationCaseAttachmentRequest(UUID caseId, MigrationData migrationData) {
-        List<CaseAttachment> caseAttachments = getCaseAttachments(migrationData.getCaseAttachments());
+    List<CaseAttachment> getCaseAttachments(UUID caseId, MigrationData migrationData) {
+        return getCaseAttachments(migrationData.getCaseAttachments());
+    }
 
-        return new CreateMigrationCaseAttachmentRequest(
-                caseId,
-                caseAttachments
-        );
+    public List<CaseAttachment> getCaseAttachments(String attachmentsJson) {
+        try {
+            List<CaseAttachment> caseAttachments = objectMapper.convertValue(
+                    objectMapper.readValue(attachmentsJson, JSONArray.class),
+                    new TypeReference<>() {
+                    });
+            return caseAttachments;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     public MigrationComplaintCorrespondent getPrimaryCorrespondent(LinkedHashMap correspondentJson) {
@@ -175,15 +208,5 @@ public class MigrationService {
         }
     }
 
-    public List<CaseAttachment> getCaseAttachments(String attachmentsJson) {
-        try {
-            List<CaseAttachment> caseAttachments = objectMapper.convertValue(
-                    objectMapper.readValue(attachmentsJson, JSONArray.class),
-                    new TypeReference<>() {
-                    });
-            return caseAttachments;
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
-    }
+
 }

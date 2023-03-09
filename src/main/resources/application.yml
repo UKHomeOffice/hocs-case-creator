@@ -47,6 +47,7 @@ case:
   creator:
     case-service: http://localhost:8082
     workflow-service: http://localhost:8091
+    documents-service: http://localhost:8083
     identity:
       group:
       team:
