@@ -1,0 +1,36 @@
+
+
+  Creation Date : 2020-10-03
+
+  Complaint
+      Complaint Type : Staff behaviour
+
+      Reference
+          Reference Type : IHS reference
+          Reference : ABC12345
+
+      Reporter Details
+          Applicant Type : Agent
+
+          Applicant Details
+              Applicant Name : https://www.test.org/injection/
+              Applicant Nationality : Lorem
+              Applicant Dob : 1989-08-23
+
+          Agent Details
+              Agent Name : Test Agent
+              Agent Type : Relative
+              Agent Email : test@example.org
+
+      Complaint Details
+          Complaint Text :
+            Testscript
+
+          Experience
+              Experience Type : Face to face
+
+              Location
+                  Country : United Kingdom
+                  City : Dover
+                  Centre Type : VAC (visa application centre)
+

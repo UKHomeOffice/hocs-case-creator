@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.WordUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Safelist;
 import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 
 import java.io.IOException;
@@ -57,7 +60,8 @@ public class JSONToSimpleTextConverter {
         if (isTraversable(node)) {
             convertedOutput.append(String.format("%n%" + (level * 4 - 3) + "s %s%n", "", fromJavaIdentifierToDisplayableString(keyName)));
         } else {
-            String textValue = node.textValue();
+            String textValue = sanitizeInput(node.textValue());
+
             if (textValue.equals(textValue.toUpperCase())) {
                 String label = enumMappingsRepository.getTextValueByNameAndFieldName(keyName, textValue);
                 if (label != null && !label.isEmpty()) {
@@ -89,6 +93,14 @@ public class JSONToSimpleTextConverter {
             displayable = Character.toUpperCase(displayable.charAt(0)) + displayable.substring(1);
         }
         return displayable;
+    }
+
+    private String sanitizeInput(String input) {
+        // Clean html tags but allow special characters
+        Document.OutputSettings outputSettings = new Document.OutputSettings();
+        return Jsoup.clean(input, "", Safelist.none(), outputSettings.prettyPrint(false))
+                .replace("&lt;", "<")
+                .replace("&gt;", ">");
     }
 
 }
