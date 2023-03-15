@@ -96,7 +96,7 @@ public class MigrationService {
         return caseResponseEntity.getStatusCode().is2xxSuccessful();
     }
 
-    private ResponseEntity createCorrespondents(UUID caseId,
+    ResponseEntity createCorrespondents(UUID caseId,
                                                 UUID stageId,
                                                 MigrationData migrationCaseData) {
         try {
@@ -114,16 +114,7 @@ public class MigrationService {
         }
     }
 
-    private ResponseEntity createCaseAttachments(UUID caseId, MigrationData migrationCaseData) {
-//        try {
-//            var migrationCaseAttachmentRequest = composeMigrationCaseAttachmentRequest(caseId, migrationCaseData);
-//            ResponseEntity responseEntity = migrationCaseworkClient.migrateCaseAttachments(migrationCaseAttachmentRequest);
-//            log.info("Created case attachments for migrated case {}", caseId);
-//            return responseEntity;
-//        } catch (Exception e) {
-//            messageLogService.updateMessageLogEntryStatus(clientContext.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
-//            throw new ApplicationExceptions.DocumentCreationException(e.getMessage(), LogEvent.CASE_DOCUMENT_CREATION_FAILURE);
-//        }
+    ResponseEntity createCaseAttachments(UUID caseId, MigrationData migrationCaseData) {
        try {
            var caseAttachments = getCaseAttachments(
                    caseId,

@@ -93,13 +93,13 @@ public class MigrationServiceTest {
                 "MIGRATION");
         caseworkCaseResponse = new CreateMigrationCaseResponse();
 
-        ResponseEntity<?> responseEntity = new ResponseEntity<>(
+        ResponseEntity<?> caseResponseEntity = new ResponseEntity<>(
                 caseworkCaseResponse,
                 null,
                 HttpStatus.OK
         );
 
-        when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(responseEntity);
+        when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseResponseEntity);
 
         createMigrationCorrespondentRequest = new CreateMigrationCorrespondentRequest(
                 UUID.randomUUID(),
@@ -107,6 +107,13 @@ public class MigrationServiceTest {
                 primaryCorrespondent,
                 additionalCorrespondents);
 
+        ResponseEntity<?> correspondentResponseEntity = new ResponseEntity<>(
+                null,
+                null,
+                HttpStatus.OK
+        );
+
+        when(migrationCaseworkClient.migrateCorrespondent(any(CreateMigrationCorrespondentRequest.class))).thenReturn(correspondentResponseEntity);
         //Todo: to add case attachment request
     }
 
@@ -114,6 +121,7 @@ public class MigrationServiceTest {
     public void migrateCase() {
         migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
         verify(migrationCaseworkClient, times(1)).migrateCase(createMigrationCaseRequest);
+        verify(migrationCaseworkClient, times(1)).migrateCorrespondent(any());
     }
 
     @Test
