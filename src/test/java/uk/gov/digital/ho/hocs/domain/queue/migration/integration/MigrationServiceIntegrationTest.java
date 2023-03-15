@@ -2,19 +2,15 @@ package uk.gov.digital.ho.hocs.domain.queue.migration.integration;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
-import uk.gov.digital.ho.hocs.client.document.DocumentClient;
 import uk.gov.digital.ho.hocs.client.document.dto.CreateDocumentRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.*;
 import uk.gov.digital.ho.hocs.domain.queue.complaints.CorrespondentType;
 import uk.gov.digital.ho.hocs.domain.queue.migration.CaseAttachment;
-
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,12 +27,6 @@ import static uk.gov.digital.ho.hocs.domain.queue.migration.MigrationService.CHA
 public class MigrationServiceIntegrationTest {
 
     private TestRestTemplate testRestTemplate = new TestRestTemplate();
-
-    @Autowired
-    private  DocumentClient documentClient;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     int port = 8082;
 

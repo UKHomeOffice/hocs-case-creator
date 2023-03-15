@@ -31,7 +31,6 @@ import static uk.gov.digital.ho.hocs.utilities.TestFileReader.getResourceFileAsS
 @RunWith(MockitoJUnitRunner.class)
 public class MigrationServiceTest {
 
-
     @Mock
     private MigrationCaseworkClient migrationCaseworkClient;
 
@@ -65,7 +64,7 @@ public class MigrationServiceTest {
 
     @Before
     public void setUp() {
-        json = getResourceFileAsString("validMigration.json");
+        json = getResourceFileAsString("migration/validMigration.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
         Map<String, String> initialData = Map.of("Channel", migrationCaseTypeData.getOrigin());
@@ -148,7 +147,7 @@ public class MigrationServiceTest {
 
     @Test(expected= PathNotFoundException.class)
     public void shouldFailWithMissingPrimaryCorrespondent(){
-        json = getResourceFileAsString("invalidMigrationMissingPrimaryCorrespondent.json");
+        json = getResourceFileAsString("migration/invalidMigrationMissingPrimaryCorrespondent.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
         migrationService = new MigrationService(
@@ -174,7 +173,7 @@ public class MigrationServiceTest {
 
     @Test
     public void shouldContainNoAdditionalCorrespondents() {
-        json = getResourceFileAsString("validMigrationNoAdditionalCorrespondents.json");
+        json = getResourceFileAsString("migration/validMigrationNoAdditionalCorrespondents.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
         migrationService = new MigrationService(
@@ -212,7 +211,7 @@ public class MigrationServiceTest {
 
     @Test
     public void shouldNotContainAttachments() {
-        json = getResourceFileAsString("validMigrationNoCaseAttachments.json");
+        json = getResourceFileAsString("migration/validMigrationNoCaseAttachments.json");
         migrationData = new MigrationData(json);
         migrationCaseTypeData = new MigrationCaseTypeData();
         migrationService = new MigrationService(
@@ -230,7 +229,7 @@ public class MigrationServiceTest {
 
     @Test
     public void shouldContainCorrectCaseTypeOnParse() {
-        json = getResourceFileAsString("validMigrationCOMP.json");
+        json = getResourceFileAsString("migration/validMigrationCOMP.json");
         migrationData = new MigrationData(json);
 
         MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData();
