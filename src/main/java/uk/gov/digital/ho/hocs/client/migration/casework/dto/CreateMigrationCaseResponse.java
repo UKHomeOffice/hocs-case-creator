@@ -16,6 +16,9 @@ public class CreateMigrationCaseResponse {
     @JsonProperty("uuid")
     private UUID uuid;
 
+    @JsonProperty("stageId")
+    private UUID stageId;
+
     @JsonProperty("reference")
     private String reference;
 

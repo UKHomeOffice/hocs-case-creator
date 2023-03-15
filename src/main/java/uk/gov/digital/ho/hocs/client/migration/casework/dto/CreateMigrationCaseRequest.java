@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import uk.gov.digital.ho.hocs.domain.queue.migration.CaseAttachment;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -26,13 +24,4 @@ public class CreateMigrationCaseRequest {
 
     @JsonProperty("stageType")
     private String stageType;
-
-    @JsonProperty("primaryCorrespondent")
-    private MigrationComplaintCorrespondent primaryCorrespondent;
-
-    @JsonProperty("additionalCorrespondents")
-    private List<MigrationComplaintCorrespondent> additionalCorrespondents;
-
-    @JsonProperty("caseAttachments")
-    private List<CaseAttachment> attachments;
 }
