@@ -23,7 +23,7 @@ import static uk.gov.digital.ho.hocs.domain.queue.migration.MigrationService.CHA
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({ "local", "integration" })
+@ActiveProfiles({ "local", "integration", "migration" })
 public class MigrationServiceIntegrationTest {
 
     private TestRestTemplate testRestTemplate = new TestRestTemplate();
