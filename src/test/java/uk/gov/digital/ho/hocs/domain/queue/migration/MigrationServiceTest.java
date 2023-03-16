@@ -11,6 +11,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.digital.ho.hocs.application.RequestData;
 import uk.gov.digital.ho.hocs.client.document.DocumentClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.*;
 import static uk.gov.digital.ho.hocs.utilities.TestFileReader.getResourceFileAsString;
 
 @RunWith(MockitoJUnitRunner.class)
+@ActiveProfiles("migration")
 public class MigrationServiceTest {
 
     @Mock
