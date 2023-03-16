@@ -16,7 +16,12 @@ import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -50,8 +55,6 @@ public class MigrationService {
         UUID caseId;
         UUID stageId;
         ResponseEntity<CreateMigrationCaseResponse> caseResponseEntity;
-        ResponseEntity correspondentsResponseEntity = null;
-        ResponseEntity caseAttachmentsResponseEntity = null;
 
         // case
         try {
@@ -70,30 +73,11 @@ public class MigrationService {
             throw new ApplicationExceptions.CaseCreationException(e.getMessage(), LogEvent.CASE_MIGRATION_FAILURE);
         }
 
-        if (hasCreatedCase(caseResponseEntity)) {
-            correspondentsResponseEntity = createCorrespondents(caseId, stageId, migrationCaseData);
+        createCorrespondents(caseId, stageId, migrationCaseData);
 
-            if (hasCreatedCorrespondents(correspondentsResponseEntity)) {
-                caseAttachmentsResponseEntity = createCaseAttachments(caseId, migrationCaseData);
+        createCaseAttachments(caseId, migrationCaseData);
 
-                if (hasLinkedCaseAttachments(caseAttachmentsResponseEntity)) {
-                    completeMigration();
-                }
-            }
-        }
-
-    }
-
-    private boolean hasLinkedCaseAttachments(ResponseEntity caseAttachmentsResponseEntity) {
-        return caseAttachmentsResponseEntity.getStatusCode().is2xxSuccessful();
-    }
-
-    private boolean hasCreatedCorrespondents(ResponseEntity correspondentsResponseEntity) {
-        return correspondentsResponseEntity.getStatusCode().is2xxSuccessful();
-    }
-
-    private boolean hasCreatedCase(ResponseEntity<CreateMigrationCaseResponse> caseResponseEntity) {
-        return caseResponseEntity.getStatusCode().is2xxSuccessful();
+        messageLogService.updateStatus(requestData.getCorrelationId(), Status.COMPLETED);
     }
 
     ResponseEntity createCorrespondents(UUID caseId,
@@ -135,10 +119,6 @@ public class MigrationService {
             throw new ApplicationExceptions.DocumentCreationException(e.getMessage(), LogEvent.CASE_DOCUMENT_CREATION_FAILURE);
         }
         return ResponseEntity.ok().build();
-    }
-
-    private void completeMigration() {
-        messageLogService.updateStatus(requestData.getCorrelationId(), Status.COMPLETED);
     }
 
     CreateMigrationCaseRequest composeMigrateCaseRequest(MigrationData migrationData, MigrationCaseTypeData migrationCaseTypeData) {
