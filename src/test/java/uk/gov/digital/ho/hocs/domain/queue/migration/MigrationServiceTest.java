@@ -114,7 +114,6 @@ public class MigrationServiceTest {
         );
 
         when(migrationCaseworkClient.migrateCorrespondent(any(CreateMigrationCorrespondentRequest.class))).thenReturn(correspondentResponseEntity);
-        //Todo: to add case attachment request
     }
 
     @Test
@@ -189,25 +188,6 @@ public class MigrationServiceTest {
 
         assertTrue(migrationComplaintCorrespondents.isEmpty());
     }
-
-//    @Test
-//    public void shouldContainCaseAttachments() {
-//        List<CaseAttachment> caseAttachments = createMigrationCaseRequest.getAttachments();
-//
-//        List<CaseAttachment> expectedAttachments = Arrays.asList(
-//                new CaseAttachment(
-//                        "document1.pdf",
-//                        "To document",
-//                        "e7f5d229-3f23-450c-8f11-8ef647943ae3"
-//                ),
-//                new CaseAttachment(
-//                        "document2.pdf",
-//                        "pdf",
-//                        "9bf2665f-6b21-47af-8789-34a25b136670"
-//                ));
-//
-//        assertEquals(expectedAttachments, caseAttachments);
-//    }
 
     @Test
     public void shouldNotContainAttachments() {
