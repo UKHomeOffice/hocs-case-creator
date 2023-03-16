@@ -18,8 +18,7 @@ public enum LogEvent {
     REST_HELPER_GET,
     REST_HELPER_POST,
     REST_HELPER_PUT,
-    TOO_MANY_MESSAGES,
-    DOCUMENT_CLIENT_CREATE_SUCCESS;
+    TOO_MANY_MESSAGES;
 
     public static final String EVENT = "event_id";
     public static final String EXCEPTION = "exception";
