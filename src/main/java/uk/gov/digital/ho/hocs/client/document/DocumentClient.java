@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.client.document;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @Slf4j
 @Component
+@Profile("migration")
 public class DocumentClient {
 
     private final RestClient restClient;

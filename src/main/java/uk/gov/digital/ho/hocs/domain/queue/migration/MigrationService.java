@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.LogEvent;
@@ -25,6 +26,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@Profile("migration")
 public class MigrationService {
 
     public static final String CHANNEL_LABEL = "Channel";
