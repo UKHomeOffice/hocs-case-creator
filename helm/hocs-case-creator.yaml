@@ -3,17 +3,11 @@ hocs-generic-service:
 
   deployment:
     annotations:
-      downscaler/downtime: "Mon-Sun 00:00-08:10 Europe/London,Mon-Sun 17:50-24:00 Europe/London"
-
-  truststore:
-    resources:
-      requests:
-        cpu: 50m
+      downscaler/downtime: "Sat-Sun 00:00-24:00 Europe/London,Mon-Fri 00:00-08:10 Europe/London,Mon-Fri 17:50-24:00 Europe/London"
 
   app:
     resources:
       limits:
         memory: 512Mi
       requests:
-        cpu: 50m
         memory: 512Mi
