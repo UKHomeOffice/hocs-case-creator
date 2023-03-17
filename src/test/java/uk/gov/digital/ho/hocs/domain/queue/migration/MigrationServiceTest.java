@@ -92,16 +92,10 @@ public class MigrationServiceTest {
                 migrationData.getComplaintType(),
                 migrationData.getDateReceived(),
                 initialData,
-                "MIGRATION");
+                StageTypeMapping.getStageType("COMP"));
         caseworkCaseResponse = new CreateMigrationCaseResponse();
 
-        ResponseEntity<?> caseResponseEntity = new ResponseEntity<>(
-                caseworkCaseResponse,
-                null,
-                HttpStatus.OK
-        );
-
-        when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseResponseEntity);
+        when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
 
         createMigrationCorrespondentRequest = new CreateMigrationCorrespondentRequest(
                 UUID.randomUUID(),
@@ -204,7 +198,7 @@ public class MigrationServiceTest {
                 documentClient);
 
         List<CaseAttachment> caseAttachments =
-                migrationService.getCaseAttachments(
+                migrationService.getCaseAttachments(UUID.randomUUID(),
                         migrationData.getCaseAttachments());
         assertTrue(caseAttachments.isEmpty());
     }
