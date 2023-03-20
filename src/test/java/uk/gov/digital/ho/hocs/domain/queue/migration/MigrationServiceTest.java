@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.digital.ho.hocs.application.RequestData;
 import uk.gov.digital.ho.hocs.client.document.DocumentClient;
+import uk.gov.digital.ho.hocs.client.document.dto.CreateDocumentRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
@@ -50,6 +51,8 @@ public class MigrationServiceTest {
     private CreateMigrationCaseResponse caseworkCaseResponse;
 
     private CreateMigrationCorrespondentRequest createMigrationCorrespondentRequest;
+
+    private CreateDocumentRequest createMigrationCaseAttachmentRequest;
 
     private MigrationData migrationData;
 
@@ -93,7 +96,12 @@ public class MigrationServiceTest {
                 migrationData.getDateReceived(),
                 initialData,
                 StageTypeMapping.getStageType("COMP"));
-        caseworkCaseResponse = new CreateMigrationCaseResponse();
+        caseworkCaseResponse = new CreateMigrationCaseResponse(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                "reference",
+                Collections.emptyMap()
+        );
 
         when(migrationCaseworkClient.migrateCase(any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
 
@@ -110,6 +118,21 @@ public class MigrationServiceTest {
         );
 
         when(migrationCaseworkClient.migrateCorrespondent(any(CreateMigrationCorrespondentRequest.class))).thenReturn(correspondentResponseEntity);
+
+        createMigrationCaseAttachmentRequest = new CreateDocumentRequest(
+                "name",
+                "To Document",
+                "path",
+                UUID.randomUUID()
+        );
+
+        ResponseEntity<UUID> caseAttachmentResponseEntity = new ResponseEntity(
+                UUID.randomUUID(),
+                null,
+                HttpStatus.OK
+        );
+
+        when(documentClient.createDocument(any(), any(CreateDocumentRequest.class))).thenReturn(caseAttachmentResponseEntity);
     }
 
     @Test
@@ -117,6 +140,7 @@ public class MigrationServiceTest {
         migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
         verify(migrationCaseworkClient, times(1)).migrateCase(createMigrationCaseRequest);
         verify(migrationCaseworkClient, times(1)).migrateCorrespondent(any());
+        verify(documentClient, times(1)).createDocument(any(), any());
     }
 
     @Test
