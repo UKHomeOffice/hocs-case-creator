@@ -94,8 +94,10 @@ public class MigrationServiceTest {
         createMigrationCaseRequest = new CreateMigrationCaseRequest(
                 migrationData.getComplaintType(),
                 migrationData.getDateReceived(),
+                migrationData.getDateCompleted(),
                 initialData,
                 StageTypeMapping.getStageType("COMP"));
+
         caseworkCaseResponse = new CreateMigrationCaseResponse(
                 UUID.randomUUID(),
                 UUID.randomUUID(),
@@ -239,6 +241,20 @@ public class MigrationServiceTest {
                 migrationService.composeMigrateCaseRequest(migrationData, migrationCaseTypeData);
 
         assertEquals("COMP", request.getType());
+    }
+
+    @Test
+    public void shouldNotSendCompletedDateForOpenCases() {
+        json = getResourceFileAsString("migration/validMigrationOpenCOMP.json");
+        migrationData = new MigrationData(json);
+
+        MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData();
+        migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
+
+        CreateMigrationCaseRequest request =
+            migrationService.composeMigrateCaseRequest(migrationData, migrationCaseTypeData);
+
+        assertNull(request.getDateCompleted());
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {

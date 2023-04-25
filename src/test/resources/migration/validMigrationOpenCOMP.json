@@ -1,5 +1,5 @@
 {
-  "caseType": "POGR",
+  "caseType": "COMP",
   "sourceCaseId": "in",
   "primaryCorrespondent": {
     "fullName": "fullName",
@@ -42,7 +42,7 @@
       "reference": "reference"
     }
   ],
-  "caseStatus": "closed",
+  "caseStatus": "open",
   "caseStatusDate": "2022-09-01",
   "creationDate": "1965-06-22",
   "caseData": [

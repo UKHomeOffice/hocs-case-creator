@@ -1,8 +1,8 @@
 {
   "caseType": "COMP",
   "sourceCaseId": "in",
-  "caseStatus": "caseStatus",
-  "caseStatusDate": "1947-02-14",
+  "caseStatus": "closed",
+  "caseStatusDate": "2022-09-01",
   "creationDate": "1965-06-22",
   "caseData": [
     {"name": "type", "value": "cms"},

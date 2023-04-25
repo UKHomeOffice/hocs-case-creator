@@ -19,6 +19,9 @@ public class CreateMigrationCaseRequest {
     @JsonProperty("dateReceived")
     private LocalDate dateReceived;
 
+    @JsonProperty("dateCompleted")
+    private LocalDate dateCompleted;
+
     @JsonProperty("data")
     private Map<String, String> data;
 
