@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.application.LogEvent;
 import uk.gov.digital.ho.hocs.application.RequestData;
@@ -41,11 +40,13 @@ public class MigrationService {
 
     private final ObjectMapper objectMapper;
 
-    public MigrationService(MigrationCaseworkClient migrationCaseworkClient,
-                            RequestData requestData,
-                            ObjectMapper objectMapper,
-                            MessageLogService messageLogService,
-                            DocumentClient documentClient) {
+    public MigrationService(
+        MigrationCaseworkClient migrationCaseworkClient,
+        RequestData requestData,
+        ObjectMapper objectMapper,
+        MessageLogService messageLogService,
+        DocumentClient documentClient
+    ) {
         this.migrationCaseworkClient = migrationCaseworkClient;
         this.requestData = requestData;
         this.objectMapper = objectMapper;
@@ -60,11 +61,13 @@ public class MigrationService {
         // case
         try {
             var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData);
-            CreateMigrationCaseResponse createMigrationCaseResponse = migrationCaseworkClient.migrateCase(migrationRequest);
+            CreateMigrationCaseResponse createMigrationCaseResponse = migrationCaseworkClient.migrateCase(
+                migrationRequest);
             messageLogService.updateCaseUuidAndStatus(
-                    requestData.getCorrelationId(),
-                    createMigrationCaseResponse.getUuid(),
-                    Status.CASE_CREATED);
+                requestData.getCorrelationId(),
+                createMigrationCaseResponse.getUuid(),
+                Status.CASE_CREATED
+            );
             caseId = createMigrationCaseResponse.getUuid();
             stageId = createMigrationCaseResponse.getStageId();
             log.info("Created migration case {}", createMigrationCaseResponse.getUuid());
@@ -80,66 +83,96 @@ public class MigrationService {
         messageLogService.updateStatus(requestData.getCorrelationId(), Status.COMPLETED);
     }
 
-    void createCorrespondents(UUID caseId,
-                                        UUID stageId,
-                                        MigrationData migrationCaseData) {
+    void createCorrespondents(
+        UUID caseId,
+        UUID stageId,
+        MigrationData migrationCaseData
+    ) {
         try {
-            var migrationCorrespondentRequest  = composeMigrationCorrespondentRequest(
-                    caseId,
-                    stageId,
-                    migrationCaseData);
+            var migrationCorrespondentRequest = composeMigrationCorrespondentRequest(
+                caseId,
+                stageId,
+                migrationCaseData
+            );
             migrationCaseworkClient.migrateCorrespondent(migrationCorrespondentRequest);
-            messageLogService.updateCaseUuidAndStatus(requestData.getCorrelationId(), caseId, Status.CASE_CORRESPONDENTS_HANDLED);
+            messageLogService.updateCaseUuidAndStatus(
+                requestData.getCorrelationId(),
+                caseId,
+                Status.CASE_CORRESPONDENTS_HANDLED
+            );
             log.info("Created correspondents for migrated case {}", caseId);
         } catch (Exception e) {
             log.info("Failed to create correspondents for migrated case {}", caseId);
             messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
-            throw new ApplicationExceptions.CaseCorrespondentCreationException(e.getMessage(), LogEvent.CASE_CORRESPONDENTS_FAILURE);
+            throw new ApplicationExceptions.CaseCorrespondentCreationException(
+                e.getMessage(),
+                LogEvent.CASE_CORRESPONDENTS_FAILURE
+            );
         }
     }
 
     void createCaseAttachments(UUID caseId, MigrationData migrationCaseData) {
         try {
             var caseAttachments = getCaseAttachments(
-                    caseId,
-                    migrationCaseData);
-            for(CaseAttachment attachment : caseAttachments) {
+                caseId,
+                migrationCaseData
+            );
+            for (CaseAttachment attachment : caseAttachments) {
                 CreateDocumentRequest document =
-                        new CreateDocumentRequest(
-                                attachment.getDisplayName(),
-                                attachment.getType(),
-                                attachment.getDocumentPath(),
-                                caseId);
+                    new CreateDocumentRequest(
+                        attachment.getDisplayName(),
+                        attachment.getType(),
+                        attachment.getDocumentPath(),
+                        caseId
+                    );
                 documentClient.createDocument(caseId, document);
             }
-            messageLogService.updateCaseUuidAndStatus(requestData.getCorrelationId(), caseId, Status.CASE_DOCUMENT_CREATED);
+            messageLogService.updateCaseUuidAndStatus(
+                requestData.getCorrelationId(),
+                caseId,
+                Status.CASE_DOCUMENT_CREATED
+            );
             log.info("Created case attachments for migrated case {}", caseId);
         } catch (Exception e) {
             log.info("Failed to create case attachments for migrated case {}", caseId);
             messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
-            throw new ApplicationExceptions.DocumentCreationException(e.getMessage(), LogEvent.CASE_DOCUMENT_CREATION_FAILURE);
+            throw new ApplicationExceptions.DocumentCreationException(
+                e.getMessage(),
+                LogEvent.CASE_DOCUMENT_CREATION_FAILURE
+            );
         }
     }
 
-    CreateMigrationCaseRequest composeMigrateCaseRequest(MigrationData migrationData, MigrationCaseTypeData migrationCaseTypeData) {
+    CreateMigrationCaseRequest composeMigrateCaseRequest(
+        MigrationData migrationData,
+        MigrationCaseTypeData migrationCaseTypeData
+    ) {
         Map<String, String> initialData = Map.of(CHANNEL_LABEL, migrationCaseTypeData.getOrigin());
 
         return new CreateMigrationCaseRequest(
-                migrationData.getComplaintType(),
-                migrationData.getDateReceived(),
-                initialData,
-                StageTypeMapping.getStageType(migrationData.getComplaintType()));
+            migrationData.getComplaintType(),
+            migrationData.getDateReceived(),
+            migrationData.getDateCompleted(),
+            initialData,
+            migrationData.getDateCompleted() != null
+                ? StageTypeMapping.getStageType(migrationData.getComplaintType())
+                : null
+        );
     }
 
-    CreateMigrationCorrespondentRequest composeMigrationCorrespondentRequest(UUID caseId, UUID stageId, MigrationData migrationData) {
+    CreateMigrationCorrespondentRequest composeMigrationCorrespondentRequest(
+        UUID caseId,
+        UUID stageId,
+        MigrationData migrationData
+    ) {
         MigrationComplaintCorrespondent primaryCorrespondent = getPrimaryCorrespondent(migrationData.getPrimaryCorrespondent());
         List<MigrationComplaintCorrespondent> additionalCorrespondents = getAdditionalCorrespondents(migrationData.getAdditionalCorrespondents());
 
         return new CreateMigrationCorrespondentRequest(
-                caseId,
-                stageId,
-                primaryCorrespondent,
-                additionalCorrespondents
+            caseId,
+            stageId,
+            primaryCorrespondent,
+            additionalCorrespondents
         );
     }
 
@@ -150,9 +183,10 @@ public class MigrationService {
     public List<CaseAttachment> getCaseAttachments(UUID caseId, String attachmentsJson) {
         try {
             List<CaseAttachment> caseAttachments = objectMapper.convertValue(
-                    objectMapper.readValue(attachmentsJson, JSONArray.class),
-                    new TypeReference<>() {
-                    });
+                objectMapper.readValue(attachmentsJson, JSONArray.class),
+                new TypeReference<>() {
+                }
+            );
             return caseAttachments;
         } catch (Exception e) {
             log.info("Failed to create case attachments for case id {}", caseId);
@@ -163,18 +197,20 @@ public class MigrationService {
 
     public MigrationComplaintCorrespondent getPrimaryCorrespondent(LinkedHashMap correspondentJson) {
         MigrationComplaintCorrespondent primaryCorrespondent = objectMapper.convertValue(
-                correspondentJson,
-                new TypeReference<>() {
-                });
+            correspondentJson,
+            new TypeReference<>() {
+            }
+        );
         return primaryCorrespondent;
     }
 
-    public List<MigrationComplaintCorrespondent> getAdditionalCorrespondents(Optional<String> correspondentJson)  {
+    public List<MigrationComplaintCorrespondent> getAdditionalCorrespondents(Optional<String> correspondentJson) {
         try {
             List<MigrationComplaintCorrespondent> additionalCorrespondents = objectMapper.convertValue(
-                    objectMapper.readValue(correspondentJson.get(), JSONArray.class),
-                    new TypeReference<>() {
-                    });
+                objectMapper.readValue(correspondentJson.get(), JSONArray.class),
+                new TypeReference<>() {
+                }
+            );
             return additionalCorrespondents;
         } catch (Exception e) {
             return Collections.emptyList();

@@ -46,6 +46,7 @@ public class MigrationCaseworkClientTest {
         CreateMigrationCaseRequest request = new CreateMigrationCaseRequest(
                 "Migration",
                 date,
+                date,
                 data,
                 "COMP_MIGRATION_END");
 
