@@ -20,6 +20,8 @@ import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseR
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.migration.workflow.MigrationWorkflowClient;
+import uk.gov.digital.ho.hocs.client.migration.workflow.dto.CreateWorkflowRequest;
 import uk.gov.digital.ho.hocs.domain.queue.complaints.CorrespondentType;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
 
@@ -39,6 +41,8 @@ public class MigrationServiceTest {
 
     @Mock
     private DocumentClient documentClient;
+    @Mock
+    private MigrationWorkflowClient workflowClient;
     @Mock
     private RequestData requestData;
     @Mock
@@ -79,7 +83,8 @@ public class MigrationServiceTest {
                 requestData,
                 objectMapper,
                 messageLogService,
-                documentClient);
+                documentClient,
+                workflowClient);
 
         MigrationComplaintCorrespondent primaryCorrespondent = migrationService.getPrimaryCorrespondent(
                 migrationData.getPrimaryCorrespondent());
@@ -135,14 +140,30 @@ public class MigrationServiceTest {
         );
 
         when(documentClient.createDocument(any(), any(CreateDocumentRequest.class))).thenReturn(caseAttachmentResponseEntity);
+
+        when(workflowClient.createWorkflow(any(CreateWorkflowRequest.class))).thenReturn(ResponseEntity.ok().build());
+
     }
 
     @Test
-    public void migrateCase() {
+    public void migrateOpenCaseWithWorkflow() {
+        var json = getResourceFileAsString("migration/validMigrationOpenCOMP.json");
+        var migrationData = new MigrationData(json);
+
+        migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
+
+        verify(migrationCaseworkClient, times(1)).migrateCase(any());
+        verify(migrationCaseworkClient, times(1)).migrateCorrespondent(any());
+        verify(workflowClient, times(1)).createWorkflow(any());
+    }
+
+    @Test
+    public void migrateClosedCase() {
         migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
         verify(migrationCaseworkClient, times(1)).migrateCase(createMigrationCaseRequest);
         verify(migrationCaseworkClient, times(1)).migrateCorrespondent(any());
         verify(documentClient, times(1)).createDocument(any(), any());
+        verify(workflowClient, never()).createWorkflow(any());
     }
 
     @Test
@@ -176,7 +197,7 @@ public class MigrationServiceTest {
                 requestData,
                 objectMapper,
                 messageLogService,
-                documentClient);
+                documentClient, workflowClient);
 
         migrationData.getPrimaryCorrespondent();
     }
@@ -202,7 +223,7 @@ public class MigrationServiceTest {
                 requestData,
                 objectMapper,
                 messageLogService,
-                documentClient);
+                documentClient, workflowClient);
 
         List<MigrationComplaintCorrespondent> migrationComplaintCorrespondents =
                 migrationService.getAdditionalCorrespondents(
@@ -221,7 +242,7 @@ public class MigrationServiceTest {
                 requestData,
                 objectMapper,
                 messageLogService,
-                documentClient);
+                documentClient, workflowClient);
 
         List<CaseAttachment> caseAttachments =
                 migrationService.getCaseAttachments(UUID.randomUUID(),
