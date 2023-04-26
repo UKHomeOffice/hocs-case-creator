@@ -12,6 +12,9 @@ import uk.gov.digital.ho.hocs.client.document.DocumentClient;
 import uk.gov.digital.ho.hocs.client.document.dto.CreateDocumentRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.*;
+import uk.gov.digital.ho.hocs.client.migration.workflow.MigrationWorkflowClient;
+import uk.gov.digital.ho.hocs.client.migration.workflow.dto.CreateWorkflowRequest;
+import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
@@ -34,6 +37,8 @@ public class MigrationService {
 
     private final DocumentClient documentClient;
 
+    private final MigrationWorkflowClient workflowClient;
+
     private final RequestData requestData;
 
     private final MessageLogService messageLogService;
@@ -45,13 +50,14 @@ public class MigrationService {
         RequestData requestData,
         ObjectMapper objectMapper,
         MessageLogService messageLogService,
-        DocumentClient documentClient
-    ) {
+        DocumentClient documentClient,
+        MigrationWorkflowClient workflowClient) {
         this.migrationCaseworkClient = migrationCaseworkClient;
         this.requestData = requestData;
         this.objectMapper = objectMapper;
         this.messageLogService = messageLogService;
         this.documentClient = documentClient;
+        this.workflowClient = workflowClient;
     }
 
     public void createMigrationCase(MigrationData migrationCaseData, MigrationCaseTypeData migrationCaseTypeData) {
@@ -79,6 +85,17 @@ public class MigrationService {
         createCorrespondents(caseId, stageId, migrationCaseData);
 
         createCaseAttachments(caseId, migrationCaseData);
+
+        //case is open if no completed date set
+        if(migrationCaseData.getDateCompleted() == null)  {
+            try {
+            workflowClient.createWorkflow(new CreateWorkflowRequest(caseId));
+            log.info("Created workflow for open case {}", caseId);
+            } catch (Exception e) {
+                messageLogService.updateStatus(requestData.getCorrelationId(), Status.WORKFLOW_MIGRATION_FAILURE);
+                throw new ApplicationExceptions.CaseCreationException(e.getMessage(), LogEvent.WORKFLOW_MIGRATION_FAILURE);
+            }
+        }
 
         messageLogService.updateStatus(requestData.getCorrelationId(), Status.COMPLETED);
     }
