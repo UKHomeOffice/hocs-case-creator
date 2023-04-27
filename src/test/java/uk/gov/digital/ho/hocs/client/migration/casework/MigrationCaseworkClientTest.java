@@ -47,6 +47,7 @@ public class MigrationCaseworkClientTest {
                 "Migration",
                 date,
                 date,
+                date,
                 data,
                 "COMP_MIGRATION_END");
 

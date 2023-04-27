@@ -168,6 +168,7 @@ public class MigrationService {
 
         return new CreateMigrationCaseRequest(
             migrationData.getComplaintType(),
+            migrationData.getDateCreated(),
             migrationData.getDateReceived(),
             migrationData.getDateCompleted(),
             initialData,
