@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -15,6 +16,9 @@ public class CreateMigrationCaseRequest {
 
     @JsonProperty("type")
     private String type;
+
+    @JsonProperty("dateCreated")
+    private LocalDate dateCreated;
 
     @JsonProperty("dateReceived")
     private LocalDate dateReceived;

@@ -98,6 +98,7 @@ public class MigrationServiceTest {
 
         createMigrationCaseRequest = new CreateMigrationCaseRequest(
                 migrationData.getComplaintType(),
+                migrationData.getDateCreated(),
                 migrationData.getDateReceived(),
                 migrationData.getDateCompleted(),
                 initialData,

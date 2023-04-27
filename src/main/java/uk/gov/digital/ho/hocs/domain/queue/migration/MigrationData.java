@@ -23,6 +23,8 @@ public class MigrationData extends CaseData {
     private static final String CASE_ATTACHMENTS = "$.caseAttachments";
     public static final String CLOSED_STATUS = "closed";
 
+    public static final String CREATION_DATE = "$.creationDate";
+
     public MigrationData(String jsonBody) {
         super(jsonBody);
     }
@@ -54,6 +56,8 @@ public class MigrationData extends CaseData {
             ? getCaseStatusDate()
             : null;
     }
+
+    public LocalDate getDateCreated() { return LocalDate.parse(ctx.read(CREATION_DATE)); }
 
     public LinkedHashMap getPrimaryCorrespondent() {return ctx.read(PRIMARY_CORRESPONDENT);}
 
