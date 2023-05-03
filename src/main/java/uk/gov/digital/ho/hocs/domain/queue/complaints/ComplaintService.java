@@ -94,7 +94,7 @@ public class ComplaintService {
                 log.info("createComplaint, added primary correspondent : caseUUID : {}, primaryCorrespondent : {}", caseUuid, primaryCorrespondent);
 
                 caseworkClient.updateCase(caseUuid, stageUuid, Map.of(CORRESPONDENTS_LABEL, primaryCorrespondent.toString()));
-                log.info("createComplaint, case data updated with primary correspondent: caseUUID : {}, primaryCorrespondent : {}", caseUuid, complaintData.getComplaintType());
+                log.info("createComplaint, case data updated with primary correspondent: caseUUID : {}, primaryCorrespondent : {}", caseUuid, primaryCorrespondent);
             } else {
                 log.info("createComplaint, no correspondents added to case : caseUUID : {}", caseUuid);
             }
