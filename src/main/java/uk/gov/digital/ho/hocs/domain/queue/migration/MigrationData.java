@@ -22,8 +22,8 @@ public class MigrationData extends CaseData {
     private static final String ADDITIONAL_CORRESPONDENTS = "$.additionalCorrespondents";
     private static final String CASE_ATTACHMENTS = "$.caseAttachments";
     public static final String CLOSED_STATUS = "closed";
-
     public static final String CREATION_DATE = "$.creationDate";
+    public static final String MIGRATED_REFERENCE = "$.sourceCaseId";
 
     public MigrationData(String jsonBody) {
         super(jsonBody);
@@ -63,6 +63,10 @@ public class MigrationData extends CaseData {
 
     public Optional<String> getAdditionalCorrespondents() {
         return optionalString(ctx, ADDITIONAL_CORRESPONDENTS);
+    }
+
+    public String getMigratedReference() {
+        return ctx.read(MIGRATED_REFERENCE);
     }
 
     public Optional<String> optionalString(ReadContext ctx, String path) {
