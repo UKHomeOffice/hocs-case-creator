@@ -49,7 +49,8 @@ public class MigrationCaseworkClientTest {
                 date,
                 date,
                 data,
-                "COMP_MIGRATION_END");
+                "COMP_MIGRATION_END",
+                "test");
 
         CreateMigrationCaseResponse expectedResponse = new CreateMigrationCaseResponse(responseUUID, stageUUID, caseRef, data);
         ResponseEntity<CreateMigrationCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
