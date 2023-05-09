@@ -174,7 +174,8 @@ public class MigrationService {
             initialData,
             migrationData.getDateCompleted() != null
                 ? StageTypeMapping.getStageType(migrationData.getComplaintType())
-                : null
+                : null,
+            migrationData.getMigratedReference()
         );
     }
 

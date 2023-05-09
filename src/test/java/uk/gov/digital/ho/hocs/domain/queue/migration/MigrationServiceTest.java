@@ -102,7 +102,8 @@ public class MigrationServiceTest {
                 migrationData.getDateReceived(),
                 migrationData.getDateCompleted(),
                 initialData,
-                StageTypeMapping.getStageType("COMP"));
+                StageTypeMapping.getStageType("COMP"),
+                migrationData.getMigratedReference());
 
         caseworkCaseResponse = new CreateMigrationCaseResponse(
                 UUID.randomUUID(),
