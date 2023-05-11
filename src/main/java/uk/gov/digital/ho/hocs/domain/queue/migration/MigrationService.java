@@ -11,20 +11,17 @@ import uk.gov.digital.ho.hocs.application.RequestData;
 import uk.gov.digital.ho.hocs.client.document.DocumentClient;
 import uk.gov.digital.ho.hocs.client.document.dto.CreateDocumentRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.*;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.migration.workflow.MigrationWorkflowClient;
 import uk.gov.digital.ho.hocs.client.migration.workflow.dto.CreateWorkflowRequest;
-import uk.gov.digital.ho.hocs.client.workflow.WorkflowClient;
 import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -79,6 +76,7 @@ public class MigrationService {
             log.info("Created migration case {}", createMigrationCaseResponse.getUuid());
         } catch (Exception e) {
             messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_MIGRATION_FAILED);
+            log.info("Failed to create migration case", e);
             throw new ApplicationExceptions.CaseCreationException(e.getMessage(), LogEvent.CASE_MIGRATION_FAILURE);
         }
 
@@ -89,10 +87,11 @@ public class MigrationService {
         //case is open if no completed date set
         if(migrationCaseData.getDateCompleted() == null)  {
             try {
-            workflowClient.createWorkflow(new CreateWorkflowRequest(caseId));
-            log.info("Created workflow for open case {}", caseId);
+                workflowClient.createWorkflow(new CreateWorkflowRequest(caseId));
+                log.info("Created workflow for open case {}", caseId);
             } catch (Exception e) {
                 messageLogService.updateStatus(requestData.getCorrelationId(), Status.WORKFLOW_MIGRATION_FAILURE);
+                log.info("Failed to create workflow for open case {}", caseId, e);
                 throw new ApplicationExceptions.CaseCreationException(e.getMessage(), LogEvent.WORKFLOW_MIGRATION_FAILURE);
             }
         }
