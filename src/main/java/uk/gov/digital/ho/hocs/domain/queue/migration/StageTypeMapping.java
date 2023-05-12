@@ -6,6 +6,7 @@ public class StageTypeMapping {
     final static String MIGRATION_BF2_CASE_CLOSED = "MIGRATION_BF2_CASE_CLOSED";
     final static String MIGRATION_IEDET_CASE_CLOSED = "MIGRATION_IEDET_CASE_CLOSED";
     final static String MIGRATION_POGR_CASE_CLOSED = "MIGRATION_POGR_CASE_CLOSED";
+    final static String MIGRATION_TO_CASE_CLOSED = "MIGRATION_TO_CASE_CLOSED";
 
     public static String getStageType(String caseType) {
         switch(caseType) {
@@ -17,6 +18,8 @@ public class StageTypeMapping {
                 return MIGRATION_IEDET_CASE_CLOSED;
             case "POGR":
                 return MIGRATION_POGR_CASE_CLOSED;
+            case "TO":
+                return MIGRATION_TO_CASE_CLOSED;
             default:
                 return null;
         }
