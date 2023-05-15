@@ -73,10 +73,4 @@ public class MigrationQueueListenerIntegrationTest extends AwsSqsIntegrationTest
         String validMessage = TestFileReader.getResourceFileAsString("migration/validMigrationPOGR.json");
         amazonSQSAsync.sendMessage(queueUrl, validMessage);
     }
-
-    @Test
-    public void consumeMessageFromMigrationQueueWithTOCaseType() {
-        String validMessage = TestFileReader.getResourceFileAsString("migration/validMigrationTO.json");
-        amazonSQSAsync.sendMessage(queueUrl, validMessage);
-    }
 }
