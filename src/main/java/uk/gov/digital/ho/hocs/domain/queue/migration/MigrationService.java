@@ -21,7 +21,12 @@ import uk.gov.digital.ho.hocs.domain.exceptions.ApplicationExceptions;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -76,7 +81,7 @@ public class MigrationService {
             log.info("Created migration case {}", createMigrationCaseResponse.getUuid());
         } catch (Exception e) {
             messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_MIGRATION_FAILED);
-            log.info("Failed to create migration case", e);
+            log.error("Failed to create migration case", e);
             throw new ApplicationExceptions.CaseCreationException(e.getMessage(), LogEvent.CASE_MIGRATION_FAILURE);
         }
 
@@ -91,7 +96,7 @@ public class MigrationService {
                 log.info("Created workflow for open case {}", caseId);
             } catch (Exception e) {
                 messageLogService.updateStatus(requestData.getCorrelationId(), Status.WORKFLOW_MIGRATION_FAILURE);
-                log.info("Failed to create workflow for open case {}", caseId, e);
+                log.error("Failed to create workflow for open case {}", caseId, e);
                 throw new ApplicationExceptions.CaseCreationException(e.getMessage(), LogEvent.WORKFLOW_MIGRATION_FAILURE);
             }
         }
@@ -118,7 +123,7 @@ public class MigrationService {
             );
             log.info("Created correspondents for migrated case {}", caseId);
         } catch (Exception e) {
-            log.info("Failed to create correspondents for migrated case {}", caseId);
+            log.error("Failed to create correspondents for migrated case {}", caseId, e);
             messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_CORRESPONDENTS_FAILED);
             throw new ApplicationExceptions.CaseCorrespondentCreationException(
                 e.getMessage(),
@@ -150,7 +155,7 @@ public class MigrationService {
             );
             log.info("Created case attachments for migrated case {}", caseId);
         } catch (Exception e) {
-            log.info("Failed to create case attachments for migrated case {}", caseId);
+            log.error("Failed to create case attachments for migrated case {}", caseId, e);
             messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
             throw new ApplicationExceptions.DocumentCreationException(
                 e.getMessage(),
@@ -207,7 +212,7 @@ public class MigrationService {
             );
             return caseAttachments;
         } catch (Exception e) {
-            log.info("Failed to create case attachments for case id {}", caseId);
+            log.error("Failed to create case attachments for case id {}", caseId, e);
             messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_DOCUMENT_FAILED);
             return Collections.emptyList();
         }
