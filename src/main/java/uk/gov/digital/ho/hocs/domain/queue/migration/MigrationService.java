@@ -232,7 +232,7 @@ public class MigrationService {
             );
             return additionalCorrespondents;
         } catch (Exception e) {
-            log.info("Failed to create additional correspondents for case id {}", caseId);
+            log.error("Failed to create additional correspondents for case id {}", caseId);
             messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_ADDITIONAL_CORRESPONDENTS_FAILED);
             return Collections.emptyList();
         }
