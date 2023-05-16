@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.domain.repositories.entities;
 public enum Status {
     CASE_CORRESPONDENTS_FAILED,
     CASE_CORRESPONDENTS_HANDLED,
+    CASE_ADDITIONAL_CORRESPONDENTS_FAILED,
     CASE_CREATED,
     CASE_CREATION_FAILED,
     CASE_DOCUMENT_CREATED,

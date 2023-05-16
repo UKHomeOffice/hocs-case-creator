@@ -90,6 +90,7 @@ public class MigrationServiceTest {
                 migrationData.getPrimaryCorrespondent());
 
         List<MigrationComplaintCorrespondent> additionalCorrespondents = migrationService.getAdditionalCorrespondents(
+                UUID.randomUUID(),
                 migrationData.getAdditionalCorrespondents());
 
         caseAttachment = new ArrayList<>();
@@ -229,6 +230,7 @@ public class MigrationServiceTest {
 
         List<MigrationComplaintCorrespondent> migrationComplaintCorrespondents =
                 migrationService.getAdditionalCorrespondents(
+                        UUID.randomUUID(),
                         migrationData.getAdditionalCorrespondents());
 
         assertTrue(migrationComplaintCorrespondents.isEmpty());
