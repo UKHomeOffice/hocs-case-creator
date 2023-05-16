@@ -8,10 +8,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.digital.ho.hocs.application.RequestData;
 import uk.gov.digital.ho.hocs.client.document.DocumentClient;
 import uk.gov.digital.ho.hocs.client.document.dto.CreateDocumentRequest;
@@ -23,6 +25,7 @@ import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCo
 import uk.gov.digital.ho.hocs.client.migration.workflow.MigrationWorkflowClient;
 import uk.gov.digital.ho.hocs.client.migration.workflow.dto.CreateWorkflowRequest;
 import uk.gov.digital.ho.hocs.domain.queue.complaints.CorrespondentType;
+import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
 
 import java.util.*;
@@ -280,6 +283,32 @@ public class MigrationServiceTest {
             migrationService.composeMigrateCaseRequest(migrationData, migrationCaseTypeData);
 
         assertNull(request.getDateCompleted());
+    }
+
+    @Test
+    public void shouldLogConflictResponsesAsDuplicateCases() {
+        when(migrationCaseworkClient.migrateCase(any())).thenThrow(HttpClientErrorException.create(
+            HttpStatus.CONFLICT,
+            "Conflict",
+            HttpHeaders.EMPTY,
+            null,
+            null
+        ));
+
+        String correlationId = UUID.randomUUID().toString();
+        when(requestData.getCorrelationId()).thenReturn(correlationId);
+
+        var json = getResourceFileAsString("migration/validMigrationOpenCOMP.json");
+        var migrationData = new MigrationData(json);
+
+        migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
+
+        verify(migrationCaseworkClient, times(1)).migrateCase(any());
+        verify(migrationCaseworkClient, times(0)).migrateCorrespondent(any());
+        verify(documentClient, times(0)).createDocument(any(), any());
+        verify(workflowClient, times(0)).createWorkflow(any());
+
+        verify(messageLogService, times(1)).updateStatus(correlationId, Status.DUPLICATE_MIGRATED_REFERENCE);
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.digital.ho.hocs.application.LogEvent;
 import uk.gov.digital.ho.hocs.application.RequestData;
 import uk.gov.digital.ho.hocs.client.document.DocumentClient;
@@ -79,6 +80,13 @@ public class MigrationService {
             caseId = createMigrationCaseResponse.getUuid();
             stageId = createMigrationCaseResponse.getStageId();
             log.info("Created migration case {}", createMigrationCaseResponse.getUuid());
+        } catch (HttpClientErrorException.Conflict e) {
+            messageLogService.updateStatus(requestData.getCorrelationId(), Status.DUPLICATE_MIGRATED_REFERENCE);
+            log.warn(
+                "Case was not migrated, a case with migrated reference {} already exists",
+                migrationCaseData.getMigratedReference()
+            );
+            return;
         } catch (Exception e) {
             messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_MIGRATION_FAILED);
             log.error("Failed to create migration case", e);
