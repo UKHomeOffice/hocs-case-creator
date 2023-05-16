@@ -189,7 +189,7 @@ public class MigrationService {
         MigrationData migrationData
     ) {
         MigrationComplaintCorrespondent primaryCorrespondent = getPrimaryCorrespondent(migrationData.getPrimaryCorrespondent());
-        List<MigrationComplaintCorrespondent> additionalCorrespondents = getAdditionalCorrespondents(migrationData.getAdditionalCorrespondents());
+        List<MigrationComplaintCorrespondent> additionalCorrespondents = getAdditionalCorrespondents(caseId, migrationData.getAdditionalCorrespondents());
 
         return new CreateMigrationCorrespondentRequest(
             caseId,
@@ -227,7 +227,7 @@ public class MigrationService {
         return primaryCorrespondent;
     }
 
-    public List<MigrationComplaintCorrespondent> getAdditionalCorrespondents(Optional<String> correspondentJson) {
+    public List<MigrationComplaintCorrespondent> getAdditionalCorrespondents(UUID caseId, Optional<String> correspondentJson) {
         try {
             List<MigrationComplaintCorrespondent> additionalCorrespondents = objectMapper.convertValue(
                 objectMapper.readValue(correspondentJson.get(), JSONArray.class),
@@ -236,6 +236,8 @@ public class MigrationService {
             );
             return additionalCorrespondents;
         } catch (Exception e) {
+            log.error("Failed to create additional correspondents for case id {}", caseId);
+            messageLogService.updateStatus(requestData.getCorrelationId(), Status.CASE_ADDITIONAL_CORRESPONDENTS_FAILED);
             return Collections.emptyList();
         }
     }
