@@ -26,30 +26,26 @@ public class CaseworkClientTest {
     private CaseworkClient caseworkClient;
     @Mock
     private RestClient restClient;
+    private String messageId;
 
     @Before
     public void setUp() {
         caseworkClient = new CaseworkClient(restClient, serviceUrl);
+        messageId = UUID.randomUUID().toString();
     }
 
     @Test
     public void shouldGetStageForCase() {
-
         UUID caseUUID = UUID.randomUUID();
         UUID expectedStageUUID = UUID.randomUUID();
 
-        String jsonFromCaseService = "{\n" +
-                "  \"stages\" : [ {\n" +
-                "    \"uuid\" : \"%s\",\n" +
-                "    \"caseUUID\" : \"%s\",\n" +
-                "  } ]\n" +
-                "}\n";
+        String jsonFromCaseService = "{\n" + "  \"stages\" : [ {\n" + "    \"uuid\" : \"%s\",\n" + "    \"caseUUID\" : \"%s\",\n" + "  } ]\n" + "}\n";
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(String.format(jsonFromCaseService, expectedStageUUID, caseUUID), HttpStatus.OK);
 
-        when(restClient.get(serviceUrl, String.format("/active-stage/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
+        when(restClient.get(messageId, serviceUrl, String.format("/active-stage/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
 
-        UUID actualStageUUID = caseworkClient.getStageForCase(caseUUID);
+        UUID actualStageUUID = caseworkClient.getStageForCase(messageId, caseUUID);
 
         assertEquals(expectedStageUUID, actualStageUUID);
     }
@@ -63,9 +59,9 @@ public class CaseworkClientTest {
 
         ResponseEntity<Void> responseEntity = new ResponseEntity<>(HttpStatus.OK);
 
-        when(restClient.put(serviceUrl, String.format("/case/%s/stage/%s/user", caseUUID, stageUUID), request, Void.class)).thenReturn(responseEntity);
+        when(restClient.put(messageId, serviceUrl, String.format("/case/%s/stage/%s/user", caseUUID, stageUUID), request, Void.class)).thenReturn(responseEntity);
 
-        ResponseEntity<Void> voidResponseEntity = caseworkClient.updateStageUser(caseUUID, stageUUID, userUUID);
+        ResponseEntity<Void> voidResponseEntity = caseworkClient.updateStageUser(messageId, caseUUID, stageUUID, userUUID);
 
         assertEquals(voidResponseEntity.getStatusCode(), HttpStatus.OK);
 
@@ -80,71 +76,51 @@ public class CaseworkClientTest {
 
         ResponseEntity<Void> responseEntity = new ResponseEntity<>(HttpStatus.OK);
 
-        when(restClient.put(serviceUrl, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), request, Void.class)).thenReturn(responseEntity);
+        when(restClient.put(messageId, serviceUrl, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), request, Void.class)).thenReturn(responseEntity);
 
-        ResponseEntity<Void> voidResponseEntity = caseworkClient.updateStageTeam(caseUUID, stageUUID, teamUUID);
+        ResponseEntity<Void> voidResponseEntity = caseworkClient.updateStageTeam(messageId, caseUUID, stageUUID, teamUUID);
 
         assertEquals(voidResponseEntity.getStatusCode(), HttpStatus.OK);
     }
 
     @Test(expected = IllegalStateException.class)
     public void shouldRejectMultipleActiveStages() {
-
         UUID caseUUID = UUID.randomUUID();
 
-        String jsonFromCaseService = "{\n" +
-                "  \"stages\" : [ {\n" +
-                "    \"uuid\" : \"n\",\n" +
-                "    \"caseUUID\" : \"n\",\n" +
-                "  }," +
-                "{\n" +
-                "    \"uuid\" : \"n\",\n" +
-                "    \"caseUUID\" : \"n\",\n" +
-                "  } ]\n" +
-                "}\n";
+        String jsonFromCaseService = "{\n" + "  \"stages\" : [ {\n" + "    \"uuid\" : \"n\",\n" + "    \"caseUUID\" : \"n\",\n" + "  }," + "{\n" + "    \"uuid\" : \"n\",\n" + "    \"caseUUID\" : \"n\",\n" + "  } ]\n" + "}\n";
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonFromCaseService, HttpStatus.OK);
 
-        when(restClient.get(serviceUrl, String.format("/active-stage/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
+        when(restClient.get(messageId, serviceUrl, String.format("/active-stage/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
 
-        caseworkClient.getStageForCase(caseUUID);
-
+        caseworkClient.getStageForCase(messageId, caseUUID);
     }
 
     @Test
     public void shouldAddCorrespondentToCase() {
-
         UUID caseUUID = UUID.randomUUID();
         UUID stageForCaseUUID = UUID.randomUUID();
 
         ComplaintCorrespondent ComplaintCorrespondent = new ComplaintCorrespondent("Baz Smith", CorrespondentType.COMPLAINANT);
 
-        caseworkClient.addCorrespondentToCase(caseUUID, stageForCaseUUID, ComplaintCorrespondent);
+        caseworkClient.addCorrespondentToCase(messageId, caseUUID, stageForCaseUUID, ComplaintCorrespondent);
 
-        verify(restClient).post(serviceUrl, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageForCaseUUID), ComplaintCorrespondent, Void.class);
-
+        verify(restClient).post(messageId, serviceUrl, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageForCaseUUID), ComplaintCorrespondent, Void.class);
     }
 
     @Test
     public void shouldGetPrimaryCorrespondent() {
-
         UUID caseUUID = UUID.randomUUID();
         UUID expectedPrimaryCorrespondentUUID = UUID.randomUUID();
 
-        String jsonFromCaseService = "{\n" +
-                "  \"uuid\" : \"%s\",\n" +
-                "  \"primaryCorrespondentUUID\" : \"%s\",\n" +
-                "  \"primaryCorrespondent\" : null,\n" +
-                "  \"stages\" : [ ]\n" +
-                "}\n";
+        String jsonFromCaseService = "{\n" + "  \"uuid\" : \"%s\",\n" + "  \"primaryCorrespondentUUID\" : \"%s\",\n" + "  \"primaryCorrespondent\" : null,\n" + "  \"stages\" : [ ]\n" + "}\n";
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(String.format(jsonFromCaseService, caseUUID, expectedPrimaryCorrespondentUUID), HttpStatus.OK);
 
-        when(restClient.get(serviceUrl, String.format("/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
+        when(restClient.get(messageId, serviceUrl, String.format("/case/%s", caseUUID), String.class)).thenReturn(responseEntity);
 
-        UUID actualPrimaryCorrespondentUUID = caseworkClient.getPrimaryCorrespondent(caseUUID);
+        UUID actualPrimaryCorrespondentUUID = caseworkClient.getPrimaryCorrespondent(messageId, caseUUID);
 
         assertEquals(expectedPrimaryCorrespondentUUID, actualPrimaryCorrespondentUUID);
-
     }
 }

@@ -1,4 +1,5 @@
 package uk.gov.digital.ho.hocs.client.migration.casework;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.when;
 public class MigrationCaseworkClientTest {
 
     private final String serviceUrl = "http://localhost:8082";
+    private String messageId;
     private MigrationCaseworkClient migrationCaseworkClient;
     @Mock
     private RestClient restClient;
@@ -33,6 +35,7 @@ public class MigrationCaseworkClientTest {
     @Before
     public void setUp() {
         migrationCaseworkClient = new MigrationCaseworkClient(restClient, serviceUrl);
+        messageId = UUID.randomUUID().toString();
     }
 
     @Test
@@ -43,52 +46,28 @@ public class MigrationCaseworkClientTest {
         Map<String, String> data = new HashMap<>();
         LocalDate date = LocalDate.now();
 
-        CreateMigrationCaseRequest request = new CreateMigrationCaseRequest(
-                "Migration",
-                date,
-                date,
-                date,
-                data,
-                "COMP_MIGRATION_END",
-                "test");
+        CreateMigrationCaseRequest request = new CreateMigrationCaseRequest("Migration", date, date, date, data, "COMP_MIGRATION_END", "test");
 
         CreateMigrationCaseResponse expectedResponse = new CreateMigrationCaseResponse(responseUUID, stageUUID, caseRef, data);
         ResponseEntity<CreateMigrationCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
 
-        when(restClient.post(serviceUrl, "/migrate/case", request, CreateMigrationCaseResponse.class)).thenReturn(responseEntity);
+        when(restClient.post(messageId, serviceUrl, "/migrate/case", request, CreateMigrationCaseResponse.class)).thenReturn(responseEntity);
 
-        migrationCaseworkClient.migrateCase(request);
+        migrationCaseworkClient.migrateCase(messageId, request);
 
-        verify(restClient).post(serviceUrl, "/migrate/case", request, CreateMigrationCaseResponse.class);
+        verify(restClient).post(messageId, serviceUrl, "/migrate/case", request, CreateMigrationCaseResponse.class);
     }
 
     @Test
     public void shouldMigrateCorrespondent() {
-        CreateMigrationCorrespondentRequest request  = new CreateMigrationCorrespondentRequest(
-                UUID.randomUUID(),
-                UUID.randomUUID(),
-                createCorrespondent(),
-                List.of(createCorrespondent())
-        );
+        CreateMigrationCorrespondentRequest request = new CreateMigrationCorrespondentRequest(UUID.randomUUID(), UUID.randomUUID(), createCorrespondent(), List.of(createCorrespondent()));
 
-        migrationCaseworkClient.migrateCorrespondent(request);
+        migrationCaseworkClient.migrateCorrespondent(messageId, request);
 
-        verify(restClient).post(serviceUrl,"/migrate/correspondent", request, Void.class);
+        verify(restClient).post(messageId, serviceUrl, "/migrate/correspondent", request, Void.class);
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {
-        return new MigrationComplaintCorrespondent(
-                "fullName",
-                CorrespondentType.COMPLAINANT,
-                "address1",
-                "address2",
-                "address3",
-                "postcode",
-                "country",
-                "organisation",
-                "telephone",
-                "email",
-                "reference"
-        );
+        return new MigrationComplaintCorrespondent("fullName", CorrespondentType.COMPLAINANT, "address1", "address2", "address3", "postcode", "country", "organisation", "telephone", "email", "reference");
     }
 }

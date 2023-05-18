@@ -26,6 +26,7 @@ public class MessageValidator {
 
     private final JsonSchema schema;
 
+
     public MessageValidator(ObjectMapper objectMapper,
                             MessageLogService messageLogService,
                             String schemaName) {

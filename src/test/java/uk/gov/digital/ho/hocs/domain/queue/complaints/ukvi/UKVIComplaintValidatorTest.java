@@ -21,15 +21,12 @@ import static uk.gov.digital.ho.hocs.utilities.TestFileReader.getResourceFileAsS
 @RunWith(MockitoJUnitRunner.class)
 public class UKVIComplaintValidatorTest {
 
+    private final String messageId = UUID.randomUUID().toString();
     private MessageValidator complaintValidator;
-
     @Mock
     private RequestData requestData;
-
     @Mock
     private MessageLogService messageLogService;
-
-    private final String messageId = UUID.randomUUID().toString();
 
     @Before
     public void setUp() {
@@ -41,7 +38,7 @@ public class UKVIComplaintValidatorTest {
 
     @Test
     public void shouldPassValidationWithGoodJson() throws Exception {
-        var goodJson =  getResourceFileAsString("webform/staffBehaviour.json");
+        var goodJson = getResourceFileAsString("webform/staffBehaviour.json");
         var message = new Message(messageId, goodJson, MessageType.UKVI_COMPLAINTS);
         complaintValidator.validate(message);
     }
@@ -55,7 +52,7 @@ public class UKVIComplaintValidatorTest {
 
     @Test(expected = Exception.class)
     public void shouldFailValidationWithNotJson() throws Exception {
-        var notJson =  getResourceFileAsString("webform/notJson.txt");
+        var notJson = getResourceFileAsString("webform/notJson.txt");
         var message = new Message(messageId, notJson, MessageType.UKVI_COMPLAINTS);
         complaintValidator.validate(message);
     }
