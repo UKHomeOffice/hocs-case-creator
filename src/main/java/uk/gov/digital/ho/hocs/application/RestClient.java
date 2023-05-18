@@ -1,6 +1,7 @@
 package uk.gov.digital.ho.hocs.application;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,35 +16,46 @@ public class RestClient {
 
     private final RestTemplate restTemplate;
 
-    private final MessageContext messageContext;
+    private static final String USER_ID_HEADER = "X-Auth-UserId";
+
+    private static final String GROUP_HEADER = "X-Auth-Groups";
+
+    private final String userId;
+
+    private final String group;
 
     public RestClient(RestTemplate restTemplate,
-                      MessageContext messageContext) {
+                      @Value("${case.creator.identity.user}") String user,
+                      @Value("${case.creator.identity.group}") String group) {
         this.restTemplate = restTemplate;
-        this.messageContext = messageContext;
+
+        this.userId = user;
+        this.group = group;
     }
 
-    public <T, R> ResponseEntity<R> post(String serviceBaseURL, String url, T request, Class<R> responseType) {
+    public <T, R> ResponseEntity<R> post(String messageId, String serviceBaseURL, String url, T request, Class<R> responseType) {
         log.info("RestClient making POST request to {}{}", serviceBaseURL, url);
-        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.POST, new HttpEntity<>(request, createAuthHeaders()), responseType);
+        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.POST, new HttpEntity<>(request, createAuthHeaders(messageId)), responseType);
     }
 
-    public <T, R> ResponseEntity<R> put(String serviceBaseURL, String url, T request, Class<R> responseType) {
+    public <T, R> ResponseEntity<R> put(String messageId, String serviceBaseURL, String url, T request, Class<R> responseType) {
         log.info("RestClient making PUT request to {}{}", serviceBaseURL, url);
-        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.PUT, new HttpEntity<>(request, createAuthHeaders()), responseType);
+        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.PUT, new HttpEntity<>(request, createAuthHeaders(messageId)), responseType);
     }
 
-    public <T, R> ResponseEntity<R> get(String serviceBaseURL, String url, Class<R> responseType) {
+    public <T, R> ResponseEntity<R> get(String messageId, String serviceBaseURL, String url, Class<R> responseType) {
         log.info("RestClient making GET request to {}{}", serviceBaseURL, url);
-        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.GET, new HttpEntity<>(null, createAuthHeaders()), responseType);
+        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.GET, new HttpEntity<>(null, createAuthHeaders(messageId)), responseType);
     }
 
-    HttpHeaders createAuthHeaders() {
+    HttpHeaders createAuthHeaders(String messageId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(MessageContext.CORRELATION_ID_HEADER, messageContext.getCorrelationId());
-        headers.add(MessageContext.GROUP_HEADER, messageContext.getGroups());
-        headers.add(MessageContext.USER_ID_HEADER, messageContext.getUserId());
+
+        headers.add(RequestData.CORRELATION_ID_HEADER, messageId);
+        headers.add(USER_ID_HEADER, userId);
+        headers.add(GROUP_HEADER, group);
+
         return headers;
     }
 

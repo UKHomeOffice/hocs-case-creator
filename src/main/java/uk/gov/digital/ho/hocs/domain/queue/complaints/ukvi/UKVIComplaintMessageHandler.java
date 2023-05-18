@@ -37,7 +37,7 @@ public class UKVIComplaintMessageHandler implements MessageHandler {
         }
 
         ukviComplaintValidator.validate(message);
-        ukviComplaintService.createComplaint(message.message());
+        ukviComplaintService.createComplaint(message);
 
         messageLogService.complete(message.id());
 

@@ -20,8 +20,9 @@ public class MigrationCaseworkClient {
         this.serviceBaseURL = serviceBaseURL;
     }
 
-    public CreateMigrationCaseResponse migrateCase(CreateMigrationCaseRequest request) {
+    public CreateMigrationCaseResponse migrateCase(String messageId, CreateMigrationCaseRequest request) {
         ResponseEntity<CreateMigrationCaseResponse> responseEntity = restClient.post(
+                messageId,
                 serviceBaseURL,
                 "/migrate/case",
                 request,
@@ -29,8 +30,9 @@ public class MigrationCaseworkClient {
         return responseEntity.getBody();
     }
 
-    public ResponseEntity migrateCorrespondent(CreateMigrationCorrespondentRequest request) {
+    public ResponseEntity migrateCorrespondent(String messageId, CreateMigrationCorrespondentRequest request) {
         ResponseEntity responseEntity = restClient.post(
+                messageId,
                 serviceBaseURL,
                 "/migrate/correspondent",
                 request,

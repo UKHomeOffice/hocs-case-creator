@@ -3,6 +3,7 @@ package uk.gov.digital.ho.hocs.domain.queue.migration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.domain.model.Message;
 
 @Slf4j
 @Service
@@ -18,9 +19,9 @@ public class MigrationCaseService {
         this.migrationCaseTypeData = migrationCaseTypeData;
     }
 
-    public void createMigrationCase(String jsonBody) {
-        MigrationData migrationData = new MigrationData(jsonBody);
+    public void createMigrationCase(Message message) {
+        MigrationData migrationData = new MigrationData(message.message());
         migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
-        migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
+        migrationService.createMigrationCase(message.id(), migrationData, migrationCaseTypeData);
     }
 }

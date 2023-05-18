@@ -17,33 +17,29 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class RestClientTest {
 
+    private final String baseUrl = "http://service";
+    private final String url = "/url";
+    private final String request = "body";
+    private final String user = "U1";
+    private final String group = "G1";
     @Mock
     private RestTemplate restTemplate;
-
     private RestClient restClient;
-    private String baseUrl;
-    private String url;
-    private String request;
     private String expectedUrl;
+    private String messageId;
     private HttpHeaders expectedAuthHeaders;
 
     @Before
     public void setUp() {
-        RequestData requestData = new RequestData();
-        MessageContext messageContext = new MessageContext(requestData,  "u1", "g1", "t1");
-        restClient = new RestClient(restTemplate, messageContext);
-        baseUrl = "http://service";
-        url = "/url";
+        messageId = UUID.randomUUID().toString();
+        restClient = new RestClient(restTemplate, user, group);
         expectedUrl = String.format("%s%s", baseUrl, url);
-        request = "body";
-        messageContext.initialiseContext(UUID.randomUUID().toString());
-        expectedAuthHeaders = restClient.createAuthHeaders();
+        expectedAuthHeaders = restClient.createAuthHeaders(messageId);
     }
 
     @Test
     public void shouldPost() {
-
-        restClient.post(baseUrl, url, request, String.class);
+        restClient.post(messageId, baseUrl, url, request, String.class);
 
         HttpEntity<String> expectedRequestEntity = new HttpEntity<>(request, expectedAuthHeaders);
 
@@ -52,8 +48,7 @@ public class RestClientTest {
 
     @Test
     public void shouldPut() {
-
-        restClient.put(baseUrl, url, request, String.class);
+        restClient.put(messageId, baseUrl, url, request, String.class);
 
         HttpEntity<String> expectedRequestEntity = new HttpEntity<>(request, expectedAuthHeaders);
 
@@ -62,8 +57,7 @@ public class RestClientTest {
 
     @Test
     public void shouldGet() {
-
-        restClient.get(baseUrl, url, String.class);
+        restClient.get(messageId, baseUrl, url, String.class);
 
         HttpEntity<String> expectedRequestEntity = new HttpEntity<>(null, expectedAuthHeaders);
 
