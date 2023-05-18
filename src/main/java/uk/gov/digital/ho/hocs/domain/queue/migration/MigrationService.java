@@ -35,6 +35,7 @@ import java.util.UUID;
 public class MigrationService {
 
     public static final String CHANNEL_LABEL = "Channel";
+    public static final String EXISTING_CASE_ID_PATH = "$.existing_case_id";
 
     private final MigrationCaseworkClient migrationCaseworkClient;
 
@@ -114,9 +115,9 @@ public class MigrationService {
 
     private static String readExistingCaseId(String responseBody) {
         try {
-            return JsonPath.read(responseBody, "$.existing_case_id");
+            return JsonPath.read(responseBody, EXISTING_CASE_ID_PATH);
         } catch (Exception ignored) {
-            return "Unknown";
+            return null;
         }
     }
 
