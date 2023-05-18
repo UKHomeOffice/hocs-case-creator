@@ -300,14 +300,14 @@ public class MigrationServiceTest {
         var json = getResourceFileAsString("migration/validMigrationOpenCOMP.json");
         var migrationData = new MigrationData(json);
 
-        migrationService.createMigrationCase(messageId, migrationData, migrationCaseTypeData);
+        Status status = migrationService.createMigrationCase(messageId, migrationData, migrationCaseTypeData);
 
         verify(migrationCaseworkClient, times(1)).migrateCase(eq(messageId), any());
         verify(migrationCaseworkClient, times(0)).migrateCorrespondent(eq(messageId), any());
         verify(documentClient, times(0)).createDocument(eq(messageId), any());
         verify(workflowClient, times(0)).createWorkflow(eq(messageId), any());
 
-        verify(messageLogService, times(1)).updateStatus(messageId, Status.DUPLICATE_MIGRATED_REFERENCE);
+        assertEquals(Status.DUPLICATE_MIGRATED_REFERENCE, status);
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {
