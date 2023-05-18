@@ -289,7 +289,7 @@ public class MigrationServiceTest {
 
     @Test
     public void shouldLogConflictResponsesAsDuplicateCases() {
-        when(migrationCaseworkClient.migrateCase(any())).thenThrow(HttpClientErrorException.create(
+        when(migrationCaseworkClient.migrateCase(eq(messageId), any())).thenThrow(HttpClientErrorException.create(
             HttpStatus.CONFLICT,
             "Conflict",
             HttpHeaders.EMPTY,
@@ -297,20 +297,17 @@ public class MigrationServiceTest {
             null
         ));
 
-        String correlationId = UUID.randomUUID().toString();
-        when(requestData.getCorrelationId()).thenReturn(correlationId);
-
         var json = getResourceFileAsString("migration/validMigrationOpenCOMP.json");
         var migrationData = new MigrationData(json);
 
-        migrationService.createMigrationCase(migrationData, migrationCaseTypeData);
+        migrationService.createMigrationCase(messageId, migrationData, migrationCaseTypeData);
 
-        verify(migrationCaseworkClient, times(1)).migrateCase(any());
-        verify(migrationCaseworkClient, times(0)).migrateCorrespondent(any());
-        verify(documentClient, times(0)).createDocument(any(), any());
-        verify(workflowClient, times(0)).createWorkflow(any());
+        verify(migrationCaseworkClient, times(1)).migrateCase(eq(messageId), any());
+        verify(migrationCaseworkClient, times(0)).migrateCorrespondent(eq(messageId), any());
+        verify(documentClient, times(0)).createDocument(eq(messageId), any());
+        verify(workflowClient, times(0)).createWorkflow(eq(messageId), any());
 
-        verify(messageLogService, times(1)).updateStatus(correlationId, Status.DUPLICATE_MIGRATED_REFERENCE);
+        verify(messageLogService, times(1)).updateStatus(messageId, Status.DUPLICATE_MIGRATED_REFERENCE);
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {

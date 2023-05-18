@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.domain.queue.migration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import org.springframework.context.annotation.Profile;
@@ -59,9 +60,9 @@ public class MigrationService {
         this.workflowClient = workflowClient;
     }
 
-    public void createMigrationCase(String messageId, 
-                                    MigrationData migrationCaseData, 
-                                    MigrationCaseTypeData migrationCaseTypeData) {
+    public Status createMigrationCase(String messageId,
+                                      MigrationData migrationCaseData,
+                                      MigrationCaseTypeData migrationCaseTypeData) {
         UUID caseId;
         UUID stageId;
 
@@ -80,12 +81,12 @@ public class MigrationService {
             stageId = createMigrationCaseResponse.getStageId();
             log.info("Created migration case {}", createMigrationCaseResponse.getUuid());
         } catch (HttpClientErrorException.Conflict e) {
-            messageLogService.updateStatus(requestData.getCorrelationId(), Status.DUPLICATE_MIGRATED_REFERENCE);
             log.warn(
-                "Case was not migrated, a case with migrated reference {} already exists",
-                migrationCaseData.getMigratedReference()
+                "Case was not migrated, a case with migrated reference {} already exists with caseId: {}",
+                migrationCaseData.getMigratedReference(),
+                readExistingCaseId(e.getResponseBodyAsString())
             );
-            return;
+            return Status.DUPLICATE_MIGRATED_REFERENCE;
         } catch (Exception e) {
             messageLogService.updateStatus(messageId, Status.CASE_MIGRATION_FAILED);
             log.error("Failed to create migration case", e);
@@ -108,7 +109,15 @@ public class MigrationService {
             }
         }
 
-        messageLogService.updateStatus(messageId, Status.COMPLETED);
+        return Status.COMPLETED;
+    }
+
+    private static String readExistingCaseId(String responseBody) {
+        try {
+            return JsonPath.read(responseBody, "$.existing_case_id");
+        } catch (Exception ignored) {
+            return "Unknown";
+        }
     }
 
     void createCorrespondents(
