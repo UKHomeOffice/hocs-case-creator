@@ -50,6 +50,8 @@ public class ProcessingService {
 
         for (Message message : messages) {
             try {
+                log.info("Processing message: {}.", message.id());
+                messageLogService.updateProcessedTime(message.id());
                 messageHandler.handleMessage(message);
             } catch (Exception e) {
                 failedMessageCount++;

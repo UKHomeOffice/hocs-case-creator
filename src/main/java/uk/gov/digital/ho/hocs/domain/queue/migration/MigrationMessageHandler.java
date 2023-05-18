@@ -40,7 +40,7 @@ public class MigrationMessageHandler implements MessageHandler {
         }
 
         migrationValidator.validate(message);
-        migrationCaseService.createMigrationCase(message.message());
+        migrationCaseService.createMigrationCase(message);
 
         messageLogService.complete(message.id());
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.digital.ho.hocs.domain.model.Message;
 import uk.gov.digital.ho.hocs.domain.queue.complaints.ComplaintService;
 import uk.gov.digital.ho.hocs.domain.repositories.EnumMappingsRepository;
 
@@ -27,7 +28,7 @@ public class UKVIComplaintService {
         this.ukviTypeData = ukviTypeData;
     }
 
-    public void createComplaint(String jsonBody) {
-        complaintService.createComplaint(new UKVIComplaintData(jsonBody, objectMapper, enumMappingsRepository), ukviTypeData);
+    public void createComplaint(Message message) {
+        complaintService.createComplaint(message.id(), new UKVIComplaintData(message.message(), objectMapper, enumMappingsRepository), ukviTypeData);
     }
 }

@@ -26,14 +26,14 @@ public class WorkflowClient {
         this.serviceBaseURL = serviceBaseURL;
     }
 
-    public CreateCaseResponse createCase(CreateCaseRequest request) {
-        ResponseEntity<CreateCaseResponse> responseEntity = restClient.post(serviceBaseURL, "/case", request, CreateCaseResponse.class);
+    public CreateCaseResponse createCase(String messageId, CreateCaseRequest request) {
+        ResponseEntity<CreateCaseResponse> responseEntity = restClient.post(messageId, serviceBaseURL, "/case", request, CreateCaseResponse.class);
         return responseEntity.getBody();
     }
 
-    public UUID advanceCase(UUID caseUUID, UUID stageUUID, Map<String, String> data) {
+    public UUID advanceCase(String messageId, UUID caseUUID, UUID stageUUID, Map<String, String> data) {
         AdvanceCaseDataRequest request = new AdvanceCaseDataRequest(data);
-        ResponseEntity<String> responseEntity = restClient.post(serviceBaseURL, String.format("/case/%s/stage/%s", caseUUID, stageUUID), request, String.class);
+        ResponseEntity<String> responseEntity = restClient.post(messageId, serviceBaseURL, String.format("/case/%s/stage/%s", caseUUID, stageUUID), request, String.class);
         return UUID.fromString(JsonPath.read(responseEntity.getBody(), "$.stageUUID"));
     }
 }
