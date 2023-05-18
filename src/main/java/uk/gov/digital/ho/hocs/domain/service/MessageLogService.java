@@ -45,6 +45,11 @@ public class MessageLogService {
     }
 
     @Transactional
+    public void completeWithStatus(String messageId, Status status) {
+        messageLogRepository.updateStatusAndCompleted(messageId, status);
+    }
+
+    @Transactional
     public void updateProcessedTime(String id) {
         messageLogRepository.updateProcessedTime(id, LocalDateTime.now());
     }

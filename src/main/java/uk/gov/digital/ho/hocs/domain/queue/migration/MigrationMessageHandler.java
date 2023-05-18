@@ -40,9 +40,9 @@ public class MigrationMessageHandler implements MessageHandler {
         }
 
         migrationValidator.validate(message);
-        migrationCaseService.createMigrationCase(message);
+        Status status = migrationCaseService.createMigrationCase(message);
 
-        messageLogService.complete(message.id());
+        messageLogService.completeWithStatus(message.id(), status);
     }
 
 }

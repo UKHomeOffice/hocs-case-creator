@@ -2,10 +2,12 @@ package uk.gov.digital.ho.hocs.domain.queue.migration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.digital.ho.hocs.application.LogEvent;
 import uk.gov.digital.ho.hocs.client.document.DocumentClient;
 import uk.gov.digital.ho.hocs.client.document.dto.CreateDocumentRequest;
@@ -33,6 +35,7 @@ import java.util.UUID;
 public class MigrationService {
 
     public static final String CHANNEL_LABEL = "Channel";
+    public static final String EXISTING_CASE_ID_PATH = "$.existing_case_id";
 
     private final MigrationCaseworkClient migrationCaseworkClient;
 
@@ -58,9 +61,9 @@ public class MigrationService {
         this.workflowClient = workflowClient;
     }
 
-    public void createMigrationCase(String messageId, 
-                                    MigrationData migrationCaseData, 
-                                    MigrationCaseTypeData migrationCaseTypeData) {
+    public Status createMigrationCase(String messageId,
+                                      MigrationData migrationCaseData,
+                                      MigrationCaseTypeData migrationCaseTypeData) {
         UUID caseId;
         UUID stageId;
 
@@ -78,6 +81,13 @@ public class MigrationService {
             caseId = createMigrationCaseResponse.getUuid();
             stageId = createMigrationCaseResponse.getStageId();
             log.info("Created migration case {}", createMigrationCaseResponse.getUuid());
+        } catch (HttpClientErrorException.Conflict e) {
+            log.warn(
+                "Case was not migrated, a case with migrated reference {} already exists with caseId: {}",
+                migrationCaseData.getMigratedReference(),
+                readExistingCaseId(e.getResponseBodyAsString())
+            );
+            return Status.DUPLICATE_MIGRATED_REFERENCE;
         } catch (Exception e) {
             messageLogService.updateStatus(messageId, Status.CASE_MIGRATION_FAILED);
             log.error("Failed to create migration case", e);
@@ -100,7 +110,15 @@ public class MigrationService {
             }
         }
 
-        messageLogService.updateStatus(messageId, Status.COMPLETED);
+        return Status.COMPLETED;
+    }
+
+    private static String readExistingCaseId(String responseBody) {
+        try {
+            return JsonPath.read(responseBody, EXISTING_CASE_ID_PATH);
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     void createCorrespondents(

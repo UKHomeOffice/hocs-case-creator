@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.domain.model.Message;
+import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 
 @Slf4j
 @Service
@@ -19,9 +20,9 @@ public class MigrationCaseService {
         this.migrationCaseTypeData = migrationCaseTypeData;
     }
 
-    public void createMigrationCase(Message message) {
+    public Status createMigrationCase(Message message) {
         MigrationData migrationData = new MigrationData(message.message());
         migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
-        migrationService.createMigrationCase(message.id(), migrationData, migrationCaseTypeData);
+        return migrationService.createMigrationCase(message.id(), migrationData, migrationCaseTypeData);
     }
 }
