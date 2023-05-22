@@ -64,7 +64,7 @@
     "fieldName": "documentReturnRequest",
     "choices": {
       "YES_DOCS_SERVICE": "Documents service",
-      "YES_OTHER": "Other",
+      "YES_OTHER": "Yes",
       "NO": "No"
     }
   },
