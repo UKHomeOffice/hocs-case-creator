@@ -42,6 +42,7 @@ public class MigrationService {
     private final DocumentClient documentClient;
 
     private final MigrationWorkflowClient workflowClient;
+    private final CaseDataService caseDataService;
 
 
     private final MessageLogService messageLogService;
@@ -53,12 +54,15 @@ public class MigrationService {
             ObjectMapper objectMapper,
             MessageLogService messageLogService,
             DocumentClient documentClient,
-            MigrationWorkflowClient workflowClient) {
+            MigrationWorkflowClient workflowClient,
+            CaseDataService caseDataService
+            ) {
         this.migrationCaseworkClient = migrationCaseworkClient;
         this.objectMapper = objectMapper;
         this.messageLogService = messageLogService;
         this.documentClient = documentClient;
         this.workflowClient = workflowClient;
+        this.caseDataService = caseDataService;
     }
 
     public Status createMigrationCase(String messageId,
@@ -69,7 +73,7 @@ public class MigrationService {
 
         // case
         try {
-            var migrationRequest = composeMigrateCaseRequest(migrationCaseData, migrationCaseTypeData);
+            var migrationRequest = composeMigrateCaseRequest(messageId, migrationCaseData, migrationCaseTypeData);
             CreateMigrationCaseResponse createMigrationCaseResponse = migrationCaseworkClient.migrateCase(
                     messageId,
                     migrationRequest);
@@ -185,15 +189,19 @@ public class MigrationService {
     }
 
     CreateMigrationCaseRequest composeMigrateCaseRequest(
+        String messageId,
         MigrationData migrationData,
         MigrationCaseTypeData migrationCaseTypeData
     ) {
-        Map<String, String> initialData = Map.of(CHANNEL_LABEL, migrationCaseTypeData.getOrigin());
+        Map<String, String> initialData =
+            caseDataService.parseCaseDataJson(messageId, migrationData.getCaseDataJson());
+        initialData.put(CHANNEL_LABEL, migrationCaseTypeData.getOrigin());
 
         return new CreateMigrationCaseRequest(
             migrationData.getComplaintType(),
             migrationData.getDateCreated(),
             migrationData.getDateReceived(),
+            migrationData.getCaseDeadline(),
             migrationData.getDateCompleted(),
             initialData,
             migrationData.getDateCompleted() != null
