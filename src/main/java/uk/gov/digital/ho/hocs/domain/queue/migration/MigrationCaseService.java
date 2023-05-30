@@ -12,17 +12,14 @@ import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 public class MigrationCaseService {
 
     private final MigrationService migrationService;
-    private final MigrationCaseTypeData migrationCaseTypeData;
 
-    public MigrationCaseService(MigrationService migrationService,
-                                MigrationCaseTypeData migrationCaseTypeData) {
+    public MigrationCaseService(MigrationService migrationService) {
         this.migrationService = migrationService;
-        this.migrationCaseTypeData = migrationCaseTypeData;
     }
 
     public Status createMigrationCase(Message message) {
         MigrationData migrationData = new MigrationData(message.message());
-        migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
+        MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData(migrationData.getComplaintType());
         return migrationService.createMigrationCase(message.id(), migrationData, migrationCaseTypeData);
     }
 }
