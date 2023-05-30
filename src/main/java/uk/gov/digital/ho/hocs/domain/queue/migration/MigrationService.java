@@ -195,7 +195,6 @@ public class MigrationService {
     ) {
         Map<String, String> initialData =
             caseDataService.parseCaseDataJson(messageId, migrationData.getCaseDataJson());
-        initialData.put(CHANNEL_LABEL, migrationCaseTypeData.getOrigin());
 
         return new CreateMigrationCaseRequest(
             migrationData.getComplaintType(),
