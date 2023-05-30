@@ -46,7 +46,7 @@ public class MigrationCaseworkClientTest {
         Map<String, String> data = new HashMap<>();
         LocalDate date = LocalDate.now();
 
-        CreateMigrationCaseRequest request = new CreateMigrationCaseRequest("Migration", date, date, date, data, "COMP_MIGRATION_END", "test");
+        CreateMigrationCaseRequest request = new CreateMigrationCaseRequest("Migration", date, date, date, date, data, "COMP_MIGRATION_END", "test");
 
         CreateMigrationCaseResponse expectedResponse = new CreateMigrationCaseResponse(responseUUID, stageUUID, caseRef, data);
         ResponseEntity<CreateMigrationCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);

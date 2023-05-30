@@ -45,6 +45,8 @@
   "caseStatus": "closed",
   "caseStatusDate": "2022-09-01",
   "creationDate": "1965-06-22",
+  "dateReceived": "1965-06-21",
+  "deadlineDate": "1965-07-21",
   "caseData": [
     {"name": "type", "value": "cms"},
     {"name": "creationDate", "value": "01/07/2022"}

@@ -23,7 +23,10 @@ public class MigrationData extends CaseData {
     private static final String CASE_ATTACHMENTS = "$.caseAttachments";
     public static final String CLOSED_STATUS = "closed";
     public static final String CREATION_DATE = "$.creationDate";
+    public static final String RECEIVED_DATE = "$.dateReceived";
     public static final String MIGRATED_REFERENCE = "$.sourceCaseId";
+    public static final String CASE_DATA = "$.caseData";
+    public static final String CASE_DEADLINE = "$.deadlineDate";
 
     public MigrationData(String jsonBody) {
         super(jsonBody);
@@ -57,9 +60,28 @@ public class MigrationData extends CaseData {
             : null;
     }
 
+    public String getCaseDataJson() {
+        return ctx.read(CASE_DATA, JSONArray.class).toJSONString();
+    }
+
     public LocalDate getDateCreated() { return LocalDate.parse(ctx.read(CREATION_DATE)); }
 
-    public LinkedHashMap getPrimaryCorrespondent() {return ctx.read(PRIMARY_CORRESPONDENT);}
+    @Override
+    public LocalDate getDateReceived() {
+        return LocalDate.parse(ctx.read(RECEIVED_DATE));
+    }
+
+    public LocalDate getCaseDeadline() {
+        try {
+            CharSequence read = ctx.read(CASE_DEADLINE);
+            return LocalDate.parse(read);
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    public LinkedHashMap<String, Object> getPrimaryCorrespondent() {return ctx.read(PRIMARY_CORRESPONDENT);}
 
     public Optional<String> getAdditionalCorrespondents() {
         return optionalString(ctx, ADDITIONAL_CORRESPONDENTS);
