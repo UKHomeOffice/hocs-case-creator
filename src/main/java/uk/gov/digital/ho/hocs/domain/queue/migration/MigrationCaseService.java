@@ -19,7 +19,7 @@ public class MigrationCaseService {
 
     public Status createMigrationCase(Message message) {
         MigrationData migrationData = new MigrationData(message.message());
-        MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData(migrationData.getComplaintType());
-        return migrationService.createMigrationCase(message.id(), migrationData, migrationCaseTypeData);
+
+        return migrationService.createMigrationCase(message.id(), migrationData);
     }
 }

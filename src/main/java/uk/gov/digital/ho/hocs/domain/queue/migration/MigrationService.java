@@ -33,8 +33,6 @@ import java.util.UUID;
 @Service
 @Profile("migration")
 public class MigrationService {
-
-    public static final String CHANNEL_LABEL = "Channel";
     public static final String EXISTING_CASE_ID_PATH = "$.existing_case_id";
 
     private final MigrationCaseworkClient migrationCaseworkClient;
@@ -65,15 +63,13 @@ public class MigrationService {
         this.caseDataService = caseDataService;
     }
 
-    public Status createMigrationCase(String messageId,
-                                      MigrationData migrationCaseData,
-                                      MigrationCaseTypeData migrationCaseTypeData) {
+    public Status createMigrationCase(String messageId, MigrationData migrationCaseData) {
         UUID caseId;
         UUID stageId;
 
         // case
         try {
-            var migrationRequest = composeMigrateCaseRequest(messageId, migrationCaseData, migrationCaseTypeData);
+            var migrationRequest = composeMigrateCaseRequest(messageId, migrationCaseData);
             CreateMigrationCaseResponse createMigrationCaseResponse = migrationCaseworkClient.migrateCase(
                     messageId,
                     migrationRequest);
@@ -190,8 +186,7 @@ public class MigrationService {
 
     CreateMigrationCaseRequest composeMigrateCaseRequest(
         String messageId,
-        MigrationData migrationData,
-        MigrationCaseTypeData migrationCaseTypeData
+        MigrationData migrationData
     ) {
         Map<String, String> initialData =
             caseDataService.parseCaseDataJson(messageId, migrationData.getCaseDataJson());
@@ -233,12 +228,11 @@ public class MigrationService {
 
     public List<CaseAttachment> getCaseAttachments(String messageId, UUID caseId, String attachmentsJson) {
         try {
-            List<CaseAttachment> caseAttachments = objectMapper.convertValue(
+            return objectMapper.convertValue(
                 objectMapper.readValue(attachmentsJson, JSONArray.class),
                 new TypeReference<>() {
                 }
             );
-            return caseAttachments;
         } catch (Exception e) {
             log.error("Failed to create case attachments for case id {}", caseId, e);
             messageLogService.updateStatus(messageId, Status.CASE_DOCUMENT_FAILED);
@@ -246,23 +240,21 @@ public class MigrationService {
         }
     }
 
-    public MigrationComplaintCorrespondent getPrimaryCorrespondent(LinkedHashMap correspondentJson) {
-        MigrationComplaintCorrespondent primaryCorrespondent = objectMapper.convertValue(
+    public MigrationComplaintCorrespondent getPrimaryCorrespondent(LinkedHashMap<String, Object> correspondentJson) {
+        return objectMapper.convertValue(
             correspondentJson,
             new TypeReference<>() {
             }
         );
-        return primaryCorrespondent;
     }
 
     public List<MigrationComplaintCorrespondent> getAdditionalCorrespondents(String messageId, UUID caseId, Optional<String> correspondentJson) {
         try {
-            List<MigrationComplaintCorrespondent> additionalCorrespondents = objectMapper.convertValue(
-                objectMapper.readValue(correspondentJson.get(), JSONArray.class),
+            return objectMapper.convertValue(
+                objectMapper.readValue(correspondentJson.orElse("[]"), JSONArray.class),
                 new TypeReference<>() {
                 }
             );
-            return additionalCorrespondents;
         } catch (Exception e) {
             log.error("Failed to create additional correspondents for case id {}", caseId);
             messageLogService.updateStatus(messageId, Status.CASE_ADDITIONAL_CORRESPONDENTS_FAILED);

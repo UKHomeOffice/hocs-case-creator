@@ -63,31 +63,19 @@ public class MigrationServiceTest {
 
     private CreateMigrationCaseRequest createMigrationCaseRequest;
 
-    private CreateMigrationCaseResponse caseworkCaseResponse;
-
     private CreateMigrationCorrespondentRequest createMigrationCorrespondentRequest;
-
-    private CreateDocumentRequest createMigrationCaseAttachmentRequest;
 
     private MigrationData migrationData;
 
     private String json;
 
-    private MigrationCaseTypeData migrationCaseTypeData;
-
-    private List<CaseAttachment> caseAttachment;
-
     private ObjectMapper objectMapper;
 
     private String messageId;
 
-    @Mock
-    private ResponseEntity<CreateMigrationCaseResponse> responseEntity;
-
     @Before
     public void setUp() {
-        migrationCaseTypeData = new MigrationCaseTypeData();
-        Map<String, String> initialData = Map.of("Channel", migrationCaseTypeData.getOrigin());
+        Map<String, String> initialData = Map.of();
 
         json = getResourceFileAsString("migration/validMigration.json");
         migrationData = new MigrationData(json);
@@ -110,10 +98,6 @@ public class MigrationServiceTest {
                 UUID.randomUUID(),
                 migrationData.getAdditionalCorrespondents());
 
-        caseAttachment = new ArrayList<>();
-        caseAttachment.add(new CaseAttachment("document1.pdf","To document","e7f5d229-3f23-450c-8f11-8ef647943ae3"));
-        caseAttachment.add(new CaseAttachment("document2.pdf","pdf","9bf2665f-6b21-47af-8789-34a25b136670"));
-
         createMigrationCaseRequest = new CreateMigrationCaseRequest(
                 migrationData.getComplaintType(),
                 migrationData.getDateCreated(),
@@ -124,14 +108,15 @@ public class MigrationServiceTest {
                 StageTypeMapping.getStageType("COMP"),
                 migrationData.getMigratedReference());
 
-        caseworkCaseResponse = new CreateMigrationCaseResponse(
-                UUID.randomUUID(),
-                UUID.randomUUID(),
-                "reference",
-                Collections.emptyMap()
+        CreateMigrationCaseResponse caseworkCaseResponse = new CreateMigrationCaseResponse(
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            "reference",
+            Collections.emptyMap()
         );
 
-        when(migrationCaseworkClient.migrateCase(eq(messageId), any(CreateMigrationCaseRequest.class))).thenReturn(caseworkCaseResponse);
+        when(migrationCaseworkClient.migrateCase(eq(messageId), any(CreateMigrationCaseRequest.class))).thenReturn(
+            caseworkCaseResponse);
 
         createMigrationCorrespondentRequest = new CreateMigrationCorrespondentRequest(
                 UUID.randomUUID(),
@@ -147,14 +132,7 @@ public class MigrationServiceTest {
 
         when(migrationCaseworkClient.migrateCorrespondent(eq(messageId), any(CreateMigrationCorrespondentRequest.class))).thenReturn(correspondentResponseEntity);
 
-        createMigrationCaseAttachmentRequest = new CreateDocumentRequest(
-                "name",
-                "To Document",
-                "path",
-                UUID.randomUUID()
-        );
-
-        ResponseEntity<UUID> caseAttachmentResponseEntity = new ResponseEntity(
+        ResponseEntity<UUID> caseAttachmentResponseEntity = new ResponseEntity<>(
                 UUID.randomUUID(),
                 null,
                 HttpStatus.OK
@@ -171,7 +149,7 @@ public class MigrationServiceTest {
         var json = getResourceFileAsString("migration/validMigrationOpenCOMP.json");
         var migrationData = new MigrationData(json);
 
-        migrationService.createMigrationCase(messageId, migrationData, migrationCaseTypeData);
+        migrationService.createMigrationCase(messageId, migrationData);
 
         verify(migrationCaseworkClient, times(1)).migrateCase(eq(messageId), any());
         verify(migrationCaseworkClient, times(1)).migrateCorrespondent(eq(messageId), any());
@@ -180,7 +158,7 @@ public class MigrationServiceTest {
 
     @Test
     public void migrateClosedCase() {
-        migrationService.createMigrationCase(messageId, migrationData, migrationCaseTypeData);
+        migrationService.createMigrationCase(messageId, migrationData);
         verify(migrationCaseworkClient, times(1)).migrateCase(messageId, createMigrationCaseRequest);
         verify(migrationCaseworkClient, times(1)).migrateCorrespondent(eq(messageId), any());
         verify(documentClient, times(1)).createDocument(any(), any());
@@ -212,7 +190,6 @@ public class MigrationServiceTest {
     public void shouldFailWithMissingPrimaryCorrespondent(){
         json = getResourceFileAsString("migration/invalidMigrationMissingPrimaryCorrespondent.json");
         migrationData = new MigrationData(json);
-        migrationCaseTypeData = new MigrationCaseTypeData();
         migrationService = new MigrationService(
             migrationCaseworkClient,
             objectMapper,
@@ -240,7 +217,6 @@ public class MigrationServiceTest {
     public void shouldContainNoAdditionalCorrespondents() {
         json = getResourceFileAsString("migration/validMigrationNoAdditionalCorrespondents.json");
         migrationData = new MigrationData(json);
-        migrationCaseTypeData = new MigrationCaseTypeData();
         migrationService = new MigrationService(
             migrationCaseworkClient,
             objectMapper,
@@ -263,7 +239,6 @@ public class MigrationServiceTest {
     public void shouldNotContainAttachments() {
         json = getResourceFileAsString("migration/validMigrationNoCaseAttachments.json");
         migrationData = new MigrationData(json);
-        migrationCaseTypeData = new MigrationCaseTypeData();
         migrationService = new MigrationService(
             migrationCaseworkClient,
             objectMapper,
@@ -287,11 +262,8 @@ public class MigrationServiceTest {
         json = getResourceFileAsString("migration/validMigrationCOMP.json");
         migrationData = new MigrationData(json);
 
-        MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData();
-        migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
-
         CreateMigrationCaseRequest request =
-                migrationService.composeMigrateCaseRequest(messageId, migrationData, migrationCaseTypeData);
+                migrationService.composeMigrateCaseRequest(messageId, migrationData);
 
         assertEquals("COMP", request.getType());
     }
@@ -302,11 +274,8 @@ public class MigrationServiceTest {
         json = getResourceFileAsString("migration/validMigrationOpenCOMP.json");
         migrationData = new MigrationData(json);
 
-        MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData();
-        migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
-
         CreateMigrationCaseRequest request =
-            migrationService.composeMigrateCaseRequest(messageId, migrationData, migrationCaseTypeData);
+            migrationService.composeMigrateCaseRequest(messageId, migrationData);
 
         assertNull(request.getDateCompleted());
     }
@@ -317,11 +286,8 @@ public class MigrationServiceTest {
         json = getResourceFileAsString("migration/validMigrationCOMP.json");
         migrationData = new MigrationData(json);
 
-        MigrationCaseTypeData migrationCaseTypeData = new MigrationCaseTypeData();
-        migrationCaseTypeData.setCaseType(migrationData.getComplaintType());
-
         CreateMigrationCaseRequest request =
-            migrationService.composeMigrateCaseRequest(messageId, migrationData, migrationCaseTypeData);
+            migrationService.composeMigrateCaseRequest(messageId, migrationData);
 
         assertEquals(request.getDateCreated(), LocalDate.parse("2010-06-22"));
         assertEquals(request.getDateReceived(), LocalDate.parse("1965-06-21"));
@@ -342,7 +308,7 @@ public class MigrationServiceTest {
         var json = getResourceFileAsString("migration/validMigrationOpenCOMP.json");
         var migrationData = new MigrationData(json);
 
-        Status status = migrationService.createMigrationCase(messageId, migrationData, migrationCaseTypeData);
+        Status status = migrationService.createMigrationCase(messageId, migrationData);
 
         verify(migrationCaseworkClient, times(1)).migrateCase(eq(messageId), any());
         verify(migrationCaseworkClient, times(0)).migrateCorrespondent(eq(messageId), any());
@@ -365,7 +331,7 @@ public class MigrationServiceTest {
         when(caseDataService.parseCaseDataJson(messageId, migrationData.getCaseDataJson()))
             .thenReturn(caseData);
 
-        migrationService.createMigrationCase(messageId, migrationData, migrationCaseTypeData);
+        migrationService.createMigrationCase(messageId, migrationData);
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {

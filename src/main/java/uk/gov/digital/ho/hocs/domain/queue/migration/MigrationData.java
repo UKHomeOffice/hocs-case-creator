@@ -81,7 +81,7 @@ public class MigrationData extends CaseData {
         }
     }
 
-    public LinkedHashMap getPrimaryCorrespondent() {return ctx.read(PRIMARY_CORRESPONDENT);}
+    public LinkedHashMap<String, Object> getPrimaryCorrespondent() {return ctx.read(PRIMARY_CORRESPONDENT);}
 
     public Optional<String> getAdditionalCorrespondents() {
         return optionalString(ctx, ADDITIONAL_CORRESPONDENTS);
