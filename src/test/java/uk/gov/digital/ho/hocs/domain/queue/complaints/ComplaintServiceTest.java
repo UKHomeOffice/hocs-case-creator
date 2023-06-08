@@ -81,7 +81,7 @@ public class ComplaintServiceTest {
         messageId = UUID.randomUUID().toString();
 
         var initialCaseData = Map.of(
-                "ComplaintType", "POOR_INFORMATION_OR_STAFF_BEHAVIOUR",
+                "ComplaintType", "POOR_STAFF_BEHAVIOUR",
                 "Channel", "Webform",
                 "XOriginatedFrom", "Webform");
 
@@ -95,7 +95,7 @@ public class ComplaintServiceTest {
         when(workflowClient.createCase(messageId, createCaseRequest)).thenReturn(createCaseResponse);
         when(caseworkClient.getStageForCase(messageId, caseUUID)).thenReturn(stageForCaseUUID);
         when(caseworkClient.getPrimaryCorrespondent(messageId, caseUUID)).thenReturn(primaryCorrespondent);
-        when(enumMappingsRepository.getTextValueByNameAndFieldName("complaintType", "POOR_INFORMATION_OR_STAFF_BEHAVIOUR")).thenReturn("Staff behaviour");
+        when(enumMappingsRepository.getTextValueByNameAndFieldName("complaintType", "POOR_STAFF_BEHAVIOUR")).thenReturn("Staff behaviour");
         when(enumMappingsRepository.getTextValueByNameAndFieldName("referenceType", "IHS_REF")).thenReturn("IHS reference");
         when(enumMappingsRepository.getTextValueByNameAndFieldName("applicantType", "AGENT")).thenReturn("Agent");
         when(enumMappingsRepository.getTextValueByNameAndFieldName("agentType", "RELATIVE")).thenReturn("Relative");
