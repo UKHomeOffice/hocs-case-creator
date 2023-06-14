@@ -8,7 +8,7 @@ localstack:
 aws:
   sqs:
     queue:
-      url: ${localstack.base-url}/queue/case-creator-queue
+      url: ${localstack.base-url}/queue/migration-queue
       account:
         access-key: 12345
         secret-key: 12345
@@ -31,7 +31,8 @@ case:
     case-service: http://localhost:8082
     workflow-service: http://localhost:8091
     document-service: http://localhost:8083
+    info-service: http://localhost:8085
     identity:
-      group: /TEST_TEAM_GROUP
-      team: 00000000-0000-0000-0000-000000000002
-      user: 00000000-0000-0000-0000-000000000003
+      group: /evPR7Fa9S063C6SLsHkNaw
+      team:
+      user: 428804f0-bc6a-45b2-9dad-a73378606b01

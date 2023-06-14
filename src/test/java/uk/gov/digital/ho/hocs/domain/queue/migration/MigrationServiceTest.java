@@ -17,10 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.digital.ho.hocs.client.document.DocumentClient;
 import uk.gov.digital.ho.hocs.client.document.dto.CreateDocumentRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.*;
 import uk.gov.digital.ho.hocs.client.migration.workflow.MigrationWorkflowClient;
 import uk.gov.digital.ho.hocs.client.migration.workflow.dto.CreateWorkflowRequest;
 import uk.gov.digital.ho.hocs.domain.queue.complaints.CorrespondentType;
@@ -28,12 +25,7 @@ import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 import uk.gov.digital.ho.hocs.domain.service.MessageLogService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -58,6 +50,9 @@ public class MigrationServiceTest {
 
     @Mock
     private CaseDataService caseDataService;
+
+    @Mock
+    private TopicMapper topicMapper;
 
     private MigrationService migrationService;
 
@@ -86,9 +81,11 @@ public class MigrationServiceTest {
                 messageLogService,
                 documentClient,
                 workflowClient,
-                caseDataService
-            );
+                caseDataService,
+                topicMapper
+        );
         messageId = UUID.randomUUID().toString();
+        UUID topicId = UUID.randomUUID();
 
         MigrationComplaintCorrespondent primaryCorrespondent = migrationService.getPrimaryCorrespondent(
                 migrationData.getPrimaryCorrespondent());
@@ -124,7 +121,7 @@ public class MigrationServiceTest {
                 primaryCorrespondent,
                 additionalCorrespondents);
 
-        ResponseEntity<?> correspondentResponseEntity = new ResponseEntity<>(
+        ResponseEntity<Void> correspondentResponseEntity = new ResponseEntity<>(
                 null,
                 null,
                 HttpStatus.OK
@@ -142,6 +139,7 @@ public class MigrationServiceTest {
 
         when(workflowClient.createWorkflow(eq(messageId), any(CreateWorkflowRequest.class))).thenReturn(ResponseEntity.ok().build());
 
+        when(topicMapper.getTopicId(messageId, "Primary topic")).thenReturn(Optional.of(topicId));
     }
 
     @Test
@@ -154,6 +152,9 @@ public class MigrationServiceTest {
         verify(migrationCaseworkClient, times(1)).migrateCase(eq(messageId), any());
         verify(migrationCaseworkClient, times(1)).migrateCorrespondent(eq(messageId), any());
         verify(workflowClient, times(1)).createWorkflow(eq(messageId), any());
+
+        verify(topicMapper, never()).getTopicId(any(), any());
+        verify(migrationCaseworkClient, never()).createPrimaryTopic(any(), any());
     }
 
     @Test
@@ -162,7 +163,10 @@ public class MigrationServiceTest {
         verify(migrationCaseworkClient, times(1)).migrateCase(messageId, createMigrationCaseRequest);
         verify(migrationCaseworkClient, times(1)).migrateCorrespondent(eq(messageId), any());
         verify(documentClient, times(1)).createDocument(any(), any());
+
         verify(workflowClient, never()).createWorkflow(eq(messageId), any());
+        verify(topicMapper, never()).getTopicId(any(), any());
+        verify(migrationCaseworkClient, never()).createPrimaryTopic(any(), any());
     }
 
     @Test
@@ -196,7 +200,8 @@ public class MigrationServiceTest {
             messageLogService,
             documentClient,
             workflowClient,
-            caseDataService
+            caseDataService,
+            topicMapper
         );
 
         migrationData.getPrimaryCorrespondent();
@@ -223,7 +228,8 @@ public class MigrationServiceTest {
             messageLogService,
             documentClient,
             workflowClient,
-            caseDataService
+            caseDataService,
+            topicMapper
         );
 
         List<MigrationComplaintCorrespondent> migrationComplaintCorrespondents =
@@ -245,7 +251,8 @@ public class MigrationServiceTest {
             messageLogService,
             documentClient,
             workflowClient,
-            caseDataService
+            caseDataService,
+            topicMapper
         );
 
         List<CaseAttachment> caseAttachments =
@@ -332,6 +339,18 @@ public class MigrationServiceTest {
             .thenReturn(caseData);
 
         migrationService.createMigrationCase(messageId, migrationData);
+    }
+
+    @Test
+    public void whenAPrimaryTopicIsIncluded_theTopicShouldBeAddedToTheCase() {
+        var json = getResourceFileAsString("migration/validMigrationTOWithPrimaryTopic.json");
+        var migrationData = new MigrationData(json);
+
+        migrationService.createMigrationCase(messageId, migrationData);
+
+        verify(topicMapper, times(1)).getTopicId(messageId, "Primary topic");
+        verify(migrationCaseworkClient, times(1))
+                .createPrimaryTopic(eq(messageId), any(CreatePrimaryTopicRequest.class));
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {

@@ -8,10 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.application.RestClient;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.*;
 import uk.gov.digital.ho.hocs.domain.queue.complaints.CorrespondentType;
 
 import java.time.LocalDate;
@@ -65,6 +62,19 @@ public class MigrationCaseworkClientTest {
         migrationCaseworkClient.migrateCorrespondent(messageId, request);
 
         verify(restClient).post(messageId, serviceUrl, "/migrate/correspondent", request, Void.class);
+    }
+
+    @Test
+    public void shouldCreatePrimaryTopic() {
+        CreatePrimaryTopicRequest request = new CreatePrimaryTopicRequest(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                UUID.randomUUID()
+        );
+
+        migrationCaseworkClient.createPrimaryTopic(messageId, request);
+
+        verify(restClient).post(messageId, serviceUrl, "/migrate/primary-topic", request, Void.class);
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {

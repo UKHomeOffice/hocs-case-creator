@@ -1,0 +1,62 @@
+{
+  "caseType": "TO",
+  "sourceCaseId": "in",
+  "primaryCorrespondent": {
+    "fullName": "fullName",
+    "correspondentType": "COMPLAINANT",
+    "address1": "address1",
+    "address2": "address2",
+    "address3": "address3",
+    "postcode": "postcode",
+    "country": "country",
+    "organisation": "organisation",
+    "telephone": "telephone",
+    "email": "email",
+    "reference": "reference"
+  },
+  "additionalCorrespondents": [
+    {
+      "fullName": "fullName",
+      "correspondentType": "COMPLAINANT",
+      "address1": "address1",
+      "address2": "address2",
+      "address3": "address3",
+      "postcode": "postcode",
+      "country": "country",
+      "organisation": "organisation",
+      "telephone": "telephone",
+      "email": "email",
+      "reference": "reference"
+    },
+    {
+      "fullName": "fullName",
+      "correspondentType": "COMPLAINANT",
+      "address1": "address1",
+      "address2": "address2",
+      "address3": "address3",
+      "postcode": "postcode",
+      "country": "country",
+      "organisation": "organisation",
+      "telephone": "telephone",
+      "email": "email",
+      "reference": "reference"
+    }
+  ],
+  "caseStatus": "closed",
+  "caseStatusDate": "2022-09-01",
+  "creationDate": "1965-06-22",
+  "dateReceived": "1965-06-21",
+  "deadlineDate": "1965-07-21",
+  "primaryTopic": "Primary topic",
+  "caseData": [
+    {"name": "type", "value": "cms"},
+    {"name": "creationDate", "value": "01/07/2022"}
+  ],
+  "caseAttachments": [
+    {
+      "documentPath": "e7f5d229-3f23-450c-8f11-8ef647943ae3",
+      "displayName": "document1.pdf",
+      "documentType": "To document"
+    }
+  ]
+}

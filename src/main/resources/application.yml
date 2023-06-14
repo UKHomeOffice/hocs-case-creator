@@ -48,10 +48,13 @@ case:
     case-service: http://localhost:8082
     workflow-service: http://localhost:8091
     document-service: http://localhost:8083
+    info-service: http://localhost:8085
     identity:
       group:
       team:
       user:
+    migration:
+      parent-topic-uuid: 'eb939efd-8aa8-46e0-a9c3-9ae979e151ab'
 
 management:
   endpoints:
