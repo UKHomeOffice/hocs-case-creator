@@ -54,7 +54,7 @@ case:
       team:
       user:
     migration:
-      parent-topic-uuid: 'eb939efd-8aa8-46e0-a9c3-9ae979e151ab'
+      parent-topic-uuid:
 
 management:
   endpoints:

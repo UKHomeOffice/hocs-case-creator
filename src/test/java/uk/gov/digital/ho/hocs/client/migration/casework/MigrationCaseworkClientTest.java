@@ -8,7 +8,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.digital.ho.hocs.application.RestClient;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.*;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreatePrimaryTopicRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.domain.queue.complaints.CorrespondentType;
 
 import java.time.LocalDate;
