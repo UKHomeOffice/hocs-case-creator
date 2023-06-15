@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.client.info;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
@@ -24,6 +25,7 @@ public class InfoClient {
         this.serviceBaseURL = serviceBaseURL;
     }
 
+    @Cacheable(value="InfoClientGetTopicsForParent", unless = "#result.size() == 0", key="{#parentTopicUUID}")
     public List<Topic> getTopicsForParent(String messageId, UUID parentTopicUUID) {
         ResponseEntity<GetTopicsResponse> responseEntity = restClient.get(
                 messageId,
