@@ -118,8 +118,6 @@ public class MigrationService {
             }
         }
 
-        addPrimaryTopic(messageId, caseId, stageId, migrationCaseData);
-
         return Status.COMPLETED;
     }
 
@@ -194,6 +192,7 @@ public class MigrationService {
         }
     }
 
+    @SuppressWarnings("unused") // HOCS-6385 no longer requires this but may be useful for Alfresco migration
     private void addPrimaryTopic(String messageId, UUID caseId, UUID stageId, MigrationData migrationCaseData) {
         if (stageId == null) {
             log.info("Skipping adding topic for case {} - no stage was available", caseId);

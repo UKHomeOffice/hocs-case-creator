@@ -54,8 +54,6 @@ case:
       group: /evPR7Fa9S063C6SLsHkNaw
       team:
       user: 428804f0-bc6a-45b2-9dad-a73378606b01
-    migration:
-      parent-topic-uuid: 'eb939efd-8aa8-46e0-a9c3-9ae979e151ab'
 aws:
   sqs:
     queue:

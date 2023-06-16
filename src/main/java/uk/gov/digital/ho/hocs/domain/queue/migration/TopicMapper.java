@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.domain.queue.migration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.digital.ho.hocs.client.info.InfoClient;
@@ -11,6 +12,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class TopicMapper {
 
     private final InfoClient infoClient;
@@ -34,11 +36,17 @@ public class TopicMapper {
     }
 
     private Map<String, UUID> getTopicMapping(String messageId) {
+        if(parentTopicId == null) {
+            log.warn("case.creator.migration.parent-topic-uuid has not been configured so topics will not be migrated");
+            topicMapping = Map.of();
+        }
+
         if (topicMapping == null) {
             topicMapping =
                 infoClient.getTopicsForParent(messageId, parentTopicId).stream()
                           .collect(Collectors.toMap(Topic::getDisplayName, Topic::getUuid));
         }
+
         return topicMapping;
     }
 }
