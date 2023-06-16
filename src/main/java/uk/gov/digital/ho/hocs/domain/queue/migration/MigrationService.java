@@ -15,6 +15,7 @@ import uk.gov.digital.ho.hocs.client.migration.casework.MigrationCaseworkClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreatePrimaryTopicRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.MigrationComplaintCorrespondent;
 import uk.gov.digital.ho.hocs.client.migration.workflow.MigrationWorkflowClient;
 import uk.gov.digital.ho.hocs.client.migration.workflow.dto.CreateWorkflowRequest;
@@ -40,27 +41,31 @@ public class MigrationService {
     private final DocumentClient documentClient;
 
     private final MigrationWorkflowClient workflowClient;
-    private final CaseDataService caseDataService;
 
+    private final CaseDataService caseDataService;
 
     private final MessageLogService messageLogService;
 
     private final ObjectMapper objectMapper;
 
+    private final TopicMapper topicMapper;
+
     public MigrationService(
-            MigrationCaseworkClient migrationCaseworkClient,
-            ObjectMapper objectMapper,
-            MessageLogService messageLogService,
-            DocumentClient documentClient,
-            MigrationWorkflowClient workflowClient,
-            CaseDataService caseDataService
-            ) {
+        MigrationCaseworkClient migrationCaseworkClient,
+        ObjectMapper objectMapper,
+        MessageLogService messageLogService,
+        DocumentClient documentClient,
+        MigrationWorkflowClient workflowClient,
+        CaseDataService caseDataService,
+        TopicMapper topicMapper
+    ) {
         this.migrationCaseworkClient = migrationCaseworkClient;
         this.objectMapper = objectMapper;
         this.messageLogService = messageLogService;
         this.documentClient = documentClient;
         this.workflowClient = workflowClient;
         this.caseDataService = caseDataService;
+        this.topicMapper = topicMapper;
     }
 
     public Status createMigrationCase(String messageId, MigrationData migrationCaseData) {
@@ -106,7 +111,10 @@ public class MigrationService {
             } catch (Exception e) {
                 messageLogService.updateStatus(messageId, Status.WORKFLOW_MIGRATION_FAILURE);
                 log.error("Failed to create workflow for open case {}", caseId, e);
-                throw new ApplicationExceptions.CaseCreationException(e.getMessage(), LogEvent.WORKFLOW_MIGRATION_FAILURE);
+                throw new ApplicationExceptions.CaseCreationException(
+                    e.getMessage(),
+                    LogEvent.WORKFLOW_MIGRATION_FAILURE
+                );
             }
         }
 
@@ -181,6 +189,36 @@ public class MigrationService {
                 e.getMessage(),
                 LogEvent.CASE_DOCUMENT_CREATION_FAILURE
             );
+        }
+    }
+
+    @SuppressWarnings("unused") // HOCS-6385 no longer requires this but may be useful for Alfresco migration
+    private void addPrimaryTopic(String messageId, UUID caseId, UUID stageId, MigrationData migrationCaseData) {
+        if (stageId == null) {
+            log.info("Skipping adding topic for case {} - no stage was available", caseId);
+            return;
+        }
+
+        if (migrationCaseData.getPrimaryTopic().isEmpty()) {
+            log.info("Skipping adding topic for case {} - no primary topic was provided", caseId);
+            return;
+        }
+
+        try {
+            UUID topicId =
+                migrationCaseData
+                    .getPrimaryTopic()
+                    .flatMap(text -> topicMapper.getTopicId(messageId, text))
+                    .orElseThrow(() -> new Exception("Topic text did not match a CMS migration topic"));
+
+            migrationCaseworkClient.createPrimaryTopic(
+                    messageId,
+                    new CreatePrimaryTopicRequest(caseId, stageId, topicId)
+            );
+
+            log.info("Created primary topic for migrated case {}", caseId);
+        } catch (Exception e) {
+            log.warn("Failed to create primary topic for migrated case {} - {}", caseId, e.getMessage(), e);
         }
     }
 

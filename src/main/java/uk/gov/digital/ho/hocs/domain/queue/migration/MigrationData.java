@@ -27,6 +27,7 @@ public class MigrationData extends CaseData {
     public static final String MIGRATED_REFERENCE = "$.sourceCaseId";
     public static final String CASE_DATA = "$.caseData";
     public static final String CASE_DEADLINE = "$.deadlineDate";
+    public static final String PRIMARY_TOPIC = "$.primaryTopic";
 
     public MigrationData(String jsonBody) {
         super(jsonBody);
@@ -89,6 +90,14 @@ public class MigrationData extends CaseData {
 
     public String getMigratedReference() {
         return ctx.read(MIGRATED_REFERENCE);
+    }
+
+    public Optional<String> getPrimaryTopic() {
+        try {
+            return Optional.ofNullable(ctx.read(PRIMARY_TOPIC));
+        } catch (PathNotFoundException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<String> optionalString(ReadContext ctx, String path) {

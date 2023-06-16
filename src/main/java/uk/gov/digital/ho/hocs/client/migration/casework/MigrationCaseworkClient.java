@@ -8,6 +8,7 @@ import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreatePrimaryTopicRequest;
 
 @Slf4j
 @Component
@@ -30,13 +31,23 @@ public class MigrationCaseworkClient {
         return responseEntity.getBody();
     }
 
-    public ResponseEntity migrateCorrespondent(String messageId, CreateMigrationCorrespondentRequest request) {
-        ResponseEntity responseEntity = restClient.post(
+    public ResponseEntity<Void> migrateCorrespondent(String messageId, CreateMigrationCorrespondentRequest request) {
+        return restClient.post(
                 messageId,
                 serviceBaseURL,
                 "/migrate/correspondent",
                 request,
                 Void.class);
-        return responseEntity;
     }
+
+    public void createPrimaryTopic(String messageId, CreatePrimaryTopicRequest request) {
+        restClient.post(
+            messageId,
+            serviceBaseURL,
+            "/migrate/primary-topic",
+            request,
+            Void.class
+        );
+    }
+
 }
