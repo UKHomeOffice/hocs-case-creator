@@ -138,8 +138,6 @@ public class MigrationServiceTest {
         when(documentClient.createDocument(any(), any(CreateDocumentRequest.class))).thenReturn(caseAttachmentResponseEntity);
 
         when(workflowClient.createWorkflow(eq(messageId), any(CreateWorkflowRequest.class))).thenReturn(ResponseEntity.ok().build());
-
-        when(topicMapper.getTopicId(messageId, "Primary topic")).thenReturn(Optional.of(topicId));
     }
 
     @Test
@@ -339,18 +337,6 @@ public class MigrationServiceTest {
             .thenReturn(caseData);
 
         migrationService.createMigrationCase(messageId, migrationData);
-    }
-
-    @Test
-    public void whenAPrimaryTopicIsIncluded_theTopicShouldBeAddedToTheCase() {
-        var json = getResourceFileAsString("migration/validMigrationTOWithPrimaryTopic.json");
-        var migrationData = new MigrationData(json);
-
-        migrationService.createMigrationCase(messageId, migrationData);
-
-        verify(topicMapper, times(1)).getTopicId(messageId, "Primary topic");
-        verify(migrationCaseworkClient, times(1))
-                .createPrimaryTopic(eq(messageId), any(CreatePrimaryTopicRequest.class));
     }
 
     private MigrationComplaintCorrespondent createCorrespondent() {
