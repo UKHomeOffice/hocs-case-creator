@@ -1,5 +1,7 @@
 package uk.gov.digital.ho.hocs.domain.service;
 
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.digital.ho.hocs.domain.model.Message;
@@ -8,18 +10,40 @@ import uk.gov.digital.ho.hocs.domain.repositories.MessageLogRepository;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.MessageLog;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import static uk.gov.digital.ho.hocs.domain.repositories.entities.Status.*;
 
 @Service
 public class MessageLogService {
 
     private final MessageLogRepository messageLogRepository;
 
-    public MessageLogService(MessageLogRepository messageLogRepository) {
+    private final MeterRegistry meterRegistry;
+
+    private static final List<Status> FAILED_STATUS = List.of(
+            CASE_DOCUMENT_FAILED,
+            CASE_CREATION_FAILED,
+            CASE_CORRESPONDENTS_FAILED,
+            CASE_STAGE_RETRIEVAL_FAILED,
+            CASE_USER_UPDATE_FAILED,
+            CASE_TEAM_UPDATE_FAILED
+    );
+
+    public MessageLogService(MessageLogRepository messageLogRepository, MeterRegistry meterRegistry) {
         this.messageLogRepository = messageLogRepository;
+        this.meterRegistry = meterRegistry;
+    }
+
+    @PostConstruct
+    public void init() {
+        Gauge.builder("decs.message.failures.count", messageLogRepository, m->m.countByStatusIn(FAILED_STATUS))
+                .description("DECS Number of Webform failures")
+                .register(meterRegistry);
     }
 
     public void createEntry(String messageId, UUID externalReference, MessageType type, String message) {

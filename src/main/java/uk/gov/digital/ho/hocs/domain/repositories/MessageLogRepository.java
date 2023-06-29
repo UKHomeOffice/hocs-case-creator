@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.hocs.domain.repositories;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -8,6 +9,7 @@ import uk.gov.digital.ho.hocs.domain.repositories.entities.MessageLog;
 import uk.gov.digital.ho.hocs.domain.repositories.entities.Status;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -44,5 +46,8 @@ public interface MessageLogRepository extends CrudRepository<MessageLog, String>
     Stream<MessageLog> findByStatusAndReceivedBetween(Status status, LocalDateTime from, LocalDateTime to);
 
     Stream<MessageLog> findByStatusAndReceivedBefore(Status status, LocalDateTime to);
+
+    @Cacheable(value="messageLogcountByStatusIn")
+    long countByStatusIn(List<Status> status);
 
 }

@@ -21,6 +21,10 @@ spring:
   jpa:
     database: postgresql
     open-in-view: false
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=30m
 
 aws:
   sqs:
@@ -59,8 +63,18 @@ case:
 management:
   endpoints:
     enabled-by-default: false
+    web:
+      exposure:
+        include: health,prometheus
   endpoint:
     health:
       enabled: true
       probes:
         enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
