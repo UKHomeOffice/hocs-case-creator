@@ -51,7 +51,7 @@ dependencies {
 
     implementation 'com.networknt:json-schema-validator:1.0.85'
     implementation 'com.jayway.jsonpath:json-path:2.8.0'
-    implementation 'net.minidev:json-smart:2.4.11'
+    implementation 'net.minidev:json-smart:2.5.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.apache.commons:commons-text:1.10.0'
     implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE'
