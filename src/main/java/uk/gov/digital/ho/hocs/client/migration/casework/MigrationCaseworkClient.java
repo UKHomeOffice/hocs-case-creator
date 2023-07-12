@@ -5,10 +5,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
+import uk.gov.digital.ho.hocs.client.casework.dto.UpdateMigratedCaseDataRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreatePrimaryTopicRequest;
+
+import java.time.LocalDateTime;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -45,6 +49,22 @@ public class MigrationCaseworkClient {
             messageId,
             serviceBaseURL,
             "/migrate/primary-topic",
+            request,
+            Void.class
+        );
+    }
+
+    public void updateMigratedCaseData(
+        String messageId,
+        String migratedCaseReference,
+        LocalDateTime updateTimestamp,
+        Map<String, String> data
+    ) {
+        UpdateMigratedCaseDataRequest request = new UpdateMigratedCaseDataRequest(updateTimestamp, data);
+        restClient.post(
+            messageId,
+            serviceBaseURL,
+            String.format("/migrate/case/%s/case-data", migratedCaseReference),
             request,
             Void.class
         );
