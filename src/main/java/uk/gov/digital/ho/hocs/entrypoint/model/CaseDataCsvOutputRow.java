@@ -1,6 +1,8 @@
 package uk.gov.digital.ho.hocs.entrypoint.model;
 
 import lombok.Getter;
+import uk.gov.digital.ho.hocs.client.casework.dto.BatchUpdateMigratedCaseDataRequest;
+import uk.gov.digital.ho.hocs.client.casework.dto.BatchUpdateMigratedCaseDataResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,8 +15,6 @@ import static java.util.Map.entry;
 
 @Getter
 public class CaseDataCsvOutputRow extends CaseDataCsvInputRow {
-
-
     public static final String SUCCESS_COLUMN = "success";
     public static final String ERROR_MESSAGE_COLUMN = "errorMessage";
     public static final String MESSAGE_ID_COLUMN = "messageId";
@@ -52,6 +52,21 @@ public class CaseDataCsvOutputRow extends CaseDataCsvInputRow {
             row.getCaseData(),
             true,
             null,
+            messageId
+        );
+    }
+
+    public static CaseDataCsvOutputRow from(
+        BatchUpdateMigratedCaseDataRequest request,
+        BatchUpdateMigratedCaseDataResponse response,
+        UUID messageId
+    ) {
+        return new CaseDataCsvOutputRow(
+            request.getMigratedReference(),
+            request.getUpdateEventTimestamp(),
+            request.getData(),
+            response.isSuccess(),
+            response.getErrorMessage(),
             messageId
         );
     }
