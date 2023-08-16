@@ -180,6 +180,8 @@ public class MigrationResourceIntegrationTest {
                         req -> refToResponseMapping.get(req.getMigratedReference())
                     ).toList();
 
+                    System.out.println(responses);
+
                     return ResponseEntity.ok(responses);
                 }
             );

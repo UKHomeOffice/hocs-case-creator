@@ -39,6 +39,8 @@ public class MigrationResource {
         HttpServletRequest request,
         @RequestParam(name = "batchSize", defaultValue = "1000") int batchSize
     ) throws IOException {
+        System.out.println(batchSize);
+
         final AtomicInteger counter = new AtomicInteger(0);
 
         var outputRows =
