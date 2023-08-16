@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.digital.ho.hocs.application.RestClient;
+import uk.gov.digital.ho.hocs.client.casework.dto.BatchUpdateMigratedCaseDataRequest;
+import uk.gov.digital.ho.hocs.client.casework.dto.BatchUpdateMigratedCaseDataResponse;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateMigratedCaseDataRequest;
 import uk.gov.digital.ho.hocs.utilities.CsvHasRows;
 
@@ -26,6 +29,10 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -89,10 +96,47 @@ public class MigrationResourceIntegrationTest {
                    )
                )
            )));
+
+        verify(mockRestClient, times(2)).post(any(), any(), any(), any(), eq(Void.class));
+        verifyNoMoreInteractions(mockRestClient);
+    }
+
+    @Test
+    public void whenACsvWithCaseUpdatesIsUploadedForBatchProcessing_thenAnUpdateIsRequestedForEachBatchAndTheResultCsvIsReturned() throws Exception {
+        setupRestClientMock();
+
+        mvc.perform(
+               post("/migrate/batch-update-case-data?batchSize=2")
+                   .header(HttpHeaders.CONTENT_TYPE, "text/csv")
+                   .content(getResourceFileAsString("migration/case-updates-extended.csv"))
+           )
+           .andExpect(request().asyncStarted())
+           .andDo(MvcResult::getAsyncResult)
+           .andExpect(status().isOk())
+           .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "text/csv"))
+           .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=results.csv"))
+           .andExpect(content().string(new CsvHasRows(
+               List.of(
+                   Map.of("migratedReference", "12345678", "success", "true", "errorMessage", ""),
+                   Map.of(
+                       "migratedReference", "87654321",
+                       "success", "false",
+                       "errorMessage", "Migrated Case: 87654321, not found!"
+                   ),
+                   Map.of(
+                       "migratedReference", "11111111",
+                       "success", "false",
+                       "errorMessage", "A different error"
+                   )
+               )
+           )))
+           ;
+        verify(mockRestClient, times(2)).post(any(), any(), any(), any(), eq(new ParameterizedTypeReference<List<BatchUpdateMigratedCaseDataResponse>>() {}));
+        verifyNoMoreInteractions(mockRestClient);
     }
 
     private void setupRestClientMock() {
-        when(mockRestClient.post(any(), any(), any(), any(), any()))
+        when(mockRestClient.post(any(), any(), any(), any(), eq(Void.class)))
             .thenAnswer(
                 (Answer<ResponseEntity<Void>>) invocation -> {
                     String url = invocation.getArgument(2, String.class);
@@ -118,6 +162,27 @@ public class MigrationResourceIntegrationTest {
                     }
 
                     throw new RuntimeException("Unexpected request: %s".formatted(invocation.getArguments()));
+                }
+            );
+
+        final Map<String, BatchUpdateMigratedCaseDataResponse> refToResponseMapping = Map.of(
+            "12345678", new BatchUpdateMigratedCaseDataResponse("12345678", true, null),
+            "87654321", new BatchUpdateMigratedCaseDataResponse("87654321", false, "Migrated Case: 87654321, not found!"),
+            "11111111", new BatchUpdateMigratedCaseDataResponse("11111111", false, "A different error")
+        );
+
+        when(mockRestClient.post(any(), any(), any(), any(), eq(new ParameterizedTypeReference<List<BatchUpdateMigratedCaseDataResponse>>() {})))
+            .thenAnswer(
+                (Answer<ResponseEntity<List<BatchUpdateMigratedCaseDataResponse>>>) invocation -> {
+                    List<BatchUpdateMigratedCaseDataRequest> request = invocation.getArgument(3);
+
+                    List<BatchUpdateMigratedCaseDataResponse> responses = request.stream().map(
+                        req -> refToResponseMapping.get(req.getMigratedReference())
+                    ).toList();
+
+                    System.out.println(responses);
+
+                    return ResponseEntity.ok(responses);
                 }
             );
     }
