@@ -78,7 +78,7 @@ public class CaseDataCsvOutputRow extends CaseDataCsvInputRow {
                 entry(ERROR_MESSAGE_COLUMN, Optional.ofNullable(getErrorMessage()).orElse("")),
                 entry(MESSAGE_ID_COLUMN, this.getMessageId().toString()),
                 entry(MIGRATED_REFERENCE_COLUMN, this.getMigratedReference()),
-                entry(UPDATE_TIMESTAMP_COLUMN, this.getUpdateTimestamp().toString())
+                entry(UPDATE_TIMESTAMP_COLUMN, Optional.ofNullable(this.getUpdateTimestamp()).map(Object::toString).orElse(""))
             ),
             getCaseData().entrySet().stream()
         );

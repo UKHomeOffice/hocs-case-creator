@@ -2,7 +2,9 @@ package uk.gov.digital.ho.hocs.entrypoint;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.dataformat.csv.CsvFactory;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvParser;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -21,7 +23,7 @@ import java.util.stream.StreamSupport;
 public class CsvHelpers {
     public static Stream<Map<String, String>> getRowsFromInputStream(InputStream inputStream) throws IOException {
         CsvSchema bootstrapSchema = CsvSchema.emptySchema().withHeader();
-        CsvMapper mapper = new CsvMapper();
+        CsvMapper mapper = new CsvMapper(CsvFactory.builder().enable(CsvParser.Feature.SKIP_EMPTY_LINES).build());
 
         MappingIterator<Map<String, String>> readValues =
             mapper.readerFor(Map.class).with(bootstrapSchema).readValues(inputStream);
