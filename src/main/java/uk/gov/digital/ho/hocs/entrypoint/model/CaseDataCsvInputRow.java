@@ -7,6 +7,7 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,10 +26,13 @@ public class CaseDataCsvInputRow {
 
     public static CaseDataCsvInputRow from(Map<String, String> row) {
         String migratedReference = row.get(MIGRATED_REFERENCE_COLUMN);
-        LocalDateTime updateTimestamp = LocalDateTime.parse(
-            row.get(UPDATE_TIMESTAMP_COLUMN),
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-        );
+        LocalDateTime updateTimestamp =
+            Optional.ofNullable(row.get(UPDATE_TIMESTAMP_COLUMN))
+                    .map(dateString -> LocalDateTime.parse(
+                        dateString,
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+                    ))
+                    .orElse(null);
 
         Map<String, String> caseData =
             row.entrySet().stream()
