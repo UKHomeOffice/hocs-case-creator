@@ -2,9 +2,12 @@ package uk.gov.digital.ho.hocs.client.migration.casework;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
+import uk.gov.digital.ho.hocs.client.casework.dto.BatchUpdateMigratedCaseDataRequest;
+import uk.gov.digital.ho.hocs.client.casework.dto.BatchUpdateMigratedCaseDataResponse;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateMigratedCaseDataRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
@@ -12,6 +15,7 @@ import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorre
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreatePrimaryTopicRequest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -68,6 +72,19 @@ public class MigrationCaseworkClient {
             request,
             Void.class
         );
+    }
+
+    public List<BatchUpdateMigratedCaseDataResponse> batchUpdateMigratedCaseData(
+        String messageId,
+        List<BatchUpdateMigratedCaseDataRequest> updates
+    ) {
+        return restClient.post(
+            messageId,
+            serviceBaseURL,
+            "/migrate/case/case-data",
+            updates,
+            new ParameterizedTypeReference<List<BatchUpdateMigratedCaseDataResponse>>() {}
+        ).getBody();
     }
 
 }

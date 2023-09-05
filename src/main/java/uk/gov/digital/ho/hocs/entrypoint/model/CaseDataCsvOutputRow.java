@@ -1,6 +1,8 @@
 package uk.gov.digital.ho.hocs.entrypoint.model;
 
 import lombok.Getter;
+import uk.gov.digital.ho.hocs.client.casework.dto.BatchUpdateMigratedCaseDataRequest;
+import uk.gov.digital.ho.hocs.client.casework.dto.BatchUpdateMigratedCaseDataResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,8 +15,6 @@ import static java.util.Map.entry;
 
 @Getter
 public class CaseDataCsvOutputRow extends CaseDataCsvInputRow {
-
-
     public static final String SUCCESS_COLUMN = "success";
     public static final String ERROR_MESSAGE_COLUMN = "errorMessage";
     public static final String MESSAGE_ID_COLUMN = "messageId";
@@ -56,6 +56,21 @@ public class CaseDataCsvOutputRow extends CaseDataCsvInputRow {
         );
     }
 
+    public static CaseDataCsvOutputRow from(
+        BatchUpdateMigratedCaseDataRequest request,
+        BatchUpdateMigratedCaseDataResponse response,
+        UUID messageId
+    ) {
+        return new CaseDataCsvOutputRow(
+            request.getMigratedReference(),
+            request.getUpdateEventTimestamp(),
+            request.getData(),
+            response.isSuccess(),
+            response.getErrorMessage(),
+            messageId
+        );
+    }
+
     public Map<String, String> toRow() {
         return MapUtils.concatEntries(
             Stream.of(
@@ -63,7 +78,7 @@ public class CaseDataCsvOutputRow extends CaseDataCsvInputRow {
                 entry(ERROR_MESSAGE_COLUMN, Optional.ofNullable(getErrorMessage()).orElse("")),
                 entry(MESSAGE_ID_COLUMN, this.getMessageId().toString()),
                 entry(MIGRATED_REFERENCE_COLUMN, this.getMigratedReference()),
-                entry(UPDATE_TIMESTAMP_COLUMN, this.getUpdateTimestamp().toString())
+                entry(UPDATE_TIMESTAMP_COLUMN, Optional.ofNullable(this.getUpdateTimestamp()).map(Object::toString).orElse(""))
             ),
             getCaseData().entrySet().stream()
         );
