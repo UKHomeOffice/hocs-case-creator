@@ -2,6 +2,7 @@ package uk.gov.digital.ho.hocs.application;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -38,12 +39,17 @@ public class RestClient {
         return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.POST, new HttpEntity<>(request, createAuthHeaders(messageId)), responseType);
     }
 
+    public <T, R> ResponseEntity<R> post(String messageId, String serviceBaseURL, String url, T request, ParameterizedTypeReference<R> responseType) {
+        log.info("RestClient making POST request to {}{}", serviceBaseURL, url);
+        return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.POST, new HttpEntity<>(request, createAuthHeaders(messageId)), responseType);
+    }
+
     public <T, R> ResponseEntity<R> put(String messageId, String serviceBaseURL, String url, T request, Class<R> responseType) {
         log.info("RestClient making PUT request to {}{}", serviceBaseURL, url);
         return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.PUT, new HttpEntity<>(request, createAuthHeaders(messageId)), responseType);
     }
 
-    public <T, R> ResponseEntity<R> get(String messageId, String serviceBaseURL, String url, Class<R> responseType) {
+    public <R> ResponseEntity<R> get(String messageId, String serviceBaseURL, String url, Class<R> responseType) {
         log.info("RestClient making GET request to {}{}", serviceBaseURL, url);
         return restTemplate.exchange(String.format("%s%s", serviceBaseURL, url), HttpMethod.GET, new HttpEntity<>(null, createAuthHeaders(messageId)), responseType);
     }
