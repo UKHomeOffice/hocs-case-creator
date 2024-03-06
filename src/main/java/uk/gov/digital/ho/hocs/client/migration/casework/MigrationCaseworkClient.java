@@ -2,12 +2,21 @@ package uk.gov.digital.ho.hocs.client.migration.casework;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
+import uk.gov.digital.ho.hocs.client.casework.dto.BatchUpdateMigratedCaseDataRequest;
+import uk.gov.digital.ho.hocs.client.casework.dto.BatchUpdateMigratedCaseDataResponse;
+import uk.gov.digital.ho.hocs.client.casework.dto.UpdateMigratedCaseDataRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseResponse;
 import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCorrespondentRequest;
+import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreatePrimaryTopicRequest;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -20,8 +29,9 @@ public class MigrationCaseworkClient {
         this.serviceBaseURL = serviceBaseURL;
     }
 
-    public CreateMigrationCaseResponse migrateCase(CreateMigrationCaseRequest request) {
+    public CreateMigrationCaseResponse migrateCase(String messageId, CreateMigrationCaseRequest request) {
         ResponseEntity<CreateMigrationCaseResponse> responseEntity = restClient.post(
+                messageId,
                 serviceBaseURL,
                 "/migrate/case",
                 request,
@@ -29,12 +39,52 @@ public class MigrationCaseworkClient {
         return responseEntity.getBody();
     }
 
-    public ResponseEntity migrateCorrespondent(CreateMigrationCorrespondentRequest request) {
-        ResponseEntity responseEntity = restClient.post(
+    public ResponseEntity<Void> migrateCorrespondent(String messageId, CreateMigrationCorrespondentRequest request) {
+        return restClient.post(
+                messageId,
                 serviceBaseURL,
                 "/migrate/correspondent",
                 request,
                 Void.class);
-        return responseEntity;
     }
+
+    public void createPrimaryTopic(String messageId, CreatePrimaryTopicRequest request) {
+        restClient.post(
+            messageId,
+            serviceBaseURL,
+            "/migrate/primary-topic",
+            request,
+            Void.class
+        );
+    }
+
+    public void updateMigratedCaseData(
+        String messageId,
+        String migratedCaseReference,
+        LocalDateTime updateTimestamp,
+        Map<String, String> data
+    ) {
+        UpdateMigratedCaseDataRequest request = new UpdateMigratedCaseDataRequest(updateTimestamp, data);
+        restClient.post(
+            messageId,
+            serviceBaseURL,
+            String.format("/migrate/case/%s/case-data", migratedCaseReference),
+            request,
+            Void.class
+        );
+    }
+
+    public List<BatchUpdateMigratedCaseDataResponse> batchUpdateMigratedCaseData(
+        String messageId,
+        List<BatchUpdateMigratedCaseDataRequest> updates
+    ) {
+        return restClient.post(
+            messageId,
+            serviceBaseURL,
+            "/migrate/case/case-data",
+            updates,
+            new ParameterizedTypeReference<List<BatchUpdateMigratedCaseDataResponse>>() {}
+        ).getBody();
+    }
+
 }

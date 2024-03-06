@@ -9,6 +9,7 @@
       "IMMIGRATION_DECISION": "Immigration decision",
       "BIOMETRIC_RESIDENCE_PERMIT": "Biometric residence permit",
       "REFUND": "Refund",
+      "POOR_STAFF_BEHAVIOUR": "Staff behaviour",
       "POOR_INFORMATION_OR_STAFF_BEHAVIOUR": "Staff behaviour",
       "SOMETHING_ELSE": "Something else"
     }
@@ -64,7 +65,7 @@
     "fieldName": "documentReturnRequest",
     "choices": {
       "YES_DOCS_SERVICE": "Documents service",
-      "YES_OTHER": "Other",
+      "YES_OTHER": "Yes",
       "NO": "No"
     }
   },

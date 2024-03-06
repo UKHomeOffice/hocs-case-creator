@@ -28,12 +28,14 @@ public class WorkflowClientTest {
 
     private final String serviceUrl = "http://localhost:8091";
     private WorkflowClient workflowClient;
+    private String messageId;
     @Mock
     private RestClient restClient;
 
     @Before
     public void setUp() {
         workflowClient = new WorkflowClient(restClient, serviceUrl);
+        messageId = UUID.randomUUID().toString();
     }
 
     @Test
@@ -48,9 +50,9 @@ public class WorkflowClientTest {
         CreateCaseResponse expectedResponse = new CreateCaseResponse(responseUUID, caseRef);
         ResponseEntity<CreateCaseResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
 
-        when(restClient.post(serviceUrl, "/case", request, CreateCaseResponse.class)).thenReturn(responseEntity);
+        when(restClient.post(messageId, serviceUrl, "/case", request, CreateCaseResponse.class)).thenReturn(responseEntity);
 
-        CreateCaseResponse actualResponse = workflowClient.createCase(request);
+        CreateCaseResponse actualResponse = workflowClient.createCase(messageId, request);
 
         assertEquals(expectedResponse.getUuid(), actualResponse.getUuid());
         assertEquals(expectedResponse.getReference(), actualResponse.getReference());
@@ -62,16 +64,14 @@ public class WorkflowClientTest {
         UUID currentStageUUID = UUID.randomUUID();
         Map<String, String> data = Map.of("ComplaintType", "BIOMETRIC_RESIDENCE_PERMIT");
 
-        String jsonFromService = "{\n" +
-                "  \"stageUUID\" : \"%s\"\n" +
-                "}\n";
+        String jsonFromService = "{\n" + "  \"stageUUID\" : \"%s\"\n" + "}\n";
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(String.format(jsonFromService, currentStageUUID), HttpStatus.OK);
         AdvanceCaseDataRequest request = new AdvanceCaseDataRequest(data);
 
-        when(restClient.post(serviceUrl, String.format("/case/%s/stage/%s", caseUUID, currentStageUUID), request, String.class)).thenReturn(responseEntity);
+        when(restClient.post(messageId, serviceUrl, String.format("/case/%s/stage/%s", caseUUID, currentStageUUID), request, String.class)).thenReturn(responseEntity);
 
-        UUID actualStageUUID = workflowClient.advanceCase(caseUUID, currentStageUUID, data);
+        UUID actualStageUUID = workflowClient.advanceCase(messageId, caseUUID, currentStageUUID, data);
 
         assertEquals(currentStageUUID, actualStageUUID);
 

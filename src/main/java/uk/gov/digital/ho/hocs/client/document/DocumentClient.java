@@ -24,8 +24,8 @@ public class DocumentClient {
         this.serviceBaseURL = documentService;
     }
 
-    public ResponseEntity<UUID> createDocument(UUID caseUUID, CreateDocumentRequest request) {
-        ResponseEntity<UUID> response = restClient.post(serviceBaseURL, "/document", request, UUID.class);
+    public ResponseEntity<UUID> createDocument(String messageId, CreateDocumentRequest request) {
+        ResponseEntity<UUID> response = restClient.post(messageId, serviceBaseURL, "/document", request, UUID.class);
         return response;
     }
 }

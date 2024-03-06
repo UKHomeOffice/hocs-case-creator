@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.digital.ho.hocs.application.RestClient;
 import uk.gov.digital.ho.hocs.client.casework.dto.ComplaintCorrespondent;
-import uk.gov.digital.ho.hocs.client.casework.dto.CreateCaseworkCaseResponse;
-import uk.gov.digital.ho.hocs.client.migration.casework.dto.CreateMigrationCaseRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateCaseworkCaseDataRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageTeamRequest;
 import uk.gov.digital.ho.hocs.client.casework.dto.UpdateStageUserRequest;
@@ -28,8 +26,8 @@ public class CaseworkClient {
         this.serviceBaseURL = serviceBaseURL;
     }
 
-    public UUID getStageForCase(UUID caseUUID) {
-        ResponseEntity<String> responseEntity = restClient.get(serviceBaseURL, String.format("/active-stage/case/%s", caseUUID), String.class);
+    public UUID getStageForCase(String messageId, UUID caseUUID) {
+        ResponseEntity<String> responseEntity = restClient.get(messageId, serviceBaseURL, String.format("/active-stage/case/%s", caseUUID), String.class);
         ReadContext ctx = JsonPath.parse(responseEntity.getBody());
         Integer numStages = ctx.read("$.stages.length()");
         if (numStages > 1) {
@@ -40,33 +38,27 @@ public class CaseworkClient {
         return UUID.fromString(ctx.read("$.stages[0].uuid"));
     }
 
-    public ResponseEntity<Void> updateStageUser(UUID caseUUID, UUID stageUUID, UUID userUUID) {
+    public ResponseEntity<Void> updateStageUser(String messageId, UUID caseUUID, UUID stageUUID, UUID userUUID) {
         UpdateStageUserRequest request = new UpdateStageUserRequest(userUUID);
-        return restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/user", caseUUID, stageUUID), request, Void.class);
+        return restClient.put(messageId, serviceBaseURL, String.format("/case/%s/stage/%s/user", caseUUID, stageUUID), request, Void.class);
     }
 
-    public ResponseEntity<Void> addCorrespondentToCase(UUID caseUUID, UUID stageUUID, ComplaintCorrespondent complaintCorrespondent) {
-        return restClient.post(serviceBaseURL, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageUUID), complaintCorrespondent, Void.class);
+    public ResponseEntity<Void> addCorrespondentToCase(String messageId, UUID caseUUID, UUID stageUUID, ComplaintCorrespondent complaintCorrespondent) {
+        return restClient.post(messageId, serviceBaseURL, String.format("/case/%s/stage/%s/correspondent", caseUUID, stageUUID), complaintCorrespondent, Void.class);
     }
 
-    public UUID getPrimaryCorrespondent(UUID caseUUID) {
-        ResponseEntity<String> responseEntity = restClient.get(serviceBaseURL, String.format("/case/%s", caseUUID), String.class);
+    public UUID getPrimaryCorrespondent(String messageId, UUID caseUUID) {
+        ResponseEntity<String> responseEntity = restClient.get(messageId, serviceBaseURL, String.format("/case/%s", caseUUID), String.class);
         return UUID.fromString(JsonPath.read(responseEntity.getBody(), "$.primaryCorrespondentUUID"));
     }
 
-    public ResponseEntity<Void> updateStageTeam(UUID caseUUID, UUID stageUUID, UUID teamUUID) {
+    public ResponseEntity<Void> updateStageTeam(String messageId, UUID caseUUID, UUID stageUUID, UUID teamUUID) {
         UpdateStageTeamRequest request = new UpdateStageTeamRequest(caseUUID, stageUUID, teamUUID);
-        return restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), request, Void.class);
+        return restClient.put(messageId, serviceBaseURL, String.format("/case/%s/stage/%s/team", caseUUID, stageUUID), request, Void.class);
     }
 
-    public ResponseEntity<Void> updateCase(UUID caseUUID, UUID stageUUID, Map<String, String> data) {
+    public ResponseEntity<Void> updateCase(String messageId, UUID caseUUID, UUID stageUUID, Map<String, String> data) {
         UpdateCaseworkCaseDataRequest request = new UpdateCaseworkCaseDataRequest(data);
-        return restClient.put(serviceBaseURL, String.format("/case/%s/stage/%s/data", caseUUID, stageUUID), request, Void.class);
+        return restClient.put(messageId, serviceBaseURL, String.format("/case/%s/stage/%s/data", caseUUID, stageUUID), request, Void.class);
     }
-
-    public CreateCaseworkCaseResponse migrateCase(CreateMigrationCaseRequest request) {
-        ResponseEntity<CreateCaseworkCaseResponse> responseEntity = restClient.post(serviceBaseURL, "/migrate", request, CreateCaseworkCaseResponse.class);
-        return responseEntity.getBody();
-    }
-
 }

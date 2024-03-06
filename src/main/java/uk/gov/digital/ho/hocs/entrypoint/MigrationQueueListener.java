@@ -46,6 +46,7 @@ public class MigrationQueueListener implements QueueListener {
         }
 
         messageLogService.createEntry(messageId, externalReference, messageType, message);
+        messageLogService.updateProcessedTime(messageId);
         messageHandler.handleMessage(new Message(messageId, message, messageType));
     }
 }

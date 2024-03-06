@@ -19,8 +19,8 @@ public class MigrationWorkflowClient {
         this.serviceBaseURL = serviceBaseURL;
     }
 
-    public ResponseEntity createWorkflow(CreateWorkflowRequest request) {
-        return restClient.post(serviceBaseURL, "/migrate/case", request, void.class);
+    public ResponseEntity createWorkflow(String messageId, CreateWorkflowRequest request) {
+        return restClient.post(messageId, serviceBaseURL, "/migrate/case", request, void.class);
     }
 
 }
